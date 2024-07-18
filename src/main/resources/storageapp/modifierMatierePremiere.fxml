@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="570.0" prefWidth="800.0" style="-fx-background-color: #ffffff;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
+    <right>
+
+    </right>
+    <bottom>
+
+    </bottom>
+    <left>
+
+    </left>
+    <center>
+        <Pane prefHeight="488.0" prefWidth="800.0" BorderPane.alignment="CENTER">
+            <Label layoutX="86.0" layoutY="384.0" text="Désignation :" textFill="#2e3333">
+                <font><Font name="Inter Semi Bold" size="20.0" /></font>
+            </Label>
+            <Label layoutX="101.0" layoutY="444.0" text="Référence :" textFill="#2e3333">
+                <font><Font name="Inter Semi Bold" size="20.0" /></font>
+            </Label>
+            <Label layoutX="102.0" layoutY="325.0" prefHeight="25.0" prefWidth="108.0" text="Catégorie :" textFill="#2e3333">
+                <font><Font name="Inter Semi Bold" size="20.0" /></font>
+            </Label>
+
+            <Label layoutX="465.0" layoutY="384.0" text="Prix unitaire :" textAlignment="CENTER" textFill="#2e3333">
+                <font><Font name="Inter Semi Bold" size="20.0" /></font>
+            </Label>
+            <Label layoutX="423.0" layoutY="324.0" text="Unité de mesure :" textFill="#2e3333">
+                <font><Font name="Inter Semi Bold" size="20.0" /></font>
+            </Label>
+            <Label layoutX="64.0" layoutY="47.0" text="Sélectionnez la matière première à modifier" textFill="#2e3333">
+                <font><Font name="Inter Semi Bold" size="32.0" /></font>
+            </Label>
+            <Label layoutX="497.0" layoutY="445.0" text="Quantité :" textFill="#2e3333">
+                <font><Font name="Inter Semi Bold" size="20.0" /></font>
+            </Label>
+            <Button layoutX="343.0" layoutY="491.0" mnemonicParsing="false" onAction="#validerModifications" prefHeight="40.0" text="Valider modifications">
+                <font><Font name="Inter Semi Bold" size="15.0" /></font>
+            </Button>
+
+            <ComboBox fx:id="categorieField" layoutX="220.0" layoutY="317.0" prefHeight="40.0" prefWidth="140.0" />
+            <ComboBox fx:id="designationField" layoutX="220.0" layoutY="377.0" prefHeight="40.0" prefWidth="140.0" />
+            <ComboBox fx:id="referenceField" layoutX="220.0" layoutY="437.0" prefHeight="40.0" prefWidth="140.0" />
+            <ComboBox fx:id="unitMesureField" layoutX="599.0" layoutY="317.0" prefHeight="40.0" prefWidth="100.0" />
+            <TextField fx:id="pxUnitField" layoutX="599.0" layoutY="377.0" prefHeight="40.0" prefWidth="100.0" />
+            <TextField fx:id="qteField" layoutX="599.0" layoutY="437.0" prefHeight="40.0" prefWidth="100.0" />
+         <TableView fx:id="listeEntree" layoutX="86.0" layoutY="103.0" prefHeight="200.0" prefWidth="613.0">
+           <columns>
+             <TableColumn fx:id="referenceCol" prefWidth="100.0" text="Référence" />
+             <TableColumn fx:id="categorieCol" prefWidth="81.00001525878906" text="Catégorie" />
+               <TableColumn fx:id="designationCol" prefWidth="100.0" text="Désignation" />
+               <TableColumn fx:id="quantiteCol" prefWidth="60.0" text="Quantité" />
+               <TableColumn fx:id="pxUnitaireCol" text="Prix unitaire" />
+               <TableColumn fx:id="pxRevientCol" prefWidth="90.0" text="Prix de revient" />
+               <TableColumn fx:id="uniteMesureCol" prefWidth="100.0" text="Unité de mesure" />
+           </columns>
+         </TableView>
+         <Button onAction="#finirModifications" layoutX="630.0" layoutY="491.0" mnemonicParsing="false" prefHeight="40.0" text="Finir modifications">
+            <font>
+               <Font name="Inter Semi Bold" size="15.0" />
+            </font>
+         </Button>
+        </Pane>
+    </center>
+    <top>
+        <MenuBar BorderPane.alignment="CENTER">
+            <Menu mnemonicParsing="false" text="File">
+                <MenuItem mnemonicParsing="false" text="Close" />
+            </Menu>
+            <Menu mnemonicParsing="false" text="Edit">
+                <MenuItem mnemonicParsing="false" text="Delete" />
+            </Menu>
+            <Menu mnemonicParsing="false" text="Help">
+                <MenuItem mnemonicParsing="false" text="About" />
+            </Menu>
+        </MenuBar>
+    </top>
+
+</BorderPane>
