@@ -1,14 +1,75 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="$CONTROLLER_NAME$"
-            prefHeight="400.0" prefWidth="600.0" >
+<BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640.0" prefWidth="850.0" style="-fx-background-color: #ffffff;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
+    <right>
 
-</AnchorPane>
+    </right>
+    <bottom>
+    </bottom>
+    <left>
+
+    </left>
+    <center>
+        <Pane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+            <Label layoutX="82.0" layoutY="212.0" text="Date :" textFill="#2e3333">
+                <font>
+                    <Font name="Inter Semi Bold" size="20.0" />
+                </font>
+            </Label>
+            <Label layoutX="110.0" layoutY="158.0" text="ID :" textFill="#2e3333">
+                <font>
+                    <Font name="Inter Semi Bold" size="20.0" />
+                </font>
+            </Label>
+            <TextField fx:id="id" layoutX="181.0" layoutY="150.0" prefHeight="40.0" prefWidth="140.0" />
+            <TextField fx:id="date" layoutX="181.0" layoutY="205.0" prefHeight="40.0" prefWidth="140.0" />
+            <Label layoutX="110.0" layoutY="27.0" text="Commande n°" textFill="#2e3333">
+                <font>
+                    <Font name="Inter Semi Bold" size="24.0" />
+                </font>
+            </Label>
+            <TableView fx:id="produitTable" layoutX="80.0" layoutY="312.0" prefHeight="112.0" prefWidth="249.0" stylesheets="@../css/tab.css">
+                <columns>
+                    <TableColumn fx:id="idColumn" prefWidth="136.0" text="ID" />
+                    <TableColumn fx:id="qteColumn" minWidth="0.0" prefWidth="110.79998779296875" text="Quantité" />
+                </columns>
+            </TableView>
+            <Button layoutX="648.0" layoutY="14.0" mnemonicParsing="false" onAction="#retour" text="X">
+            <font>
+               <Font name="System Bold" size="24.0" />
+            </font></Button>
+            <Label layoutX="80.0" layoutY="276.0" text="Liste des produits :">
+                <font>
+                    <Font name="Inter Semi Bold" size="20.0" />
+                </font>
+            </Label>
+            <Button layoutX="162.0" layoutY="437.0" mnemonicParsing="false" onAction="#modifier" prefHeight="40.0" prefWidth="167.0" text="Modifier un produit">
+                <font>
+                    <Font name="Inter Semi Bold" size="15.0" />
+                </font>
+            </Button>
+            <Label layoutX="381.0" layoutY="111.0" text="Description :">
+                <font>
+                    <Font name="Inter Semi Bold" size="20.0" />
+                </font>
+            </Label>
+            <TextArea fx:id="description" layoutX="381.0" layoutY="150.0" prefHeight="95.0" prefWidth="200.0" />
+         <Label layoutX="381.0" layoutY="276.0" text="Liste des matières premières :">
+            <font>
+               <Font name="Inter Semi Bold" size="20.0" />
+            </font>
+         </Label>
+         <TableView fx:id="listeBesoin" layoutX="381.0" layoutY="312.0" prefHeight="200.0" prefWidth="268.0" stylesheets="@../css/tab.css">
+           <columns>
+             <TableColumn fx:id="refMatiere" prefWidth="179.4000244140625" text="Réf matières première" />
+             <TableColumn fx:id="qteMatiere" minWidth="0.20001220703125" prefWidth="84.4000244140625" text="Quantité" />
+           </columns>
+         </TableView>
+        </Pane>
+    </center>
+
+</BorderPane>

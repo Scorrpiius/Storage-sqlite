@@ -1,14 +1,152 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="$CONTROLLER_NAME$"
-            prefHeight="400.0" prefWidth="600.0" >
+<BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="835.0" prefWidth="1124.0" style="-fx-background-color: #ffffff;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
+    <right>
 
-</AnchorPane>
+    </right>
+    <bottom>
+    </bottom>
+    <left>
+
+    </left>
+    <top>
+        <Pane prefHeight="836.0" prefWidth="1124.0" BorderPane.alignment="CENTER">
+            <TextField fx:id="referenceFacture" layoutX="42.0" layoutY="126.0" prefHeight="40.0" prefWidth="280.0" style="-fx-background-color: ccecf0;" />
+            <DatePicker fx:id="dateFacture" layoutX="378.0" layoutY="126.0" prefHeight="40.0" prefWidth="260.0" style="-fx-background-color: ccecf0;" />
+            <TextField fx:id="valeurDevise" layoutX="40.0" layoutY="212.0" prefHeight="40.0" prefWidth="100.0" style="-fx-background-color: ccecf0;" />
+            <ComboBox fx:id="nomDevise" layoutX="158.0" layoutY="212.0" prefHeight="40.0" prefWidth="115.0" style="-fx-background-color: ccecf0;" />
+            <TextField fx:id="txTheo" layoutX="378.0" layoutY="212.0" prefHeight="40.0" prefWidth="100.0" style="-fx-background-color: ccecf0;" />
+            <TextField fx:id="txReel" layoutX="705.0" layoutY="212.0" prefHeight="40.0" prefWidth="100.0" style="-fx-background-color: ccecf0;" />
+            <Button layoutX="42.0" layoutY="674.0" onAction="#ajouterMatierePremiere" prefHeight="40.0" prefWidth="110.0" style="-fx-background-color: #529c3f; -fx-border-color: #529c3f; -fx-border-radius: 20;" text="Ajouter">
+                <font>
+                    <Font name="Inter Semi Bold" size="15.0" />
+                </font>
+            </Button>
+            <Button layoutX="313.0" layoutY="674.0" mnemonicParsing="false" onAction="#modifier" prefHeight="40.0" prefWidth="110.0" style="-fx-background-color: white; -fx-border-color: grey; -fx-border-radius: 10;" text="Modifier">
+                <font>
+                    <Font name="Inter Semi Bold" size="15.0" />
+                </font>
+            </Button>
+            <Button layoutX="790.0" layoutY="768.0" mnemonicParsing="false" onAction="#finir" prefHeight="40.0" prefWidth="150.0" style="-fx-background-color: white; -fx-border-color: black; -fx-border-radius: 10;" text="Terminer">
+                <font>
+                    <Font name="Inter Semi Bold" size="15.0" />
+                </font>
+            </Button>
+            <Button layoutX="1069.0" layoutY="9.0" mnemonicParsing="false" onAction="#retour" style="-fx-background-color: white;" text="X">
+                <font>
+                    <Font name="System Bold" size="20.0" />
+                </font></Button>
+            <Label layoutX="368.0" layoutY="94.0" text="Date" textFill="#6f7482">
+                <font>
+                    <Font name="Inter Regular" size="20.0" />
+                </font>
+            </Label>
+            <Label layoutX="705.0" layoutY="94.0" text="Fournisseur " textFill="#6f7482">
+                <font>
+                    <Font name="Inter Regular" size="20.0" />
+                </font>
+            </Label>
+            <Label layoutX="42.0" layoutY="94.0" text="Référence" textFill="#6f7482">
+                <font>
+                    <Font name="Inter Regular" size="20.0" />
+                </font>
+            </Label>
+            <Label layoutX="378.0" layoutY="179.0" text="Taux d'approche théorique" textAlignment="CENTER" textFill="#6f7482">
+                <font>
+                    <Font name="Inter Regular" size="20.0" />
+                </font>
+            </Label>
+            <Label layoutX="32.0" layoutY="179.0" text="Devise" textFill="#6f7482">
+                <font>
+                    <Font name="Inter Regular" size="20.0" />
+                </font>
+            </Label>
+            <Label layoutX="704.0" layoutY="179.0" text="Taux d'approche réel" textFill="#6f7482">
+                <font>
+                    <Font name="Inter Regular" size="20.0" />
+                </font>
+            </Label>
+            <Label fx:id="titlePage" layoutX="67.0" layoutY="13.0" text="Facture n°" textFill="#2e3333">
+                <font>
+                    <Font name="Inter Semi Bold" size="28.0" />
+                </font>
+            </Label>
+            <TableView stylesheets="@../css/tab.css" fx:id="matPremTableau" layoutX="42.0" layoutY="303.0" prefHeight="172.0" prefWidth="934.0">
+                <columns>
+                    <TableColumn fx:id="refMatPremCol" prefWidth="180.0" text="Référence" />
+                    <TableColumn fx:id="catMatPremCol" minWidth="0.0" prefWidth="130.0" text="Catégorie" />
+                    <TableColumn fx:id="desMatPremCol" prefWidth="150.0" text="Désignation" />
+                    <TableColumn fx:id="qteMatPremCol" prefWidth="90.0" text="Quantité" />
+                    <TableColumn fx:id="pxUnitMatPremCol" prefWidth="100.0" text="Prix unitaire" />
+                    <TableColumn fx:id="pxRevientDeviseMatPremColumn" prefWidth="150.0" text="Prix de revient&#10;" />
+                    <TableColumn fx:id="pxRevientLocalMatPremColumn" prefWidth="130.0" text="Prix de revient&#10;(DHS)" />
+                </columns>
+            </TableView>
+            <Separator layoutY="64.0" opacity="0.56" prefHeight="1.0" prefWidth="1124.0" style="-fx-background-color: black;" />
+            <ComboBox fx:id="fournisseurFacture" layoutX="704.0" layoutY="126.0" prefHeight="40.0" prefWidth="280.0" style="-fx-background-color: ccecf0;" />
+            <Label layoutX="42.0" layoutY="272.0" text="Matières premières :" textFill="#6f7482">
+                <font>
+                    <Font name="Inter Regular" size="20.0" />
+                </font>
+            </Label>
+            <ComboBox fx:id="refMatPremBox" layoutX="40.0" layoutY="517.0" prefHeight="40.0" prefWidth="225.0" style="-fx-background-color: ccecf0;" />
+            <Label layoutX="40.0" layoutY="485.0" text="Référence" textFill="#6f7482">
+                <font>
+                    <Font name="Inter Regular" size="20.0" />
+                </font>
+            </Label>
+            <ComboBox fx:id="catMatPremBox" layoutX="286.0" layoutY="517.0" prefHeight="40.0" prefWidth="225.0" style="-fx-background-color: ccecf0;" />
+            <Label layoutX="286.0" layoutY="485.0" text="Catégorie" textFill="#6f7482">
+                <font>
+                    <Font name="Inter Regular" size="20.0" />
+                </font>
+            </Label>
+            <ComboBox fx:id="desMatPremBox" layoutX="540.0" layoutY="517.0" prefHeight="40.0" prefWidth="225.0" style="-fx-background-color: ccecf0;" />
+            <Label layoutX="539.0" layoutY="485.0" text="Désignation" textFill="#6f7482">
+                <font>
+                    <Font name="Inter Regular" size="20.0" />
+                </font>
+            </Label>
+            <TextField fx:id="qteMatPremField" layoutX="42.0" layoutY="604.0" prefHeight="40.0" prefWidth="100.0" style="-fx-background-color: ccecf0;" />
+            <Label layoutX="41.0" layoutY="570.0" text="Quantité " textFill="#6f7482">
+                <font><Font name="Inter Regular" size="20.0" /></font>
+            </Label>
+            <ComboBox fx:id="uniteMesureMatPremBox" layoutX="286.0" layoutY="604.0" prefHeight="40.0" prefWidth="100.0" style="-fx-background-color: ccecf0;" />
+            <Label layoutX="286.0" layoutY="570.0" text="Unité de mesure" textFill="#6f7482">
+                <font><Font name="Inter Regular" size="20.0" /></font>
+            </Label>
+            <TextField fx:id="pxUnitMatPremField" layoutX="540.0" layoutY="604.0" prefHeight="40.0" prefWidth="100.0" style="-fx-background-color: ccecf0;" />
+            <Label layoutX="539.0" layoutY="570.0" text="Prix unitaire" textAlignment="CENTER" textFill="#6f7482">
+                <font><Font name="Inter Regular" size="20.0" /></font>
+            </Label>
+            <ImageView fx:id="matiereImg" fitHeight="150.0" fitWidth="150.0" layoutX="790.0" layoutY="557.0" pickOnBounds="true" preserveRatio="true" />
+
+            <Button alignment="CENTER" layoutX="181.0" layoutY="674.0" mnemonicParsing="false" onAction="#supprimerMatPrem" prefHeight="40.0" prefWidth="110.0" style="-fx-background-color: #d04848; -fx-border-radius: 10;" text="Supprimer">
+                <font>
+                    <Font name="Inter Semi Bold" size="15.0" />
+                </font>
+            </Button>
+            <Label layoutX="789.0" layoutY="485.0" text="Image" textFill="#6f7482">
+                <font>
+                    <Font name="Inter Regular" size="20.0" />
+                </font>
+            </Label>
+            <Button layoutX="790.0" layoutY="517.0" mnemonicParsing="false" onAction="#loadImage" prefHeight="40.0" prefWidth="205.0" style="-fx-background-color: white; -fx-border-color: black; -fx-border-radius: 10;" text="Télécharger une image">
+                <font>
+                    <Font name="Inter Semi Bold" size="12.0" />
+                </font>
+            </Button>
+            <Button layoutX="960.0" layoutY="768.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="150.0" style="-fx-background-color: white; -fx-border-color: black; -fx-border-radius: 10;" text="Annuler">
+                <font>
+                    <Font name="Inter Semi Bold" size="15.0" />
+                </font></Button>
+
+        </Pane>
+    </top>
+
+</BorderPane>

@@ -1,14 +1,63 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="$CONTROLLER_NAME$"
-            prefHeight="400.0" prefWidth="600.0" >
+<BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="550.0" style="-fx-background-color: #ffffff;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
+    <right>
 
-</AnchorPane>
+    </right>
+    <bottom>
+
+    </bottom>
+    <left>
+
+    </left>
+    <center>
+        <Pane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+            <Label layoutX="135.0" layoutY="80.0" text="Référence :" textFill="#2e3333">
+                <font><Font name="Inter Semi Bold" size="20.0" /></font>
+            </Label>
+            <Label layoutX="136.0" layoutY="14.0" text="Ajouter une sortie" textFill="#2e3333">
+                <font><Font name="Inter Semi Bold" size="32.0" /></font>
+            </Label>
+            <Button layoutX="224.0" layoutY="406.0" mnemonicParsing="false" onAction="#finirSaisie" prefHeight="40.0" text="Finir saisie ">
+                <font><Font name="Inter Semi Bold" size="15.0" /></font>
+            </Button>
+            <ComboBox onAction="#updateQuantite" fx:id="referenceBox" layoutX="291.0" layoutY="77.0" prefHeight="40.0" prefWidth="140.0" />
+         <Label layoutX="64.0" layoutY="140.0" text="Quantité en stock :">
+            <font>
+               <Font name="Inter Semi Bold" size="20.0" />
+            </font>
+         </Label>
+         <Label layoutX="78.0" layoutY="200.0" text="Quantité à sortir :">
+            <font>
+               <Font name="Inter Semi Bold" size="20.0" />
+            </font>
+         </Label>
+         <Label layoutX="122.0" layoutY="260.0" text="Description :">
+            <font>
+               <Font name="Inter Semi Bold" size="20.0" />
+            </font>
+         </Label>
+         <TextField fx:id="qteStock" layoutX="291.0" layoutY="133.0" prefHeight="40.0" prefWidth="100.0" />
+         <TextField fx:id="qte" layoutX="291.0" layoutY="191.0" prefHeight="40.0" prefWidth="100.0" />
+         <TextArea fx:id="description" layoutX="287.0" layoutY="260.0" prefHeight="122.0" prefWidth="200.0" />
+        </Pane>
+    </center>
+    <top>
+        <MenuBar BorderPane.alignment="CENTER">
+            <Menu mnemonicParsing="false" text="File">
+                <MenuItem mnemonicParsing="false" text="Close" />
+            </Menu>
+            <Menu mnemonicParsing="false" text="Edit">
+                <MenuItem mnemonicParsing="false" text="Delete" />
+            </Menu>
+            <Menu mnemonicParsing="false" text="Help">
+                <MenuItem mnemonicParsing="false" text="About" />
+            </Menu>
+        </MenuBar>
+    </top>
+
+</BorderPane>

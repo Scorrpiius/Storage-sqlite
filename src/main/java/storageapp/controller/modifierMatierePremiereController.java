@@ -5,35 +5,36 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
-import storageapp.StorageApp;
 import storageapp.service.DependencyManager;
 
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class modifierEntreeController {
-    private final DependencyManager dependencyManager;
+public class modifierMatierePremiereController {
     private String refInit;
+    private final String factureId;
     @FXML
-    private TableView<Map<String, Object>> listeEntree;
+    private TextField qte, pxUnit;
+    private final DependencyManager dependencyManager;
     @FXML
-    private TableColumn<Map<String, Object>, String> referenceCol, categorieCol, designationCol, quantiteCol, pxUnitaireCol, pxRevientCol, uniteMesureCol;
+    private TableView<Map<String, Object>> entreeTable;
     @FXML
-    private TextField qteField, pxUnitField;
+    private ComboBox<String> categorieBox, referenceBox, designationBox, uniteMesureBox;
     @FXML
-    private ComboBox<String> categorieField, referenceField, designationField, unitMesureField;
-    public modifierEntreeController(DependencyManager dependencyManager){
+    private TableColumn<Map<String, Object>, String> refColumn, catColumn, desColumn, qteColumn, pxUnitColumn, pxRevientColumn, uniteMesureColumn;
+
+    public modifierMatierePremiereController(DependencyManager dependencyManager, String factureId){
         this.dependencyManager = dependencyManager;
+        this.factureId = factureId;
     }
 
     public void initialize(){
@@ -42,37 +43,37 @@ public class modifierEntreeController {
 
     @FXML
     public void updateEntreeTable(){
-        if (!listeEntree.getItems().isEmpty()) {
-            listeEntree.getItems().clear();
+        if (!entreeTable.getItems().isEmpty()) {
+            entreeTable.getItems().clear();
         }
 
-        List<Map<String, Object>> entrees = dependencyManager.getEntreeRepository().findByFactureId(null);
+        List<Map<String, Object>> entrees = dependencyManager.getEntreeRepository().findByFactureId(factureId);
         ObservableList<Map<String, Object>> observableEntrees = FXCollections.observableArrayList(entrees);
-        listeEntree.setItems(observableEntrees);
+        entreeTable.setItems(observableEntrees);
 
-        referenceCol.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().get("id_reference")).asString());
-        categorieCol.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().get("categorie")).asString());
-        designationCol.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().get("designation")).asString());
-        quantiteCol.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().get("quantite")).asString());
-        pxUnitaireCol.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().get("px_unitaire")).asString());
-        pxRevientCol.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().get("px_revient")).asString());
+        refColumn.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().get("id_reference")).asString());
+        catColumn.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().get("categorie")).asString());
+        desColumn.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().get("designation")).asString());
+        qteColumn.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().get("quantite")).asString());
+        pxUnitColumn.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().get("px_unitaire")).asString());
+        pxRevientColumn.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().get("px_revient")).asString());
 
-        for (Map<String, Object> f : entrees) {
-
-            listeEntree.setRowFactory(tv -> {
-                TableRow<Map<String, Object>> row = new TableRow<>();
-                row.setOnMouseClicked(event -> {
-                    if (!row.isEmpty()) {
-                        String selectEntreeId = (String) row.getItem().get("id_reference");
-                        updateData(selectEntreeId, event);
-                    }
-                });
-                return row;
+        entreeTable.setRowFactory(tv -> {
+            TableRow<Map<String, Object>> row = new TableRow<>();
+            row.setOnMouseClicked(event -> {
+                if (!row.isEmpty()) {
+                    String selectEntreeId = (String) row.getItem().get("id_reference");
+                    updateData(selectEntreeId, event);
+                }
             });
-        }
+            return row;
+        });
     }
 
     public void updateData(String matierePremiereId, MouseEvent event){
+        updateCategorie();
+        updateDesignation();
+        updateUniteMesure();
         this.refInit = matierePremiereId;
         Map<String, Object> matierePremiere = dependencyManager.getEntreeRepository().findById(matierePremiereId);
         System.out.println(matierePremiere);
@@ -83,20 +84,66 @@ public class modifierEntreeController {
         String uniteMesure = (String) matierePremiere.get("uniteMesure");
         double pxUnit = (double) matierePremiere.get("px_unitaire");
 
-        this.categorieField.setValue(categorie);
-        this.designationField.setValue(designation);
-        this.qteField.setText(String.valueOf(quantite));
-        this.referenceField.setValue(matierePremiereId);
-        this.unitMesureField.setValue(uniteMesure);
-        this.pxUnitField.setText(String.valueOf(pxUnit));
+        this.categorieBox.setValue(categorie);
+        this.designationBox.setValue(designation);
+        this.qte.setText(String.valueOf(quantite));
+        this.referenceBox.setValue(matierePremiereId);
+        this.uniteMesureBox.setValue(uniteMesure);
+        this.pxUnit.setText(String.valueOf(pxUnit));
 
-        this.categorieField.setEditable(true);
-        this.designationField.setEditable(true);
-        this.qteField.setText(String.valueOf(quantite));
-        this.referenceField.setValue(matierePremiereId);
-        this.unitMesureField.setValue(uniteMesure);
-        this.pxUnitField.setText(String.valueOf(pxUnit));
+        this.categorieBox.setEditable(true);
+        this.designationBox.setEditable(true);
+        this.qte.setEditable(true);
+        this.uniteMesureBox.setEditable(true);
+        this.pxUnit.setEditable(true);
+    }
 
+    public void updateCategorie(){
+        List<Map<String, Object>> categories = dependencyManager.getCategorieRepository().findAll();
+        List<String> categoriesList = new ArrayList<>();
+
+        for(Map<String, Object> c : categories){
+            categoriesList.add((String)c.get("nom"));
+        }
+        categorieBox.setItems(FXCollections.observableArrayList(categoriesList));
+        categorieBox.setEditable(true);
+    }
+
+    @FXML
+    public void updateDesignation(){
+        List<Map<String, Object>> designations = dependencyManager.getDesignationRepository().findAll();
+        List<String> designationsList = new ArrayList<>();
+
+        for(Map<String, Object> c : designations){
+            designationsList.add((String)c.get("nom"));
+        }
+        designationBox.setItems(FXCollections.observableArrayList(designationsList));
+        designationBox.setEditable(true);
+    }
+
+    @FXML
+    public void updateUniteMesure(){
+        List<Map<String, Object>> uniteMesures = dependencyManager.getUniteMesureRepository().findAll();
+        List<String> uniteMesuresList = new ArrayList<>();
+        for(Map<String, Object> c : uniteMesures){
+            uniteMesuresList.add((String)c.get("nom"));
+        }
+        uniteMesureBox.setItems(FXCollections.observableArrayList(uniteMesuresList));
+        uniteMesureBox.setEditable(true);
+    }
+
+    @FXML
+    public void supprimerMatPrem(ActionEvent e) throws SQLException {
+        String idRef = referenceBox.getValue();
+        int qte = Integer.parseInt(this.qte.getText());
+        int initQte = (int) dependencyManager.getFicheStockRepository().findById(idRef).get("quantite");
+        System.out.println(qte);
+        System.out.println(initQte);
+        int q = initQte - qte;
+        System.out.println(q);
+        dependencyManager.getFicheStockRepository().update(idRef, null, q,null,null);
+        dependencyManager.getEntreeRepository().delete(idRef, factureId);
+        updateEntreeTable();
     }
 
     public void finirModifications(ActionEvent event) throws IOException, SQLException {
@@ -106,13 +153,12 @@ public class modifierEntreeController {
     }
 
     public void validerModifications(ActionEvent event) throws IOException, SQLException {
-        final String categorie = categorieField.getValue();
-        final String reference = referenceField.getValue();
-        final String designation = designationField.getValue();
-        final String quantite = qteField.getText();
-        final String pxUnit = pxUnitField.getText();
-        final String uniteMesure = unitMesureField.getValue();
-
+        final String categorie = categorieBox.getValue();
+        final String reference = referenceBox.getValue();
+        final String designation = designationBox.getValue();
+        final String quantite = qte.getText();
+        final String pxUnit = this.pxUnit.getText();
+        final String uniteMesure = uniteMesureBox.getValue();
 
         final boolean isValid = categorie != null && reference != null  && designation != null && quantite != null;
 
@@ -124,13 +170,9 @@ public class modifierEntreeController {
             alert.showAndWait();
             return;
         }
-        /* Modifier la matière première, la fiche de stock qui a été crée, et la catégorie/désignation si elles ont changés*/
-        /*Update matière première*/
-        dependencyManager.getEntreeRepository().update(refInit, reference, categorie, designation, quantite,pxUnit, uniteMesure);
-        System.out.println(dependencyManager.getEntreeRepository().findById(reference));
-        /* Update fiche de stock */
+
+        dependencyManager.getEntreeRepository().update(factureId,refInit, reference, categorie, designation, quantite,pxUnit, uniteMesure);
         dependencyManager.getFicheStockRepository().update(refInit, reference, Integer.parseInt(quantite), categorie, designation);
-
+        updateEntreeTable();
     }
-
 }

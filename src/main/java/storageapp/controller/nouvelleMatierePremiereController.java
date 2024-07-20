@@ -14,27 +14,25 @@ import javafx.stage.Stage;
 import storageapp.service.DependencyManager;
 
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
 import java.io.*;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class nouvelleEntreeController {
-    @FXML
-    private TextField qteField, pxUnitField;
-    @FXML
-    private ComboBox<String> categorieField, referenceField, designationField, unitMesureField;
+public class nouvelleMatierePremiereController {
+    private String img;
     @FXML
     private ImageView matiereImg;
-    private final DependencyManager dependencyManager;
     private final String factureId;
     private final double devise, tx_reel;
-    private String img;
+    @FXML
+    private TextField qte, pxUnit;
+    private final DependencyManager dependencyManager;
+    @FXML
+    private ComboBox<String> categorieBox, referenceBox, designationBox, uniteMesureBox;
 
-    public nouvelleEntreeController(DependencyManager dependencyManager,String factureId, String devise, String tx_reel){
+    public nouvelleMatierePremiereController(DependencyManager dependencyManager, String factureId, String devise, String tx_reel){
         this.dependencyManager = dependencyManager;
         this.factureId = factureId;
         this.devise = Double.parseDouble(devise);
@@ -55,9 +53,10 @@ public class nouvelleEntreeController {
         for(Map<String, Object> c : categories){
             categoriesList.add((String)c.get("nom"));
         }
-        categorieField.setItems(FXCollections.observableArrayList(categoriesList));
-        categorieField.setEditable(true);
+        categorieBox.setItems(FXCollections.observableArrayList(categoriesList));
+        categorieBox.setEditable(true);
     }
+
     @FXML
     public void updateDesignation(){
         List<Map<String, Object>> designations = dependencyManager.getDesignationRepository().findAll();
@@ -66,42 +65,40 @@ public class nouvelleEntreeController {
         for(Map<String, Object> c : designations){
             designationsList.add((String)c.get("nom"));
         }
-        designationField.setItems(FXCollections.observableArrayList(designationsList));
-        designationField.setEditable(true);
+        designationBox.setItems(FXCollections.observableArrayList(designationsList));
+        designationBox.setEditable(true);
     }
+
     @FXML
     public void updateReference(){
         List<Map<String, Object>> references = dependencyManager.getFicheStockRepository().getAllId();
         List<String> referencesList = new ArrayList<>();
-        referenceField.setEditable(true);
-        if (!referencesList.isEmpty()){
-            for(Map<String, Object> c : references){
-                referencesList.add((String)c.get("id_matierePremiere"));
-            }
-            referenceField.setItems(FXCollections.observableArrayList(referencesList));
+
+        for (Map<String, Object> c : references) {
+            referencesList.add((String) c.get("id_matierePremiere"));
         }
+        referenceBox.setItems(FXCollections.observableArrayList(referencesList));
+        referenceBox.setEditable(true);
     }
+
     @FXML
     public void updateUniteMesure(){
-        List<Map<String, Object>> uniteMesures = dependencyManager.getFicheStockRepository().getAllId();
+        List<Map<String, Object>> uniteMesures = dependencyManager.getUniteMesureRepository().findAll();
         List<String> uniteMesuresList = new ArrayList<>();
-        unitMesureField.setEditable(true);
-        if (!uniteMesuresList.isEmpty()){
-            for(Map<String, Object> c : uniteMesures){
-                uniteMesuresList.add((String)c.get("nom"));
-            }
-            unitMesureField.setItems(FXCollections.observableArrayList(uniteMesuresList));
+        for(Map<String, Object> c : uniteMesures){
+            uniteMesuresList.add((String)c.get("nom"));
         }
+        uniteMesureBox.setItems(FXCollections.observableArrayList(uniteMesuresList));
+        uniteMesureBox.setEditable(true);
     }
 
-    public void finirSaisie(ActionEvent event) throws IOException, SQLException {
-        final String categorie = categorieField.getValue();
-        final String reference = referenceField.getValue();
-        final String designation = designationField.getValue();
-        final String quantite = qteField.getText();
-        final String pxUnit = pxUnitField.getText();
-        final String uniteMesure = unitMesureField.getValue();
-
+    public void finirSaisie(ActionEvent event) throws SQLException {
+        final String categorie = categorieBox.getValue();
+        final String reference = referenceBox.getValue();
+        final String designation = designationBox.getValue();
+        final String quantite = qte.getText();
+        final String pxUnit = this.pxUnit.getText();
+        final String uniteMesure = uniteMesureBox.getValue();
 
         final boolean isValid = categorie != null && reference != null  && designation != null && quantite != null;
 
@@ -113,11 +110,11 @@ public class nouvelleEntreeController {
             alert.showAndWait();
             return;
         }
-        // Cree une matière première et l'ajoute à la base de donnée
-        final double pxRevient = Math.round((Double.parseDouble(pxUnit) * devise + tx_reel * Double.parseDouble(pxUnit) * devise)*100.0)/100.0;
-        dependencyManager.getEntreeRepository().create(reference,null,Integer.parseInt(quantite), Double.parseDouble(pxUnit), pxRevient,categorie,designation,uniteMesure, this.img);
 
-        // Crée une fiche de stock à partir de la matière première si elle n'existe pas déja, si elle existe on met à jour la quantité
+        final double pxRevientDevise = Math.round((Double.parseDouble(pxUnit)  + tx_reel * Double.parseDouble(pxUnit))*100.0)/100.0;
+        final double pxRevientLocal = Math.round((Double.parseDouble(pxUnit) * devise  + tx_reel * Double.parseDouble(pxUnit) * devise)*100.0)/100.0;
+        dependencyManager.getEntreeRepository().create(reference, factureId, Integer.parseInt(quantite),Double.parseDouble(pxUnit), pxRevientDevise, pxRevientLocal, categorie, designation, uniteMesure, this.img);
+
         Map<String, Object> ficheDeStock = dependencyManager.getFicheStockRepository().findById(reference);
         if (ficheDeStock != null){
             int qteInit = (int) ficheDeStock.get("quantite");
@@ -127,6 +124,20 @@ public class nouvelleEntreeController {
             dependencyManager.getFicheStockRepository().create(reference, categorie, designation, Integer.parseInt(quantite), uniteMesure);
         }
 
+        Map<String, Object> categorieDB = dependencyManager.getCategorieRepository().findById(categorie);
+        if (categorieDB == null){
+            dependencyManager.getCategorieRepository().create(categorie);
+        }
+
+        Map<String, Object> designationDB = dependencyManager.getDesignationRepository().findById(designation);
+        if (designationDB == null){
+            dependencyManager.getDesignationRepository().create(designation);
+        }
+
+        Map<String, Object> uniteMesureDB = dependencyManager.getUniteMesureRepository().findById(uniteMesure);
+        if (uniteMesureDB == null){
+            dependencyManager.getUniteMesureRepository().create(uniteMesure);
+        }
 
         Node source = (Node) event.getSource();
         Stage currentStage = (Stage) source.getScene().getWindow();
@@ -140,12 +151,9 @@ public class nouvelleEntreeController {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Sélectionner un fichier PNG");
 
-        // Show the dialog and wait for the user to select a file
         File selectedFile = fileChooser.showOpenDialog(currentStage);
         InputStream stream = new FileInputStream(selectedFile);
         Image image = new Image(stream);
-        //Creating the image view
-        //Setting image to the image view
         matiereImg.setImage(image);
 
         this.img = String.valueOf(selectedFile);

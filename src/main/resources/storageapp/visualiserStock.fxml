@@ -1,14 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="$CONTROLLER_NAME$"
-            prefHeight="400.0" prefWidth="600.0" >
-
-</AnchorPane>
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
+   <center>
+       <Pane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+           <Label layoutX="60.0" layoutY="24.0" text="Recherche par catégorie :" />
+           <Label layoutX="47.0" layoutY="64.0" text="Recherche par désignation :" />
+           <ComboBox fx:id="categorieBox" layoutX="200.0" layoutY="20.0" prefWidth="150.0" />
+           <ComboBox fx:id="designationBox" layoutX="200.0" layoutY="60.0" prefWidth="150.0" />
+           <TableView fx:id="ficheStockTable" layoutX="24.0" layoutY="180.0" prefHeight="171.0" prefWidth="552.0">
+               <columns>
+                   <TableColumn fx:id="refColumn" prefWidth="120.0" text="Référence" />
+                   <TableColumn fx:id="catColumn" prefWidth="120.0" text="Catégorie" />
+                   <TableColumn fx:id="desColumn" prefWidth="120.0" text="Désignation" />
+                   <TableColumn fx:id="qteColumn" prefWidth="120.0" text="Quantité" />
+               </columns>
+           </TableView>
+           <Label layoutX="24.0" layoutY="149.0" text="Fiches de stock :" />
+           <Button layoutX="524.0" layoutY="12.0" mnemonicParsing="false" onAction="#retour" text="Retour" />
+           <Button layoutX="393.0" layoutY="64.0" mnemonicParsing="false" onAction="#rechercher" text="Rechercher" />
+         <Label layoutX="60.0" layoutY="104.0" text="Recherche par référence :" />
+         <ComboBox fx:id="referenceBox" layoutX="200.0" layoutY="100.0" prefWidth="150.0" />
+       </Pane>
+   </center>
+   <top>
+       <MenuBar BorderPane.alignment="CENTER">
+           <Menu mnemonicParsing="false" text="File">
+               <MenuItem mnemonicParsing="false" text="Close" />
+           </Menu>
+           <Menu mnemonicParsing="false" text="Edit">
+               <MenuItem mnemonicParsing="false" text="Delete" />
+           </Menu>
+           <Menu mnemonicParsing="false" text="Help">
+               <MenuItem mnemonicParsing="false" text="About" />
+           </Menu>
+       </MenuBar>
+   </top>
+</BorderPane>

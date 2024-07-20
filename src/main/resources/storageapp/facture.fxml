@@ -1,14 +1,91 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="$CONTROLLER_NAME$"
-            prefHeight="400.0" prefWidth="600.0" >
+<BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="643.0" prefWidth="852.0" style="-fx-background-color: #ffffff;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
+    <right>
 
-</AnchorPane>
+    </right>
+    <bottom>
+    </bottom>
+    <left>
+
+    </left>
+    <top>
+        <Pane prefHeight="643.0" prefWidth="852.0" BorderPane.alignment="CENTER">
+            <TextField fx:id="referenceFacture" layoutX="31.0" layoutY="98.0" prefHeight="40.0" prefWidth="310.0" style="-fx-background-color: ccecf0;" />
+            <TextField fx:id="dateFacture" layoutX="397.0" layoutY="98.0" prefHeight="40.0" prefWidth="310.0" style="-fx-background-color: ccecf0;" />
+            <TextField fx:id="valeurDevise" layoutX="395.0" layoutY="191.0" prefHeight="40.0" prefWidth="130.0" style="-fx-background-color: ccecf0;" />
+            <TextField fx:id="nomDevise" layoutX="573.0" layoutY="191.0" prefHeight="40.0" prefWidth="130.0" style="-fx-background-color: ccecf0;" />
+            <TextField fx:id="txTheo" layoutX="31.0" layoutY="290.0" prefHeight="40.0" prefWidth="100.0" style="-fx-background-color: ccecf0;" />
+            <TextField fx:id="txReel" layoutX="395.0" layoutY="290.0" prefHeight="40.0" prefWidth="100.0" style="-fx-background-color: ccecf0;" />
+            <Button layoutX="686.0" layoutY="582.0" mnemonicParsing="false" onAction="#modifier" prefHeight="40.0" prefWidth="150.0" style="-fx-border-color: black; -fx-background-color: white; -fx-border-radius: 10;" text="Modifier">
+                <font>
+                    <Font name="Inter Semi Bold" size="15.0" />
+                </font>
+            </Button>
+            <Button layoutX="790.0" layoutY="15.0" mnemonicParsing="false" onAction="#retour" style="-fx-background-color: white;" text="X">
+            <font>
+               <Font name="System Bold" size="20.0" />
+            </font></Button>
+            <Label layoutX="397.0" layoutY="72.0" text="Date" textFill="#6f7482">
+                <font>
+                    <Font name="Inter Regular" size="20.0" />
+                </font>
+            </Label>
+            <Label layoutX="31.0" layoutY="165.0" text="Fournisseur " textFill="#6f7482">
+                <font>
+                    <Font name="Inter Regular" size="20.0" />
+                </font>
+            </Label>
+            <Label layoutX="31.0" layoutY="72.0" text="Référence" textFill="#6f7482">
+                <font>
+                    <Font name="Inter Regular" size="20.0" />
+                </font>
+            </Label>
+            <Label layoutX="31.0" layoutY="264.0" text="Taux d'approche théorique" textAlignment="CENTER" textFill="#6f7482">
+                <font>
+                    <Font name="Inter Regular" size="20.0" />
+                </font>
+            </Label>
+            <Label layoutX="395.0" layoutY="165.0" text="Devise" textFill="#6f7482">
+                <font>
+                    <Font name="Inter Regular" size="20.0" />
+                </font>
+            </Label>
+            <Label layoutX="395.0" layoutY="264.0" text="Taux d'approche réel" textFill="#6f7482">
+                <font>
+                    <Font name="Inter Regular" size="20.0" />
+                </font>
+            </Label>
+            <Label fx:id="titlePage" layoutX="50.0" layoutY="20.0" text="Facture n°" textFill="#2e3333">
+                <font>
+                    <Font name="Inter Semi Bold" size="24.0" />
+                </font>
+            </Label>
+            <TableView fx:id="matPremTableau" layoutX="31.0" layoutY="390.0" prefHeight="172.0" prefWidth="805.0" stylesheets="@../css/tab.css">
+                <columns>
+                    <TableColumn fx:id="refMatPremCol" prefWidth="134.0" text="Référence" />
+                    <TableColumn fx:id="catMatPremCol" minWidth="0.0" prefWidth="134.0" text="Catégorie" />
+                    <TableColumn fx:id="desMatPremCol" prefWidth="134.0" text="Désignation" />
+                    <TableColumn fx:id="qteMatPremCol" minWidth="0.0" prefWidth="100.0" text="Quantité" />
+                    <TableColumn fx:id="pxUnitMatPremCol" prefWidth="100.0" text="Prix unitaire" />
+                    <TableColumn fx:id="pxRevientDeviseMatPremColumn" prefWidth="100.0" text="Prix de revient&#10;" />
+                    <TableColumn fx:id="pxRevientLocalMatPremColumn" prefWidth="100.0" text="Prix de revient&#10;(DHS)" />
+
+                </columns>
+            </TableView>
+            <Separator layoutY="60.0" opacity="0.56" prefHeight="1.0" prefWidth="852.0" style="-fx-background-color: black;" />
+            <TextField fx:id="fournisseurFacture" layoutX="31.0" layoutY="191.0" prefHeight="40.0" prefWidth="310.0" style="-fx-background-color: ccecf0;" />
+            <Label layoutX="31.0" layoutY="360.0" text="Matières premières :" textFill="#6f7482">
+                <font>
+                    <Font name="Inter Regular" size="20.0" />
+                </font>
+            </Label>
+
+        </Pane>
+    </top>
+
+</BorderPane>

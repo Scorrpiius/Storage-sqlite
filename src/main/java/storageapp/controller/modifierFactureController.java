@@ -1,2 +1,380 @@
-package storageapp.controller;public class modifierFactureController {
+package storageapp.controller;
+
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
+import storageapp.StorageApp;
+import storageapp.service.DependencyManager;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.sql.SQLException;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+public class modifierFactureController {
+    @FXML
+    private Label titlePage;
+    @FXML
+    private ImageView matiereImg;
+    private String factureId, img, refMatInit;
+    @FXML
+    private DatePicker dateFacture;
+    private final DependencyManager dependencyManager;
+    @FXML
+    private TableView<Map<String, Object>> matPremTableau;
+    @FXML
+    private ComboBox<String> nomDevise, fournisseurFacture, refMatPremBox, catMatPremBox, desMatPremBox, uniteMesureMatPremBox;
+    @FXML
+    private TextField referenceFacture, valeurDevise, txTheo, txReel, qteMatPremField, pxUnitMatPremField;
+    @FXML
+    private TableColumn<Map<String, Object>, String> refMatPremCol, desMatPremCol, catMatPremCol, qteMatPremCol, pxUnitMatPremCol, pxRevientDeviseMatPremColumn, pxRevientLocalMatPremColumn;
+
+    public modifierFactureController(DependencyManager dependencyManager, String factureId){
+        this.dependencyManager = dependencyManager;
+        this.factureId = factureId;
+    }
+
+    public void initialize(){
+        titlePage.setText("Facture N° " + factureId);
+        updateEntreeTable();
+        updateAllData();
+        updateDevise();
+        updateFournisseur();
+        updateCategorie();
+        updateDesignation();
+        updateUniteMesure();
+        updateReference();
+    }
+    public void updateAllData(){
+        Map<String, Object> facture = dependencyManager.getFactureRepository().findById(factureId);
+        String fournisseur = (String) facture.get("fournisseur");
+        String date = (String) facture.get("date");
+        String deviseValue = String.valueOf(facture.get("valeur_devise"));
+        String deviseName = (String) facture.get("nom_devise");
+        String txReel = String.valueOf(facture.get("tx_reel"));
+        String txTheo = String.valueOf(facture.get("tx_theo"));
+        pxRevientDeviseMatPremColumn.setText("Prix de revient \n("+deviseName+")");
+
+        referenceFacture.setText(factureId);
+        this.fournisseurFacture.setValue(fournisseur);
+        valeurDevise.setText(deviseValue);
+        nomDevise.setValue(deviseName);
+        this.txTheo.setText(txTheo);
+        this.txReel.setText(txReel);
+        this.dateFacture.setValue(LocalDate.parse(date));
+    }
+
+    @FXML
+    public void updateFournisseur(){
+        List<Map<String, Object>> fournisseurs = dependencyManager.getFournisseurRepository().findAll();
+        List<String> fournisseursList = new ArrayList<>();
+
+        for(Map<String, Object> c : fournisseurs){
+            fournisseursList.add((String)c.get("nom"));
+        }
+        fournisseurFacture.setItems(FXCollections.observableArrayList(fournisseursList));
+        fournisseurFacture.setEditable(true);
+    }
+    @FXML
+    public void updateUniteMesure(){
+        List<Map<String, Object>> uniteMesures = dependencyManager.getUniteMesureRepository().findAll();
+        List<String> uniteMesuresList = new ArrayList<>();
+        for(Map<String, Object> c : uniteMesures){
+            uniteMesuresList.add((String)c.get("nom"));
+        }
+        uniteMesureMatPremBox.setItems(FXCollections.observableArrayList(uniteMesuresList));
+        uniteMesureMatPremBox.setEditable(true);
+    }
+    @FXML
+    public void updateReference(){
+        List<Map<String, Object>> references = dependencyManager.getFicheStockRepository().getAllId();
+        List<String> referencesList = new ArrayList<>();
+
+        for (Map<String, Object> c : references) {
+            referencesList.add((String) c.get("id_matierePremiere"));
+        }
+        refMatPremBox.setItems(FXCollections.observableArrayList(referencesList));
+        refMatPremBox.setEditable(true);
+    }
+    @FXML
+    public void updateDesignation(){
+        List<Map<String, Object>> designations = dependencyManager.getDesignationRepository().findAll();
+        List<String> designationsList = new ArrayList<>();
+
+        for(Map<String, Object> c : designations){
+            designationsList.add((String)c.get("nom"));
+        }
+        desMatPremBox.setItems(FXCollections.observableArrayList(designationsList));
+        desMatPremBox.setEditable(true);
+    }
+    @FXML
+    public void updateCategorie(){
+        List<Map<String, Object>> categories = dependencyManager.getCategorieRepository().findAll();
+        List<String> categoriesList = new ArrayList<>();
+
+        for(Map<String, Object> c : categories){
+            categoriesList.add((String)c.get("nom"));
+        }
+        catMatPremBox.setItems(FXCollections.observableArrayList(categoriesList));
+        catMatPremBox.setEditable(true);
+    }
+
+    @FXML
+    public void updateDevise(){
+        List<Map<String, Object>> devises = dependencyManager.getDeviseRepository().findAll();
+        List<String> devisesList = new ArrayList<>();
+
+        for(Map<String, Object> c : devises){
+            devisesList.add((String)c.get("nom"));
+        }
+        nomDevise.setItems(FXCollections.observableArrayList(devisesList));
+        nomDevise.setEditable(true);
+    }
+
+    @FXML
+    public void updateEntreeTable(){
+        if (!matPremTableau.getItems().isEmpty()) {
+            matPremTableau.getItems().clear();
+        }
+
+        final String nom_devise = nomDevise.getValue();
+        pxRevientDeviseMatPremColumn.setText("Prix de revient \n("+nom_devise+")");
+
+        List<Map<String, Object>> entrees = dependencyManager.getEntreeRepository().findByFactureId(factureId);
+        ObservableList<Map<String, Object>> observableEntrees = FXCollections.observableArrayList(entrees);
+        matPremTableau.setItems(observableEntrees);
+
+        refMatPremCol.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().get("id_reference")).asString());
+        desMatPremCol.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().get("designation")).asString());
+        catMatPremCol.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().get("categorie")).asString());
+        qteMatPremCol.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().get("quantite")).asString());
+        pxUnitMatPremCol.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().get("px_unitaire")).asString());
+        pxRevientDeviseMatPremColumn.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().get("px_revient_devise")).asString());
+        pxRevientLocalMatPremColumn.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().get("px_revient_local")).asString());
+
+        matPremTableau.setRowFactory(tv -> {
+            TableRow<Map<String, Object>> row = new TableRow<>();
+            row.setOnMouseClicked(event -> {
+                if (!row.isEmpty()) {
+                    String selectEntreeId = (String) row.getItem().get("id_reference");
+                    updateData(selectEntreeId, event);
+                }
+            });
+            return row;
+        });
+    }
+
+    public void updateData(String matierePremiereId, MouseEvent ignoredEvent){
+        this.refMatInit = matierePremiereId;
+        Map<String, Object> matierePremiere = dependencyManager.getEntreeRepository().findByIds(referenceFacture.getText(), refMatInit);
+        System.out.println(matierePremiere);
+
+        String categorie = (String) matierePremiere.get("categorie");
+        String designation = (String) matierePremiere.get("designation");
+        int quantite = (int) matierePremiere.get("quantite");
+        String uniteMesure = (String) matierePremiere.get("uniteMesure");
+        double pxUnit = (double) matierePremiere.get("px_unitaire");
+
+        this.catMatPremBox.setValue(categorie);
+        this.desMatPremBox.setValue(designation);
+        this.qteMatPremField.setText(String.valueOf(quantite));
+        this.refMatPremBox.setValue(matierePremiereId);
+        this.uniteMesureMatPremBox.setValue(uniteMesure);
+        this.pxUnitMatPremField.setText(String.valueOf(pxUnit));
+    }
+
+
+    public void ajouterMatierePremiere(ActionEvent event) throws IOException, SQLException {
+        final String id = this.referenceFacture.getText();
+        final LocalDate date = this.dateFacture.getValue();
+        final String devise = valeurDevise.getText();
+        final String tx_reel = txReel.getText();
+
+        boolean isValid = id != null && date != null  && devise != null && tx_reel != null ;
+
+        if (!isValid) {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Warning Dialog");
+            alert.setHeaderText("Validation échouée");
+            alert.setContentText("Veuillez remplir tous les champs avant de rajouter une entrée");
+            alert.showAndWait();
+            return;
+        }
+
+        final String categorie = catMatPremBox.getValue();
+        final String reference = refMatPremBox.getValue();
+        final String designation = desMatPremBox.getValue();
+        final String quantite = qteMatPremField.getText();
+        final String pxUnit = this.pxUnitMatPremField.getText();
+        final String uniteMesure = uniteMesureMatPremBox.getValue();
+
+        isValid = categorie != null && reference != null  && designation != null && quantite != null;
+
+        if (!isValid) {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Warning Dialog");
+            alert.setHeaderText("Validation échouée");
+            alert.setContentText("Veuillez remplir tous les champs");
+            alert.showAndWait();
+            return;
+        }
+
+        final double pxRevientDevise = Math.round(Double.parseDouble(pxUnit) * 100.0 + (Double.parseDouble(tx_reel) * Double.parseDouble(pxUnit)) * 100.0)/100.0;
+        final double pxRevientLocal = Math.round((Double.parseDouble(pxUnit) * Double.parseDouble(devise)  + Double.parseDouble(tx_reel) * Double.parseDouble(pxUnit) * Double.parseDouble(devise))*100.0)/100.0;
+        dependencyManager.getEntreeRepository().create(reference, id, Integer.parseInt(quantite),Double.parseDouble(pxUnit), pxRevientDevise, pxRevientLocal, categorie, designation, uniteMesure, this.img);
+
+        Map<String, Object> ficheDeStock = dependencyManager.getFicheStockRepository().findById(reference);
+        if (ficheDeStock != null){
+            int qteInit = (int) ficheDeStock.get("quantite");
+            int nouvelleQte = qteInit + Integer.parseInt(quantite);
+            dependencyManager.getFicheStockRepository().update(reference, null, nouvelleQte, null, null);
+        } else {
+            dependencyManager.getFicheStockRepository().create(reference, categorie, designation, Integer.parseInt(quantite), uniteMesure);
+        }
+
+        Map<String, Object> categorieDB = dependencyManager.getCategorieRepository().findById(categorie);
+        if (categorieDB == null){
+            dependencyManager.getCategorieRepository().create(categorie);
+        }
+
+        Map<String, Object> designationDB = dependencyManager.getDesignationRepository().findById(designation);
+        if (designationDB == null){
+            dependencyManager.getDesignationRepository().create(designation);
+        }
+
+        Map<String, Object> uniteMesureDB = dependencyManager.getUniteMesureRepository().findById(uniteMesure);
+        if (uniteMesureDB == null){
+            dependencyManager.getUniteMesureRepository().create(uniteMesure);
+        }
+        updateEntreeTable();
+        //nbrEntree++;
+    }
+    public void loadImage(ActionEvent event) throws IOException {
+        Node source = (Node) event.getSource();
+        Stage currentStage = (Stage) source.getScene().getWindow();
+
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Sélectionner un fichier PNG");
+
+        File selectedFile = fileChooser.showOpenDialog(currentStage);
+        InputStream stream = new FileInputStream(selectedFile);
+        Image image = new Image(stream);
+        matiereImg.setImage(image);
+
+        this.img = String.valueOf(selectedFile);
+    }
+
+    public void modifier() throws IOException, SQLException {
+        final double tx_reel = Double.parseDouble(txReel.getText());
+        final double devise = Double.parseDouble(valeurDevise.getText());
+        final String categorie = catMatPremBox.getValue();
+        final String reference = refMatPremBox.getValue();
+        final String designation = desMatPremBox.getValue();
+        final String quantite = qteMatPremField.getText();
+        final String pxUnit = this.pxUnitMatPremField.getText();
+        final String uniteMesure = uniteMesureMatPremBox.getValue();
+
+
+        if (!factureId.equals(referenceFacture.getText())){
+            dependencyManager.getEntreeRepository().update(factureId, referenceFacture.getText(), tx_reel, devise);
+            factureId = referenceFacture.getText();
+        }
+
+        dependencyManager.getEntreeRepository().update(factureId, refMatInit, reference, categorie, designation, quantite, pxUnit, uniteMesure);
+        dependencyManager.getEntreeRepository().update(factureId, factureId, tx_reel, devise);
+        dependencyManager.getFicheStockRepository().update(refMatInit, reference, Integer.parseInt(quantite), categorie, designation);
+        updateEntreeTable();
+    }
+
+    @FXML
+    public void supprimerMatPrem(ActionEvent ignoredE) throws SQLException {
+        String idRef = refMatPremBox.getValue();
+        int qte = Integer.parseInt(this.qteMatPremField.getText());
+        int initQte = (int) dependencyManager.getFicheStockRepository().findById(idRef).get("quantite");
+        System.out.println(qte);
+        System.out.println(initQte);
+        int q = initQte - qte;
+        System.out.println(q);
+        dependencyManager.getFicheStockRepository().update(idRef, null, q,null,null);
+        dependencyManager.getEntreeRepository().delete(idRef, referenceFacture.getText());
+        updateEntreeTable();
+    }
+
+    public void finir(ActionEvent event) throws SQLException, IOException {
+        final String id = this.referenceFacture.getText();
+        final String fournisseur = this.fournisseurFacture.getValue();
+        final String deviseValue = valeurDevise.getText();
+        final String deviseName = nomDevise.getValue();
+        final String txTheo = this.txTheo.getText();
+        final String txReel = this.txReel.getText();
+        final LocalDate date = this.dateFacture.getValue();
+        double tauxTheo = Double.parseDouble(txTheo);
+        double tauxReel = Double.parseDouble(txReel);
+
+        final boolean validFloats = isValidFloat(deviseValue) && isValidFloat(txReel) && isValidFloat(txTheo);
+        final boolean allFieldsFilled = id != null && fournisseur != null && deviseValue != null && date != null;
+
+        if (!validFloats) {
+            showAlert("Veuillez remplir des nombres dans les champs devise, taux d'approche réel et taux d'approche théorique");
+        } else if (!allFieldsFilled) {
+            showAlert("Veuillez remplir tous les champs");
+        } else {
+            // Check if tauxTheo and tauxReel are within valid range
+            if (tauxTheo <= 0 || tauxTheo > 1) {
+                showAlert("Le taux d'approche théorique doit être compris entre 0 et 1");
+            } else if (tauxReel <= 0 || tauxReel > 1) {
+                showAlert("Le taux d'approche réel doit être compris entre 0 et 1");
+            }
+        }
+
+        assert deviseValue != null;
+        dependencyManager.getEntreeRepository().update(factureId, id, tauxReel, Double.parseDouble(deviseValue));
+        int nbrEntree = dependencyManager.getEntreeRepository().findByFactureId(id).size();
+        dependencyManager.getFactureRepository().update(factureId, id, date, fournisseur,tauxTheo, tauxReel, Double.parseDouble(deviseValue), deviseName ,nbrEntree);
+
+        dependencyManager.getConnection().commit();
+        Node source = (Node) event.getSource();
+        Stage stage = (Stage) source.getScene().getWindow();
+        stage.close();
+    }
+
+    public void retour(ActionEvent event) throws SQLException, IOException {
+        dependencyManager.getConnection().rollback();
+        Node source = (Node) event.getSource();
+        Stage oldStage = (Stage) source.getScene().getWindow();
+        oldStage.close();
+    }
+
+    private void showAlert(String contentText) {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("Warning Dialog");
+        alert.setHeaderText("Validation échouée");
+        alert.setContentText(contentText);
+        alert.showAndWait();
+    }
+
+    private boolean isValidFloat(String str) {
+        try {
+            Float.parseFloat(str);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
 }

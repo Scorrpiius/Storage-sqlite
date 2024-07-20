@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="800.0" style="-fx-background-color: #ffffff;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="570.0" style="-fx-background-color: #ffffff;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
     <right>
 
     </right>
@@ -16,54 +16,45 @@
     </left>
     <center>
         <Pane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-            <Label layoutX="91.0" layoutY="113.0" text="Référence :" textFill="#2e3333">
+            <Label layoutX="30.0" layoutY="90.0" text="Référence :" textFill="#2e3333">
                 <font>
                     <Font name="Inter Semi Bold" size="20.0" />
                 </font>
             </Label>
-            <TextField fx:id="referenceProduitField" layoutX="227.0" layoutY="106.0" prefHeight="40.0" prefWidth="140.0" />
-            <Label fx:id="titlePage" layoutX="179.0" layoutY="26.0" textFill="#2e3333">
+            <TextField fx:id="reference" layoutX="30.0" layoutY="120.0" prefHeight="40.0" prefWidth="200.0" style="-fx-background-color: ccecf0;" />
+            <Label fx:id="titlePage" layoutX="14.0" layoutY="10.0" prefHeight="40.0" prefWidth="390.0" text="Produit n°" textFill="#2e3333">
                 <font>
-                    <Font name="Inter Semi Bold" size="32.0" />
+                    <Font name="Inter Semi Bold" size="24.0" />
                 </font>
             </Label>
-            <TableView fx:id="matierePremiereTable" layoutX="91.0" layoutY="199.0" prefHeight="296.0" prefWidth="341.0">
+            <TableView stylesheets="@../css/tab.css" fx:id="matierePremiereTable" layoutX="30.0" layoutY="280.0" prefHeight="160.0" prefWidth="341.0">
                 <columns>
-                    <TableColumn fx:id="matierePremiereReference" prefWidth="254.60000610351562" text="Référence" />
-                    <TableColumn fx:id="matierePremiereQuantite" minWidth="0.0" prefWidth="83.79998779296875" text="Quantité" />
+                    <TableColumn fx:id="refColumn" prefWidth="254.60000610351562" text="Référence" />
+                    <TableColumn fx:id="qteColumn" minWidth="0.0" prefWidth="83.79998779296875" text="Quantité" />
                 </columns>
             </TableView>
-            <Button layoutX="988.0" layoutY="33.0" mnemonicParsing="false" onAction="#retour" text="Retour" />
-            <Label layoutX="91.0" layoutY="167.0" text="Liste des matières premières :">
+            <Button layoutX="517.0" layoutY="9.0" mnemonicParsing="false" onAction="#retour" style="-fx-background-color: transparent;" text="X">
+            <font>
+               <Font name="System Bold" size="20.0" />
+            </font></Button>
+            <Label layoutX="30.0" layoutY="250.0" text="Liste des matières premières :">
                 <font>
                     <Font name="Inter Semi Bold" size="20.0" />
                 </font>
             </Label>
-            <Button layoutX="350.0" layoutY="515.0" mnemonicParsing="false" onAction="#modifier" prefHeight="40.0" text="Modifier">
+            <Button layoutX="476.0" layoutY="546.0" mnemonicParsing="false" onAction="#modifier" prefHeight="40.0" style="-fx-background-color: white; -fx-border-color: black; -fx-border-radius: 10;" text="Modifier">
                 <font>
                     <Font name="Inter Semi Bold" size="15.0" />
                 </font>
             </Button>
-            <Label layoutX="467.0" layoutY="113.0" text="Image :">
+            <Label layoutX="310.0" layoutY="90.0" text="Image :">
                 <font>
                     <Font name="Inter Semi Bold" size="20.0" />
                 </font>
             </Label>
-            <ImageView fx:id="produitFiniImage" fitHeight="217.0" fitWidth="200.0" layoutX="544.0" layoutY="113.0" pickOnBounds="true" preserveRatio="true" />
+            <ImageView fx:id="img" fitHeight="141.0" fitWidth="200.0" layoutX="310.0" layoutY="115.0" pickOnBounds="true" preserveRatio="true" />
+         <Separator layoutY="60.0" prefWidth="570.0" />
         </Pane>
     </center>
-    <top>
-        <MenuBar BorderPane.alignment="CENTER">
-            <Menu mnemonicParsing="false" text="File">
-                <MenuItem mnemonicParsing="false" text="Close" />
-            </Menu>
-            <Menu mnemonicParsing="false" text="Edit">
-                <MenuItem mnemonicParsing="false" text="Delete" />
-            </Menu>
-            <Menu mnemonicParsing="false" text="Help">
-                <MenuItem mnemonicParsing="false" text="About" />
-            </Menu>
-        </MenuBar>
-    </top>
 
 </BorderPane>

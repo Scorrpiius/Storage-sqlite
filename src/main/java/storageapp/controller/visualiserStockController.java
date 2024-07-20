@@ -22,31 +22,23 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class visualiserStock {
+public class visualiserStockController {
     private final DependencyManager dependencyManager;
     @FXML
     private TableView<Map<String, Object>> ficheStockTable;
     @FXML
-    private TableColumn<Map<String, Object>, String> refFicheStock;
+    private TableColumn<Map<String, Object>, String> refColumn, catColumn, desColumn, qteColumn;
     @FXML
-    private TableColumn<Map<String, Object>, String> catFicheStock;
-    @FXML
-    private TableColumn<Map<String, Object>, String> desFicheStock;
-    @FXML
-    private TableColumn<Map<String, Object>, String> qteFicheStock;
-    @FXML
-    private ComboBox<String> categorieFilter, designationFilter, referenceFilter;
+    private ComboBox<String> categorieBox, designationBox, referenceBox;
 
-    public visualiserStock(DependencyManager dependencyManager){
-        this.dependencyManager = dependencyManager;
-    }
+    public visualiserStockController(DependencyManager dependencyManager){ this.dependencyManager = dependencyManager; }
 
     public void initialize(){
         updateCategorie();
         updateDesignation();
         updateReference();
-
     }
+
     @FXML
     public void updateFicheStockTable(List<Map<String, Object>> fichesStock) {
         if (!ficheStockTable.getItems().isEmpty()) {
@@ -56,28 +48,25 @@ public class visualiserStock {
         ObservableList<Map<String, Object>> observableFiches = FXCollections.observableArrayList(fichesStock);
         ficheStockTable.setItems(observableFiches);
 
-        refFicheStock.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().get("id_matierePremiere")).asString());
-        catFicheStock.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().get("categorie")).asString());
-        desFicheStock.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().get("designation")).asString());
-        qteFicheStock.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().get("quantite")).asString());
+        refColumn.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().get("id_matierePremiere")).asString());
+        catColumn.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().get("categorie")).asString());
+        desColumn.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().get("designation")).asString());
+        qteColumn.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().get("quantite")).asString());
 
-        for (Map<String, Object> f : fichesStock) {
-
-            ficheStockTable.setRowFactory(tv -> {
-                TableRow<Map<String, Object>> row = new TableRow<>();
-                row.setOnMouseClicked(event -> {
-                    if (!row.isEmpty()) {
-                        String selectFicheStockId = (String) row.getItem().get("id_matierePremiere");
-                        try {
-                            openFicheStockWindow(selectFicheStockId, event);
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
+        ficheStockTable.setRowFactory(tv -> {
+            TableRow<Map<String, Object>> row = new TableRow<>();
+            row.setOnMouseClicked(event -> {
+                if (!row.isEmpty()) {
+                    String selectFicheStockId = (String) row.getItem().get("id_matierePremiere");
+                    try {
+                        openFicheStockWindow(selectFicheStockId, event);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
                     }
-                });
-                return row;
+                }
             });
-        }
+            return row;
+        });
     }
 
     public void openFicheStockWindow(String ficheStockId, MouseEvent event) throws IOException {
@@ -94,6 +83,7 @@ public class visualiserStock {
         stage.setScene(scene);
         stage.show();
     }
+
     @FXML
     public void updateCategorie(){
         List<Map<String, Object>> categories = dependencyManager.getCategorieRepository().findAll();
@@ -102,9 +92,10 @@ public class visualiserStock {
         for(Map<String, Object> c : categories){
             categoriesList.add((String)c.get("nom"));
         }
-        categorieFilter.setItems(FXCollections.observableArrayList(categoriesList));
-        categorieFilter.setEditable(true);
+        categorieBox.setItems(FXCollections.observableArrayList(categoriesList));
+        categorieBox.setEditable(true);
     }
+
     @FXML
     public void updateDesignation(){
         List<Map<String, Object>> designations = dependencyManager.getDesignationRepository().findAll();
@@ -113,9 +104,10 @@ public class visualiserStock {
         for(Map<String, Object> c : designations){
             designationsList.add((String)c.get("nom"));
         }
-        designationFilter.setItems(FXCollections.observableArrayList(designationsList));
-        designationFilter.setEditable(true);
+        designationBox.setItems(FXCollections.observableArrayList(designationsList));
+        designationBox.setEditable(true);
     }
+
     @FXML
     public void updateReference(){
         List<Map<String, Object>> references = dependencyManager.getFicheStockRepository().getAllId();
@@ -124,34 +116,24 @@ public class visualiserStock {
         for(Map<String, Object> c : references){
             referencesList.add((String)c.get("id_matierePremiere"));
         }
-        referenceFilter.setItems(FXCollections.observableArrayList(referencesList));
-        referenceFilter.setEditable(true);
-
+        referenceBox.setItems(FXCollections.observableArrayList(referencesList));
+        referenceBox.setEditable(true);
     }
+
     public void retour(ActionEvent event) throws IOException {
         Node source = (Node) event.getSource();
         Stage oldStage = (Stage) source.getScene().getWindow();
         oldStage.close();
 
-        FXMLLoader fxmlLoader = new FXMLLoader();
-        fxmlLoader.setLocation(StorageApp.class.getResource("main.fxml"));
-        fxmlLoader.setController(new mainController(dependencyManager));
-        Scene scene = new Scene(fxmlLoader.load());
-        Stage stage = new Stage();
-        stage.setTitle("Stockapp");
-        stage.setScene(scene);
-        stage.show();
-
     }
 
-    public void rechercher(ActionEvent event){
-        String categorie = categorieFilter.getValue();
-        String desgination = designationFilter.getValue();
-        String reference = referenceFilter.getValue();
+    public void rechercher(){
+        String categorie = categorieBox.getValue();
+        String desgination = designationBox.getValue();
+        String reference = referenceBox.getValue();
         if (categorie != null && categorie.isEmpty()) categorie = null;
         if (desgination != null && desgination.isEmpty()) desgination = null;
         if (reference != null && reference.isEmpty()) reference = null;
-        updateFicheStockTable(dependencyManager.getFicheStockRepository().filter(categorie, desgination,reference ));
-
+        updateFicheStockTable(dependencyManager.getFicheStockRepository().filter(categorie, desgination, reference));
     }
 }

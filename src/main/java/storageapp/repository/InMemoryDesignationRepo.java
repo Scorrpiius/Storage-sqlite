@@ -1,5 +1,7 @@
 package storageapp.repository;
 
+import storageapp.model.DesignationRepository;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -9,10 +11,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class InMemoryDesignationRepository implements DesignationRepository{
-    private Connection connection;
+public class InMemoryDesignationRepo implements DesignationRepository {
+    private final Connection connection;
 
-    public InMemoryDesignationRepository(Connection connection){
+    public InMemoryDesignationRepo(Connection connection){
         this.connection = connection;
     }
     @Override
@@ -20,10 +22,8 @@ public class InMemoryDesignationRepository implements DesignationRepository{
         String sql = "insert into Designation values ('" + designation + "');";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-            // Execute the update (since it's an insert operation)
             int rowsAffected = preparedStatement.executeUpdate();
 
-            // Check if the operation was successful
             if (rowsAffected > 0) {
                 System.out.println("Insert operation into Designation successful.");
             } else {
@@ -34,12 +34,14 @@ public class InMemoryDesignationRepository implements DesignationRepository{
 
     @Override
     public Map<String, Object> findById(String id) {
-        try {
-            String sql = "SELECT * FROM Designation where nom = '" + id + "';";
+        String sql = "SELECT * FROM Designation where nom = '" + id + "';";
 
+        try {
             Statement statement = connection.createStatement();
             var rs = statement.executeQuery(sql);
-            if (!rs.first()) return null;
+            if (!rs.isBeforeFirst()) {
+                return null;
+            }
             List<Map<String, Object>> result = new ArrayList<>();
             while (rs.next()) {
                 Map<String, Object> resMap = new HashMap<>();
@@ -51,16 +53,16 @@ public class InMemoryDesignationRepository implements DesignationRepository{
             return result.getFirst();
 
         } catch (SQLException e) {
-            System.out.println("Error collecting data from FicheStock");
+            System.out.println("Designation - findById - Error collecting data from Designation");
             return null;
         }
     }
 
     @Override
     public List<Map<String, Object>> findAll() {
-        try {
-            String sql = "SELECT * FROM Designation";
+        String sql = "SELECT * FROM Designation";
 
+        try {
             Statement statement = connection.createStatement();
             var rs = statement.executeQuery(sql);
             List<Map<String, Object>> result = new ArrayList<>();
@@ -75,7 +77,7 @@ public class InMemoryDesignationRepository implements DesignationRepository{
             return result;
 
         } catch (SQLException e) {
-            System.out.println("Error connecting to SQLite database");
+            System.out.println("Designation - findAll - Error connecting to SQLite database");
             return null;
         }
     }

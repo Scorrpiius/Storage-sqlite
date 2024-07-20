@@ -46,12 +46,12 @@
                 <font><Font name="Inter Semi Bold" size="15.0" /></font>
             </Button>
 
-            <ComboBox fx:id="categorieField" layoutX="190.0" layoutY="70.0" prefHeight="40.0" prefWidth="140.0" />
-            <ComboBox fx:id="designationField" layoutX="190.0" layoutY="130.0" prefHeight="40.0" prefWidth="140.0" />
-            <ComboBox fx:id="referenceField" layoutX="190.0" layoutY="190.0" prefHeight="40.0" prefWidth="140.0" />
-            <ComboBox fx:id="unitMesureField" layoutX="190.0" layoutY="250.0" prefHeight="40.0" prefWidth="100.0" />
-            <TextField fx:id="pxUnitField" layoutX="190.0" layoutY="310.0" prefHeight="40.0" prefWidth="100.0" />
-            <TextField fx:id="qteField" layoutX="190.0" layoutY="370.0" prefHeight="40.0" prefWidth="100.0" />
+            <ComboBox fx:id="categorieBox" layoutX="190.0" layoutY="70.0" prefHeight="40.0" prefWidth="140.0" />
+            <ComboBox fx:id="designationBox" layoutX="190.0" layoutY="130.0" prefHeight="40.0" prefWidth="140.0" />
+            <ComboBox fx:id="referenceBox" layoutX="190.0" layoutY="190.0" prefHeight="40.0" prefWidth="140.0" />
+            <ComboBox fx:id="uniteMesureBox" layoutX="190.0" layoutY="250.0" prefHeight="40.0" prefWidth="100.0" />
+            <TextField fx:id="pxUnit" layoutX="190.0" layoutY="310.0" prefHeight="40.0" prefWidth="100.0" />
+            <TextField fx:id="qte" layoutX="190.0" layoutY="370.0" prefHeight="40.0" prefWidth="100.0" />
             <ImageView fx:id="matiereImg" fitHeight="150.0" fitWidth="150.0" layoutX="509.0" layoutY="134.0" pickOnBounds="true" preserveRatio="true" />
          <Button  onAction="#loadImage" layoutX="520.0" layoutY="90.0" mnemonicParsing="false" prefHeight="40.0" text="Télécharger une image">
             <font>

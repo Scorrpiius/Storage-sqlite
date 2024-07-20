@@ -42,24 +42,29 @@
                 <font><Font name="Inter Semi Bold" size="15.0" /></font>
             </Button>
 
-            <ComboBox fx:id="categorieField" layoutX="220.0" layoutY="317.0" prefHeight="40.0" prefWidth="140.0" />
-            <ComboBox fx:id="designationField" layoutX="220.0" layoutY="377.0" prefHeight="40.0" prefWidth="140.0" />
-            <ComboBox fx:id="referenceField" layoutX="220.0" layoutY="437.0" prefHeight="40.0" prefWidth="140.0" />
-            <ComboBox fx:id="unitMesureField" layoutX="599.0" layoutY="317.0" prefHeight="40.0" prefWidth="100.0" />
-            <TextField fx:id="pxUnitField" layoutX="599.0" layoutY="377.0" prefHeight="40.0" prefWidth="100.0" />
-            <TextField fx:id="qteField" layoutX="599.0" layoutY="437.0" prefHeight="40.0" prefWidth="100.0" />
-         <TableView fx:id="listeEntree" layoutX="86.0" layoutY="103.0" prefHeight="200.0" prefWidth="613.0">
+            <ComboBox fx:id="categorieBox" layoutX="220.0" layoutY="317.0" prefHeight="40.0" prefWidth="140.0" />
+            <ComboBox fx:id="designationBox" layoutX="220.0" layoutY="377.0" prefHeight="40.0" prefWidth="140.0" />
+            <ComboBox fx:id="referenceBox" layoutX="220.0" layoutY="437.0" prefHeight="40.0" prefWidth="140.0" />
+            <ComboBox fx:id="uniteMesureBox" layoutX="599.0" layoutY="317.0" prefHeight="40.0" prefWidth="100.0" />
+            <TextField fx:id="pxUnit" layoutX="599.0" layoutY="377.0" prefHeight="40.0" prefWidth="100.0" />
+            <TextField fx:id="qte" layoutX="599.0" layoutY="437.0" prefHeight="40.0" prefWidth="100.0" />
+         <TableView fx:id="entreeTable" layoutX="86.0" layoutY="103.0" prefHeight="200.0" prefWidth="613.0">
            <columns>
-             <TableColumn fx:id="referenceCol" prefWidth="100.0" text="Référence" />
-             <TableColumn fx:id="categorieCol" prefWidth="81.00001525878906" text="Catégorie" />
-               <TableColumn fx:id="designationCol" prefWidth="100.0" text="Désignation" />
-               <TableColumn fx:id="quantiteCol" prefWidth="60.0" text="Quantité" />
-               <TableColumn fx:id="pxUnitaireCol" text="Prix unitaire" />
-               <TableColumn fx:id="pxRevientCol" prefWidth="90.0" text="Prix de revient" />
-               <TableColumn fx:id="uniteMesureCol" prefWidth="100.0" text="Unité de mesure" />
+             <TableColumn fx:id="refColumn" prefWidth="100.0" text="Référence" />
+             <TableColumn fx:id="catColumn" prefWidth="81.00001525878906" text="Catégorie" />
+               <TableColumn fx:id="desColumn" prefWidth="100.0" text="Désignation" />
+               <TableColumn fx:id="qteColumn" prefWidth="60.0" text="Quantité" />
+               <TableColumn fx:id="pxUnitColumn" text="Prix unitaire" />
+               <TableColumn fx:id="pxRevientColumn" prefWidth="90.0" text="Prix de revient" />
+               <TableColumn fx:id="uniteMesureColumn" prefWidth="100.0" text="Unité de mesure" />
            </columns>
          </TableView>
-         <Button onAction="#finirModifications" layoutX="630.0" layoutY="491.0" mnemonicParsing="false" prefHeight="40.0" text="Finir modifications">
+         <Button layoutX="630.0" layoutY="491.0" mnemonicParsing="false" onAction="#finirModifications" prefHeight="40.0" text="Finir modifications">
+            <font>
+               <Font name="Inter Semi Bold" size="15.0" />
+            </font>
+         </Button>
+         <Button onAction="#supprimerMatPrem" layoutX="14.0" layoutY="491.0" mnemonicParsing="false" prefHeight="40.0" style="-fx-background-color: red;" text="Supprimer matière première" textFill="WHITE">
             <font>
                <Font name="Inter Semi Bold" size="15.0" />
             </font>
