@@ -10,5 +10,6 @@ public interface CommandeProduitFiniRepository {
     List<Map<String, Object>> findByProduitId(String idProduit);
     Map<String, Object> findByIds(String idCommande, String idProduit);
     void updateQuantite(String idCommande, String idProduit, int quantite);
+    void delete(String idCommande, String idProduit);
 
 }

@@ -15,60 +15,61 @@
     </left>
     <center>
         <Pane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-            <Label layoutX="82.0" layoutY="212.0" text="Date :" textFill="#2e3333">
+            <Label layoutX="30.0" layoutY="160.0" text="Date" textFill="#2e3333">
                 <font>
                     <Font name="Inter Semi Bold" size="20.0" />
                 </font>
             </Label>
-            <Label layoutX="110.0" layoutY="158.0" text="ID :" textFill="#2e3333">
+            <Label layoutX="30.0" layoutY="70.0" text="ID" textFill="#2e3333">
                 <font>
                     <Font name="Inter Semi Bold" size="20.0" />
                 </font>
             </Label>
-            <TextField fx:id="id" layoutX="181.0" layoutY="150.0" prefHeight="40.0" prefWidth="140.0" />
-            <TextField fx:id="date" layoutX="181.0" layoutY="205.0" prefHeight="40.0" prefWidth="140.0" />
-            <Label layoutX="110.0" layoutY="27.0" text="Commande n°" textFill="#2e3333">
+            <TextField fx:id="id" layoutX="30.0" layoutY="100.0" prefHeight="40.0" prefWidth="310.0" style="-fx-background-color: ccecf0;" />
+            <Label layoutX="50.0" layoutY="20.0" text="Commande n°" textFill="#2e3333">
                 <font>
                     <Font name="Inter Semi Bold" size="24.0" />
                 </font>
             </Label>
-            <TableView fx:id="produitTable" layoutX="80.0" layoutY="312.0" prefHeight="112.0" prefWidth="249.0" stylesheets="@../css/tab.css">
+            <TableView fx:id="produitTable" layoutX="30.0" layoutY="300.0" prefHeight="309.0" prefWidth="249.0" stylesheets="@../css/tab.css">
                 <columns>
                     <TableColumn fx:id="idColumn" prefWidth="136.0" text="ID" />
                     <TableColumn fx:id="qteColumn" minWidth="0.0" prefWidth="110.79998779296875" text="Quantité" />
                 </columns>
             </TableView>
-            <Button layoutX="648.0" layoutY="14.0" mnemonicParsing="false" onAction="#retour" text="X">
+            <Button layoutX="788.0" layoutY="10.0" mnemonicParsing="false" onAction="#retour" style="-fx-background-color: white;" text="X">
             <font>
                <Font name="System Bold" size="24.0" />
             </font></Button>
-            <Label layoutX="80.0" layoutY="276.0" text="Liste des produits :">
+            <Label layoutX="30.0" layoutY="270.0" text="Liste des produits">
                 <font>
                     <Font name="Inter Semi Bold" size="20.0" />
                 </font>
             </Label>
-            <Button layoutX="162.0" layoutY="437.0" mnemonicParsing="false" onAction="#modifier" prefHeight="40.0" prefWidth="167.0" text="Modifier un produit">
+            <Button layoutX="660.0" layoutY="580.0" mnemonicParsing="false" onAction="#modifier" prefHeight="40.0" prefWidth="167.0" style="-fx-background-color: white; -fx-border-color: black; -fx-border-radius: 10;" text="Modifier">
                 <font>
                     <Font name="Inter Semi Bold" size="15.0" />
                 </font>
             </Button>
-            <Label layoutX="381.0" layoutY="111.0" text="Description :">
+            <Label layoutX="490.0" layoutY="70.0" text="Description">
                 <font>
                     <Font name="Inter Semi Bold" size="20.0" />
                 </font>
             </Label>
-            <TextArea fx:id="description" layoutX="381.0" layoutY="150.0" prefHeight="95.0" prefWidth="200.0" />
-         <Label layoutX="381.0" layoutY="276.0" text="Liste des matières premières :">
+            <TextArea fx:id="description" layoutX="490.0" layoutY="100.0" prefHeight="140.0" prefWidth="310.0" style="-fx-background-color: ccecf0;" />
+         <Label layoutX="490.0" layoutY="276.0" text="Liste des matières premières ">
             <font>
                <Font name="Inter Semi Bold" size="20.0" />
             </font>
          </Label>
-         <TableView fx:id="listeBesoin" layoutX="381.0" layoutY="312.0" prefHeight="200.0" prefWidth="268.0" stylesheets="@../css/tab.css">
+         <TableView fx:id="listeBesoin" layoutX="490.0" layoutY="300.0" prefHeight="265.0" prefWidth="283.0" stylesheets="@../css/tab.css">
            <columns>
-             <TableColumn fx:id="refMatiere" prefWidth="179.4000244140625" text="Réf matières première" />
-             <TableColumn fx:id="qteMatiere" minWidth="0.20001220703125" prefWidth="84.4000244140625" text="Quantité" />
+             <TableColumn fx:id="refMatiere" prefWidth="204.0" text="Réf matières première" />
+             <TableColumn fx:id="qteMatiere" minWidth="0.20001220703125" prefWidth="78.39996337890625" text="Quantité" />
            </columns>
          </TableView>
+         <Separator layoutY="60.0" prefWidth="850.0" />
+         <TextField layoutX="30.0" layoutY="190.0" prefHeight="40.0" prefWidth="310.0" style="-fx-background-color: ccecf0;" />
         </Pane>
     </center>
 

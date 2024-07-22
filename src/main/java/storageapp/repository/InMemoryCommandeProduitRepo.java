@@ -153,4 +153,22 @@ public class InMemoryCommandeProduitRepo implements CommandeProduitFiniRepositor
             throw new RuntimeException(e);
         }
     }
+
+    @Override
+    public void delete(String idCommande, String idProduit){
+        String sql = "DELETE FROM Commande_ProduitFini " +
+                " WHERE id_Commande = '" + idCommande + "' and id_ProduitFini = '" + idProduit + "';";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            int rowsAffected = preparedStatement.executeUpdate();
+
+            if (rowsAffected > 0) {
+                System.out.println("Delete operation into Commande_ProduitFini successful.");
+            } else {
+                System.out.println("Delete operation into Commande_ProduitFini failed.");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

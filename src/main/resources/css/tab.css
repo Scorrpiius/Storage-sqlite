@@ -32,11 +32,11 @@
     -fx-alignment: CENTER-LEFT;
 
 }
-.table-row-cell: hover {
+.table-row-cell:hover {
     -fx-background-color: #93f9b911;
     -fx-text-background-color: red;
 }
-.table-row-cell: odd{
+.table-row-cell:odd{
     -fx-background-color:transparent;
     -fx-background-insets: 0, 0 0 1 0;
     -fx-padding: 0.0em;
@@ -45,7 +45,7 @@
     -fx-pref-height: 40;
 }
 
-.table-row-cell: even{
+.table-row-cell:even{
     -fx-background-color: transparent;
     -fx-background-insets: 0, 0 0 1 0;
     -fx-padding: 0.0em;

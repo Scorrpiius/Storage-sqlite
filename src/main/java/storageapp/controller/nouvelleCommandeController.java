@@ -75,7 +75,7 @@ public class nouvelleCommandeController {
         oldStage.close();
     }
 
-    public void finaliserSaisie(ActionEvent e) throws SQLException, IOException {
+    public void finaliserSaisie(ActionEvent e) throws SQLException {
         final String idCommande = id.getText();
         final String descriptionCommande = description.getText();
         final LocalDate dateCommande = date.getValue();
@@ -129,8 +129,8 @@ public class nouvelleCommandeController {
 
     }
 
-    public void supprimerMatiere(){
-
+    public void supprimerProduit(){
+    dependencyManager.getCommandeProduitFiniRepository().delete(id.getText(), produitBox.getValue());
     }
 
     //Associer un produit fini à une commande
