@@ -115,18 +115,13 @@ public class InMemoryFactureRepo implements FactureRepository {
     }
 
 
-    public Map<String, Object> update(String refInit, String newRef, String categorie, String designation, String quantite, String pxUnit, String uniteMesure){
-        int qte = Integer.parseInt(quantite);
-        double pxUnitaire = Double.parseDouble(pxUnit);
 
-        String sql = "UPDATE MatierePremiere " +
-                "SET id_reference = '" + newRef +"'," +
-                "categorie = '" + categorie + "'," +
-                "designation = '" + designation +"'," +
-                " quantite = " + qte + "," +
-                " px_unitaire = " + pxUnitaire + "," +
-                " uniteMesure = '"+ uniteMesure + "' " +
-                "WHERE id_reference = '" + refInit +"';";
+
+    @Override
+    public void updateFactureId(String idFactureInit, String idFactureNouveau){
+        String sql = "UPDATE Facture " +
+                "SET id = '" + idFactureNouveau +"'" +
+                "WHERE id = '" + idFactureInit +"';";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             int rowsAffected = preparedStatement.executeUpdate();
@@ -139,6 +134,31 @@ public class InMemoryFactureRepo implements FactureRepository {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return null;
     }
+
+    @Override
+    public void updateOtherInfo(String idFacture, LocalDate date, String fournisseur, double tauxTheo, double tauxReel, double valeurDevise, String nomDevise, int nbrMatPrem){
+        String sql = "UPDATE Facture " +
+                "SET fournisseur = '" + fournisseur + "'," +
+                "date = '" + date +"'," +
+                "valeur_devise = " + valeurDevise + "," +
+                "nom_devise = '" + nomDevise + "'," +
+                "tx_reel = "+ tauxReel + ", " +
+                "tx_theo = " + tauxTheo + ", " +
+                "nbr_matPrem = " + nbrMatPrem + " " +
+                "WHERE id = '" + idFacture +"';";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            int rowsAffected = preparedStatement.executeUpdate();
+
+            if (rowsAffected > 0) {
+                System.out.println("Update operation into Facture successful.");
+            } else {
+                System.out.println("Update operation into Facture failed.");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }

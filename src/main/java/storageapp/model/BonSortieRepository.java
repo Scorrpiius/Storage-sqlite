@@ -1,5 +1,6 @@
 package storageapp.model;
 
+
 import java.time.LocalDate;
 import java.util.Map;
 import java.util.List;
@@ -9,6 +10,8 @@ public interface BonSortieRepository {
     List<Map<String, Object>> findAll();
     Map<String, Object> findById(String id);
     void update(String idInitial, String idFinal, LocalDate nouvelleDate);
+    void updateBonId(String idBonInit, String idBonNouveau);
+    void updateDate(String idBon, LocalDate date);
 
 
 }

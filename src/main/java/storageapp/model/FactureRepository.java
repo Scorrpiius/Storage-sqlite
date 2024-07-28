@@ -11,4 +11,6 @@ public interface FactureRepository {
     Map<String, Object> findById(String id);
     List<Map<String, Object>> findAll();
     void update(String idInit,  String idNouveau, LocalDate date, String supplier, double tauxTheo, double tauxReel, double valeur_devise, String nom_devise,  int nbrMatPrem);
+    void updateFactureId(String idFactureInit, String idFactureNouveau);
+    void updateOtherInfo(String idFacture, LocalDate date, String fournisseur, double tauxTheo, double tauxReel, double valeurDevise, String nomDevise, int nbrMatPrem);
 }

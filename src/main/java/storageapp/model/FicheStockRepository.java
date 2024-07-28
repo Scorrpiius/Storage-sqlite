@@ -10,6 +10,7 @@ public interface FicheStockRepository {
     Map<String, Object> findById(String id);
     List<Map<String, Object>> findAll();
     void update(String referenceInit, String newReference, Integer nouvelleQte, String categorie, String designation) throws SQLException;
+    void updateQuantite(String reference, Integer quantite);
     List<Map<String, Object>> filter(String categorie, String designation, String reference);
     List<Map<String, Object>> getAllId();
 }

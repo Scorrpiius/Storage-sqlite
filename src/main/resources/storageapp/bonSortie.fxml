@@ -26,23 +26,23 @@
                 </font>
             </Label>
             <TextField fx:id="idBonField" layoutX="30.0" layoutY="100.0" prefHeight="40.0" prefWidth="300.0" style="-fx-background-color: ccecf0;" />
-            <TextField fx:id="dateBon" layoutX="369.0" layoutY="100.0" prefHeight="40.0" prefWidth="230.0" style="-fx-background-color: ccecf0;" />
+            <TextField fx:id="dateBonField" layoutX="369.0" layoutY="100.0" prefHeight="40.0" prefWidth="230.0" style="-fx-background-color: ccecf0;" />
             <Button layoutX="681.0" layoutY="450.0" mnemonicParsing="false" onAction="#modifier" prefHeight="40.0" prefWidth="150.0" style="-fx-background-color: white; -fx-border-color: black; -fx-border-radius: 10;" text="Modifier">
                 <font>
                     <Font name="Inter Semi Bold" size="15.0" />
                 </font>
             </Button>
-            <Label fx:id="titlePage" layoutX="50.0" layoutY="15.0" text="Bon de sortie n°" textFill="#2e3333">
+            <Label fx:id="titleLabel" layoutX="50.0" layoutY="15.0" text="Bon de sortie n°" textFill="#2e3333">
                 <font>
                     <Font name="Inter Semi Bold" size="24.0" />
                 </font>
             </Label>
-            <TableView fx:id="sortiesTableau" layoutX="30.0" layoutY="220.0" prefHeight="160.0" prefWidth="698.0" stylesheets="@../css/tab.css">
+            <TableView fx:id="sortiesTable" layoutX="30.0" layoutY="220.0" prefHeight="160.0" prefWidth="698.0" stylesheets="@../css/tab.css">
                 <columns>
-                    <TableColumn fx:id="idColumn" prefWidth="52.39999008178711" text="ID" />
-                    <TableColumn fx:id="refColumn" prefWidth="152.8000030517578" text="Référence" />
-                    <TableColumn fx:id="qteColumn" minWidth="0.0" prefWidth="90.0" text="Quantité" />
-                    <TableColumn fx:id="descColumn" prefWidth="400.0" text="Description" />
+                    <TableColumn fx:id="idSortieCol" prefWidth="52.39999008178711" text="ID" />
+                    <TableColumn fx:id="refSortieCol" prefWidth="152.8000030517578" text="Référence" />
+                    <TableColumn fx:id="qteSortieCol" minWidth="0.0" prefWidth="90.0" text="Quantité" />
+                    <TableColumn fx:id="descrSortieCol" prefWidth="400.0" text="Description" />
                 </columns>
             </TableView>
             <Button layoutX="790.0" layoutY="9.0" mnemonicParsing="false" onAction="#retour" style="-fx-background-color: white;" text="X">
@@ -55,6 +55,11 @@
                 </font>
             </Label>
             <Separator layoutY="60.0" prefWidth="852.0" />
+         <Button layoutX="517.0" layoutY="450.0" mnemonicParsing="false" onAction="#imprimer" prefHeight="40.0" prefWidth="150.0" style="-fx-background-color: white; -fx-border-color: black; -fx-border-radius: 10;" text="Imprimer">
+            <font>
+               <Font name="Inter Semi Bold" size="15.0" />
+            </font>
+         </Button>
         </Pane>
     </center>
 

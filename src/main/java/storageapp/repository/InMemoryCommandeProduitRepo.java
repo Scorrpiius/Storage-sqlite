@@ -171,4 +171,53 @@ public class InMemoryCommandeProduitRepo implements CommandeProduitFiniRepositor
             throw new RuntimeException(e);
         }
     }
+
+    @Override
+    public void update(String idCommande, String idAncienProduit, String idNouveauProduit, String quantite) {
+        StringBuilder sqlBuilder = new StringBuilder("update Commande_ProduitFini set");
+        if (quantite != null) {
+            sqlBuilder.append(" quantite = '").append(quantite).append("',");
+        }
+        if (idNouveauProduit != null) {
+            sqlBuilder.append(" id_ProduitFini = '").append(idNouveauProduit).append("',");
+        }
+        // Remove the trailing comma if it exists
+        if (sqlBuilder.charAt(sqlBuilder.length() - 1) == ',') {
+            sqlBuilder.deleteCharAt(sqlBuilder.length() - 1);
+        }
+
+        sqlBuilder.append(" where id_Commande = '").append(idCommande).append("' and ");
+        sqlBuilder.append("id_ProduitFini = '").append(idAncienProduit).append("'; ");
+        String sql = sqlBuilder.toString();
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            int rowsAffected = preparedStatement.executeUpdate();
+
+            if (rowsAffected > 0) {
+                System.out.println("Update operation into Commande_ProduitFini successful.");
+            } else {
+                System.out.println("Update operation into Commande_ProduitFini failed.");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void updateCommandeId(String idCommandeInit, String idCommandeNouveau){
+        String sql = "UPDATE Commande_ProduitFini " +
+                "SET id_Commande = '" + idCommandeNouveau +"'" +
+                "WHERE id_Commande = '" + idCommandeInit +"';";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            int rowsAffected = preparedStatement.executeUpdate();
+
+            if (rowsAffected > 0) {
+                System.out.println("UpdateCommandeId operation into Commande_ProduitFini successful.");
+            } else {
+                System.out.println("UpdateCommandeId operation into Commande_ProduitFini failed.");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

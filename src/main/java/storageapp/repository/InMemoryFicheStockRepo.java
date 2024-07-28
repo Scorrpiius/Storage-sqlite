@@ -31,7 +31,7 @@ public class InMemoryFicheStockRepo implements FicheStockRepository {
             if (rowsAffected > 0) {
                 System.out.println("Insert operation in FicheStock successful.");
             } else {
-                System.out.println("Insert operation in FicheSotck failed.");
+                System.out.println("Insert operation in FicheStock failed.");
             }
         }
     }
@@ -176,6 +176,24 @@ public class InMemoryFicheStockRepo implements FicheStockRepository {
         } catch (SQLException e) {
             System.out.println("Fiche Stock - getAllId - Error collecting data from FicheStock");
             return null;
+        }
+    }
+
+    @Override
+    public void updateQuantite(String reference, Integer quantite){
+
+        String sql = "UPDATE FicheStock SET quantite = " + quantite + " where id_matierePremiere = '" + reference + "';";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            int rowsAffected = preparedStatement.executeUpdate();
+
+            if (rowsAffected > 0) {
+                System.out.println("Update operation into Fiche Stock successful.");
+            } else {
+                System.out.println("Update operation into Fiche Stock failed.");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 

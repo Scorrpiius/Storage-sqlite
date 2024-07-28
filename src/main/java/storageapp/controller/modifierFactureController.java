@@ -5,16 +5,13 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import storageapp.StorageApp;
 import storageapp.service.DependencyManager;
 
 import java.io.File;
@@ -32,28 +29,30 @@ public class modifierFactureController {
     private Label titlePage;
     @FXML
     private ImageView matiereImg;
-    private String factureId, img, refMatInit;
+    private String idFactureInit;
+    private final String IDFACTURE;
+    private String img, refMatInit;
     @FXML
-    private DatePicker dateFacture;
+    private DatePicker dateFacturePicker;
     private final DependencyManager dependencyManager;
     @FXML
-    private TableView<Map<String, Object>> matPremTableau;
+    private TableView<Map<String, Object>> matierePremiereTable;
     @FXML
-    private ComboBox<String> nomDevise, fournisseurFacture, refMatPremBox, catMatPremBox, desMatPremBox, uniteMesureMatPremBox;
+    private TextField referenceFactureField, valeurDeviseField, tauxTheoField, tauxReelField, qteMatPremField, pxUnitMatPremField;
     @FXML
-    private TextField referenceFacture, valeurDevise, txTheo, txReel, qteMatPremField, pxUnitMatPremField;
+    private ComboBox<String> nomDeviseBox, fournisseurFactureBox, refMatPremBox, catMatPremBox, desMatPremBox, uniteMesureMatPremBox;
     @FXML
     private TableColumn<Map<String, Object>, String> refMatPremCol, desMatPremCol, catMatPremCol, qteMatPremCol, pxUnitMatPremCol, pxRevientDeviseMatPremColumn, pxRevientLocalMatPremColumn;
 
     public modifierFactureController(DependencyManager dependencyManager, String factureId){
         this.dependencyManager = dependencyManager;
-        this.factureId = factureId;
+        this.idFactureInit = factureId;
+        this.IDFACTURE = factureId;
     }
-
     public void initialize(){
-        titlePage.setText("Facture N° " + factureId);
-        updateEntreeTable();
+        titlePage.setText("Facture N° " + idFactureInit);
         updateAllData();
+        updateEntreeTable();
         updateDevise();
         updateFournisseur();
         updateCategorie();
@@ -62,7 +61,7 @@ public class modifierFactureController {
         updateReference();
     }
     public void updateAllData(){
-        Map<String, Object> facture = dependencyManager.getFactureRepository().findById(factureId);
+        Map<String, Object> facture = dependencyManager.getFactureRepository().findById(idFactureInit);
         String fournisseur = (String) facture.get("fournisseur");
         String date = (String) facture.get("date");
         String deviseValue = String.valueOf(facture.get("valeur_devise"));
@@ -71,16 +70,14 @@ public class modifierFactureController {
         String txTheo = String.valueOf(facture.get("tx_theo"));
         pxRevientDeviseMatPremColumn.setText("Prix de revient \n("+deviseName+")");
 
-        referenceFacture.setText(factureId);
-        this.fournisseurFacture.setValue(fournisseur);
-        valeurDevise.setText(deviseValue);
-        nomDevise.setValue(deviseName);
-        this.txTheo.setText(txTheo);
-        this.txReel.setText(txReel);
-        this.dateFacture.setValue(LocalDate.parse(date));
+        referenceFactureField.setText(idFactureInit);
+        this.fournisseurFactureBox.setValue(fournisseur);
+        valeurDeviseField.setText(deviseValue);
+        nomDeviseBox.setValue(deviseName);
+        this.tauxTheoField.setText(txTheo);
+        this.tauxReelField.setText(txReel);
+        this.dateFacturePicker.setValue(LocalDate.parse(date));
     }
-
-    @FXML
     public void updateFournisseur(){
         List<Map<String, Object>> fournisseurs = dependencyManager.getFournisseurRepository().findAll();
         List<String> fournisseursList = new ArrayList<>();
@@ -88,10 +85,9 @@ public class modifierFactureController {
         for(Map<String, Object> c : fournisseurs){
             fournisseursList.add((String)c.get("nom"));
         }
-        fournisseurFacture.setItems(FXCollections.observableArrayList(fournisseursList));
-        fournisseurFacture.setEditable(true);
+        fournisseurFactureBox.setItems(FXCollections.observableArrayList(fournisseursList));
+        fournisseurFactureBox.setEditable(true);
     }
-    @FXML
     public void updateUniteMesure(){
         List<Map<String, Object>> uniteMesures = dependencyManager.getUniteMesureRepository().findAll();
         List<String> uniteMesuresList = new ArrayList<>();
@@ -101,7 +97,6 @@ public class modifierFactureController {
         uniteMesureMatPremBox.setItems(FXCollections.observableArrayList(uniteMesuresList));
         uniteMesureMatPremBox.setEditable(true);
     }
-    @FXML
     public void updateReference(){
         List<Map<String, Object>> references = dependencyManager.getFicheStockRepository().getAllId();
         List<String> referencesList = new ArrayList<>();
@@ -112,7 +107,6 @@ public class modifierFactureController {
         refMatPremBox.setItems(FXCollections.observableArrayList(referencesList));
         refMatPremBox.setEditable(true);
     }
-    @FXML
     public void updateDesignation(){
         List<Map<String, Object>> designations = dependencyManager.getDesignationRepository().findAll();
         List<String> designationsList = new ArrayList<>();
@@ -123,7 +117,6 @@ public class modifierFactureController {
         desMatPremBox.setItems(FXCollections.observableArrayList(designationsList));
         desMatPremBox.setEditable(true);
     }
-    @FXML
     public void updateCategorie(){
         List<Map<String, Object>> categories = dependencyManager.getCategorieRepository().findAll();
         List<String> categoriesList = new ArrayList<>();
@@ -134,8 +127,6 @@ public class modifierFactureController {
         catMatPremBox.setItems(FXCollections.observableArrayList(categoriesList));
         catMatPremBox.setEditable(true);
     }
-
-    @FXML
     public void updateDevise(){
         List<Map<String, Object>> devises = dependencyManager.getDeviseRepository().findAll();
         List<String> devisesList = new ArrayList<>();
@@ -143,32 +134,47 @@ public class modifierFactureController {
         for(Map<String, Object> c : devises){
             devisesList.add((String)c.get("nom"));
         }
-        nomDevise.setItems(FXCollections.observableArrayList(devisesList));
-        nomDevise.setEditable(true);
+        nomDeviseBox.setItems(FXCollections.observableArrayList(devisesList));
+        nomDeviseBox.setEditable(true);
     }
-
-    @FXML
     public void updateEntreeTable(){
-        if (!matPremTableau.getItems().isEmpty()) {
-            matPremTableau.getItems().clear();
+        if (!matierePremiereTable.getItems().isEmpty()) {
+            matierePremiereTable.getItems().clear();
         }
 
-        final String nom_devise = nomDevise.getValue();
+        final String nom_devise = nomDeviseBox.getValue();
         pxRevientDeviseMatPremColumn.setText("Prix de revient \n("+nom_devise+")");
 
-        List<Map<String, Object>> entrees = dependencyManager.getEntreeRepository().findByFactureId(factureId);
+        List<Map<String, Object>> entrees = dependencyManager.getEntreeRepository().findByFactureId(idFactureInit);
         ObservableList<Map<String, Object>> observableEntrees = FXCollections.observableArrayList(entrees);
-        matPremTableau.setItems(observableEntrees);
+        matierePremiereTable.setItems(observableEntrees);
+
+        double devise = Double.parseDouble(valeurDeviseField.getText());
+        double tx_reel = Double.parseDouble(tauxReelField.getText());
 
         refMatPremCol.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().get("id_reference")).asString());
         desMatPremCol.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().get("designation")).asString());
         catMatPremCol.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().get("categorie")).asString());
         qteMatPremCol.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().get("quantite")).asString());
         pxUnitMatPremCol.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().get("px_unitaire")).asString());
-        pxRevientDeviseMatPremColumn.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().get("px_revient_devise")).asString());
-        pxRevientLocalMatPremColumn.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().get("px_revient_local")).asString());
+        pxRevientDeviseMatPremColumn.setCellValueFactory(cellData -> {
+            Object pxUnitaireObj = cellData.getValue().get("px_unitaire");
+            double pxUnitaire = pxUnitaireObj != null ? Double.parseDouble(pxUnitaireObj.toString()) : 0;
 
-        matPremTableau.setRowFactory(tv -> {
+            double result = pxUnitaire + tx_reel * pxUnitaire;
+            return new SimpleObjectProperty<>(String.format("%.2f", result));
+
+        });
+        pxRevientLocalMatPremColumn.setCellValueFactory(cellData -> {
+            Object pxUnitaireObj = cellData.getValue().get("px_unitaire");
+            double pxUnitaire = pxUnitaireObj != null ? Double.parseDouble(pxUnitaireObj.toString()) : 0;
+
+            double result = pxUnitaire * devise + tx_reel * pxUnitaire * devise;
+            return new SimpleObjectProperty<>(String.format("%.2f", result));
+
+        });
+
+        matierePremiereTable.setRowFactory(tv -> {
             TableRow<Map<String, Object>> row = new TableRow<>();
             row.setOnMouseClicked(event -> {
                 if (!row.isEmpty()) {
@@ -179,11 +185,9 @@ public class modifierFactureController {
             return row;
         });
     }
-
     public void updateData(String matierePremiereId, MouseEvent ignoredEvent){
         this.refMatInit = matierePremiereId;
-        Map<String, Object> matierePremiere = dependencyManager.getEntreeRepository().findByIds(referenceFacture.getText(), refMatInit);
-        System.out.println(matierePremiere);
+        Map<String, Object> matierePremiere = dependencyManager.getEntreeRepository().findByIds(idFactureInit, refMatInit);
 
         String categorie = (String) matierePremiere.get("categorie");
         String designation = (String) matierePremiere.get("designation");
@@ -198,33 +202,19 @@ public class modifierFactureController {
         this.uniteMesureMatPremBox.setValue(uniteMesure);
         this.pxUnitMatPremField.setText(String.valueOf(pxUnit));
     }
+    public void ajouterMatierePremiere(ActionEvent ignoredevent) throws SQLException {
+        /* Maj de l'id de facture si elle a été faite */
+        majId();
+        majPrix();
 
+        String categorie = catMatPremBox.getValue();
+        String reference = refMatPremBox.getValue();
+        String designation = desMatPremBox.getValue();
+        String quantite = qteMatPremField.getText();
+        String pxUnit = this.pxUnitMatPremField.getText();
+        String uniteMesure = uniteMesureMatPremBox.getValue();
 
-    public void ajouterMatierePremiere(ActionEvent event) throws IOException, SQLException {
-        final String id = this.referenceFacture.getText();
-        final LocalDate date = this.dateFacture.getValue();
-        final String devise = valeurDevise.getText();
-        final String tx_reel = txReel.getText();
-
-        boolean isValid = id != null && date != null  && devise != null && tx_reel != null ;
-
-        if (!isValid) {
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("Warning Dialog");
-            alert.setHeaderText("Validation échouée");
-            alert.setContentText("Veuillez remplir tous les champs avant de rajouter une entrée");
-            alert.showAndWait();
-            return;
-        }
-
-        final String categorie = catMatPremBox.getValue();
-        final String reference = refMatPremBox.getValue();
-        final String designation = desMatPremBox.getValue();
-        final String quantite = qteMatPremField.getText();
-        final String pxUnit = this.pxUnitMatPremField.getText();
-        final String uniteMesure = uniteMesureMatPremBox.getValue();
-
-        isValid = categorie != null && reference != null  && designation != null && quantite != null;
+        boolean isValid = categorie != null && reference != null  && designation != null && quantite != null;
 
         if (!isValid) {
             Alert alert = new Alert(Alert.AlertType.WARNING);
@@ -235,11 +225,11 @@ public class modifierFactureController {
             return;
         }
 
-        final double pxRevientDevise = Math.round(Double.parseDouble(pxUnit) * 100.0 + (Double.parseDouble(tx_reel) * Double.parseDouble(pxUnit)) * 100.0)/100.0;
-        final double pxRevientLocal = Math.round((Double.parseDouble(pxUnit) * Double.parseDouble(devise)  + Double.parseDouble(tx_reel) * Double.parseDouble(pxUnit) * Double.parseDouble(devise))*100.0)/100.0;
-        dependencyManager.getEntreeRepository().create(reference, id, Integer.parseInt(quantite),Double.parseDouble(pxUnit), pxRevientDevise, pxRevientLocal, categorie, designation, uniteMesure, this.img);
+        dependencyManager.getEntreeRepository().create(reference, idFactureInit, Integer.parseInt(quantite),Double.parseDouble(pxUnit),0.0 , 0.0, categorie, designation, uniteMesure, this.img);
+        majPrix();
 
         Map<String, Object> ficheDeStock = dependencyManager.getFicheStockRepository().findById(reference);
+
         if (ficheDeStock != null){
             int qteInit = (int) ficheDeStock.get("quantite");
             int nouvelleQte = qteInit + Integer.parseInt(quantite);
@@ -263,7 +253,6 @@ public class modifierFactureController {
             dependencyManager.getUniteMesureRepository().create(uniteMesure);
         }
         updateEntreeTable();
-        //nbrEntree++;
     }
     public void loadImage(ActionEvent event) throws IOException {
         Node source = (Node) event.getSource();
@@ -279,56 +268,71 @@ public class modifierFactureController {
 
         this.img = String.valueOf(selectedFile);
     }
-
     public void modifier() throws IOException, SQLException {
-        final double tx_reel = Double.parseDouble(txReel.getText());
-        final double devise = Double.parseDouble(valeurDevise.getText());
-        final String categorie = catMatPremBox.getValue();
-        final String reference = refMatPremBox.getValue();
-        final String designation = desMatPremBox.getValue();
-        final String quantite = qteMatPremField.getText();
-        final String pxUnit = this.pxUnitMatPremField.getText();
-        final String uniteMesure = uniteMesureMatPremBox.getValue();
+        /* Maj si l'id facture a été modifié et des prix si modifications de la devise  */
+        majId();
+        majPrix();
+
+        /* Modififcation de la matière première et de la fiche de stock */
+        String categorie = catMatPremBox.getValue();
+        String reference = refMatPremBox.getValue();
+        String designation = desMatPremBox.getValue();
+        String quantite = qteMatPremField.getText();
+        String pxUnit = this.pxUnitMatPremField.getText();
+        String uniteMesure = uniteMesureMatPremBox.getValue();
+        int quantiteInit, quantiteEnStock, nouvelleQteStock;
+        int nouvelleQuantite = Integer.parseInt(quantite);
 
 
-        if (!factureId.equals(referenceFacture.getText())){
-            dependencyManager.getEntreeRepository().update(factureId, referenceFacture.getText(), tx_reel, devise);
-            factureId = referenceFacture.getText();
+        if (refMatInit == null){
+            refMatInit = reference;
         }
 
-        dependencyManager.getEntreeRepository().update(factureId, refMatInit, reference, categorie, designation, quantite, pxUnit, uniteMesure);
-        dependencyManager.getEntreeRepository().update(factureId, factureId, tx_reel, devise);
-        dependencyManager.getFicheStockRepository().update(refMatInit, reference, Integer.parseInt(quantite), categorie, designation);
+        quantiteInit =  Integer.parseInt(dependencyManager.getEntreeRepository().findByIds(idFactureInit, refMatInit).get("quantite").toString());
+        quantiteEnStock = Integer.parseInt(dependencyManager.getFicheStockRepository().findById(refMatInit).get("quantite").toString());
+        nouvelleQteStock= quantiteEnStock - quantiteInit + nouvelleQuantite;
+        dependencyManager.getEntreeRepository().update(idFactureInit, refMatInit, reference, categorie, designation, quantite, pxUnit, uniteMesure);
+        dependencyManager.getFicheStockRepository().update(refMatInit, reference, nouvelleQteStock ,categorie, designation);
+
         updateEntreeTable();
     }
-
-    @FXML
     public void supprimerMatPrem(ActionEvent ignoredE) throws SQLException {
-        String idRef = refMatPremBox.getValue();
-        int qte = Integer.parseInt(this.qteMatPremField.getText());
-        int initQte = (int) dependencyManager.getFicheStockRepository().findById(idRef).get("quantite");
-        System.out.println(qte);
-        System.out.println(initQte);
-        int q = initQte - qte;
-        System.out.println(q);
-        dependencyManager.getFicheStockRepository().update(idRef, null, q,null,null);
-        dependencyManager.getEntreeRepository().delete(idRef, referenceFacture.getText());
+        /* Faire la maje de l'id de facture si il y a eu des modifications + la maj des prix */
+        majId();
+        majPrix();
+
+        /* Supprimer la matiere première de la base de donnée + mettre à jour la fiche de stock en supprimer la quantité associée */
+        String refToDelete = refMatPremBox.getValue();
+        int qteToRemove = Integer.parseInt(qteMatPremField.getText());
+        int qteEnStock = Integer.parseInt(dependencyManager.getFicheStockRepository().findById(refToDelete).get("quantite").toString());
+        int nouvelleQte = qteEnStock - qteToRemove;
+
+        dependencyManager.getFicheStockRepository().update(refToDelete, null, nouvelleQte, null, null);
+        dependencyManager.getEntreeRepository().delete(refToDelete, idFactureInit);
         updateEntreeTable();
     }
+    public void finir(ActionEvent event) throws SQLException {
+        if(!IDFACTURE.equals(referenceFactureField.getText())){
+            if (!(dependencyManager.getFactureRepository().findById(referenceFactureField.getText()) == null)){
+                showAlert("Cette référence de facture existe déjà. Veuillez saisir une nouvelle référence");
+                return;
+            }
+        }
 
-    public void finir(ActionEvent event) throws SQLException, IOException {
-        final String id = this.referenceFacture.getText();
-        final String fournisseur = this.fournisseurFacture.getValue();
-        final String deviseValue = valeurDevise.getText();
-        final String deviseName = nomDevise.getValue();
-        final String txTheo = this.txTheo.getText();
-        final String txReel = this.txReel.getText();
-        final LocalDate date = this.dateFacture.getValue();
+        majId();
+        majPrix();
+
+        final String fournisseur = this.fournisseurFactureBox.getValue();
+        final String deviseValue = valeurDeviseField.getText();
+        final String deviseName = nomDeviseBox.getValue();
+        final String txTheo = this.tauxTheoField.getText();
+        final String txReel = this.tauxReelField.getText();
+        final LocalDate date = this.dateFacturePicker.getValue();
         double tauxTheo = Double.parseDouble(txTheo);
         double tauxReel = Double.parseDouble(txReel);
 
         final boolean validFloats = isValidFloat(deviseValue) && isValidFloat(txReel) && isValidFloat(txTheo);
-        final boolean allFieldsFilled = id != null && fournisseur != null && deviseValue != null && date != null;
+        final boolean allFieldsFilled = fournisseur != null && deviseValue != null && date != null;
 
         if (!validFloats) {
             showAlert("Veuillez remplir des nombres dans les champs devise, taux d'approche réel et taux d'approche théorique");
@@ -344,23 +348,20 @@ public class modifierFactureController {
         }
 
         assert deviseValue != null;
-        dependencyManager.getEntreeRepository().update(factureId, id, tauxReel, Double.parseDouble(deviseValue));
-        int nbrEntree = dependencyManager.getEntreeRepository().findByFactureId(id).size();
-        dependencyManager.getFactureRepository().update(factureId, id, date, fournisseur,tauxTheo, tauxReel, Double.parseDouble(deviseValue), deviseName ,nbrEntree);
+        int nbrEntree = dependencyManager.getEntreeRepository().findByFactureId(idFactureInit).size();
+        dependencyManager.getFactureRepository().updateOtherInfo(idFactureInit, date, fournisseur,tauxTheo, tauxReel, Double.parseDouble(deviseValue), deviseName ,nbrEntree);
 
         dependencyManager.getConnection().commit();
         Node source = (Node) event.getSource();
         Stage stage = (Stage) source.getScene().getWindow();
         stage.close();
     }
-
     public void retour(ActionEvent event) throws SQLException, IOException {
         dependencyManager.getConnection().rollback();
         Node source = (Node) event.getSource();
         Stage oldStage = (Stage) source.getScene().getWindow();
         oldStage.close();
     }
-
     private void showAlert(String contentText) {
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle("Warning Dialog");
@@ -368,7 +369,6 @@ public class modifierFactureController {
         alert.setContentText(contentText);
         alert.showAndWait();
     }
-
     private boolean isValidFloat(String str) {
         try {
             Float.parseFloat(str);
@@ -376,5 +376,26 @@ public class modifierFactureController {
         } catch (NumberFormatException e) {
             return false;
         }
+    }
+    /* Met à jour la référence de la facture pour la facture et les différentes matières premières associés si il y a eu des estrangements */
+    public void majId(){
+        String idFactureNouveau = referenceFactureField.getText();
+
+        /* Si les id sont différents faire la maj sinon ne rien faire */
+        if (!idFactureNouveau.equals(idFactureInit)){
+
+            /* MAJ */
+            dependencyManager.getEntreeRepository().updateFactureId(idFactureInit, idFactureNouveau);
+            dependencyManager.getFactureRepository().updateFactureId(idFactureInit, idFactureNouveau);
+        }
+        idFactureInit = idFactureNouveau;
+    }
+    /* Met à jour les valeurs des prix de revient pour les matières premières */
+    public void majPrix(){
+
+        double valeurDevise = Double.parseDouble(this.valeurDeviseField.getText());
+        double tauxReel = Double.parseDouble(this.tauxReelField.getText());
+
+        dependencyManager.getEntreeRepository().updatePrix(idFactureInit, valeurDevise, tauxReel);
     }
 }

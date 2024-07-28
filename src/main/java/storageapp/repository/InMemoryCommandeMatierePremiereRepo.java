@@ -153,4 +153,41 @@ public class InMemoryCommandeMatierePremiereRepo implements CommandeMatierePremi
             throw new RuntimeException(e);
         }
     }
+
+    @Override
+    public void delete(String idCommande, String idMatierePremiere){
+        String sql = "DELETE FROM Commande_MatierePremiere " +
+                " WHERE id_Commande = '" + idCommande + "' and id_MatierePremiere = '" + idMatierePremiere + "';";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            int rowsAffected = preparedStatement.executeUpdate();
+
+            if (rowsAffected > 0) {
+                System.out.println("Delete operation into Commande_MatierePremiere successful.");
+            } else {
+                System.out.println("Delete operation into Commande_MatierePremiere failed.");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void updateCommandeId(String idCommandeInit, String idCommandeNouveau){
+        String sql = "UPDATE Commande_MatierePremiere " +
+                "SET id_Commande = '" + idCommandeNouveau +"'" +
+                "WHERE id_Commande = '" + idCommandeInit +"';";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            int rowsAffected = preparedStatement.executeUpdate();
+
+            if (rowsAffected > 0) {
+                System.out.println("UpdateCommandeId operation into Commande_MatierePremiere successful.");
+            } else {
+                System.out.println("UpdateCommandeId operation into Commande_MatierePremiere failed.");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

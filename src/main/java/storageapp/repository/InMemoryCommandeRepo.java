@@ -80,4 +80,23 @@ public class InMemoryCommandeRepo implements CommandeRepository {
             return null;
         }
     }
+
+    @Override
+    public void updateCommandeId(String idCommandeInit, String idCommandeNouveau){
+        String sql = "UPDATE Commande " +
+                "SET id = '" + idCommandeNouveau +"'" +
+                "WHERE id = '" + idCommandeInit +"';";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            int rowsAffected = preparedStatement.executeUpdate();
+
+            if (rowsAffected > 0) {
+                System.out.println("UpdateCommandeId operation into Commande successful.");
+            } else {
+                System.out.println("UpdateCommandeId operation into Commande failed.");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

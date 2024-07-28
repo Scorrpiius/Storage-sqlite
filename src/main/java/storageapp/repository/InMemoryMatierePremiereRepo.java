@@ -39,7 +39,7 @@ public class InMemoryMatierePremiereRepo implements MatierePremiereRepository {
 
     @Override
     public void create(String idRef, String idFacture, int quantite, double px_unitaire, double px_revient_devise, double px_revient_local, String categorie, String designation, String uniteMesure, String file) throws SQLException{
-        String sql = "";
+        String sql;
         if(file == null){
             sql = "insert into MatierePremiere values " +
                     "('" + idRef + "', " +
@@ -151,7 +151,7 @@ public class InMemoryMatierePremiereRepo implements MatierePremiereRepository {
         }
     }
 
-    @Override
+    /*@Override
     public void update(String idFactureInit, String idFactureNouveaux,  double tx, double devise) {
         String sql = "UPDATE MatierePremiere " +
                 "SET id_facture = '" + idFactureNouveaux +"', " +
@@ -173,13 +173,12 @@ public class InMemoryMatierePremiereRepo implements MatierePremiereRepository {
             throw new RuntimeException(e);
         }
     }
-
+    */
     @Override
     public void getPicture(String id, String filename, ImageView imageView) {
         String selectSQL = "SELECT img FROM MatierePremiere  where id_reference = '" + id + "';";
-        ResultSet rs = null;
-        FileOutputStream fos = null;
-        PreparedStatement pstmt = null;
+        ResultSet rs;
+        PreparedStatement pstmt;
 
         try {
             pstmt = connection.prepareStatement(selectSQL);
@@ -206,7 +205,7 @@ public class InMemoryMatierePremiereRepo implements MatierePremiereRepository {
     }
 
     @Override
-    public Map<String, Object> update(String factureId, String refInit, String newRef, String categorie, String designation, String quantite, String pxUnit, String uniteMesure){
+    public void update(String factureId, String refInit, String newRef, String categorie, String designation, String quantite, String pxUnit, String uniteMesure){
         int qte = Integer.parseInt(quantite);
         double pxUnitaire = Double.parseDouble(pxUnit);
 
@@ -230,7 +229,6 @@ public class InMemoryMatierePremiereRepo implements MatierePremiereRepository {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return null;
     }
 
     @Override
@@ -301,5 +299,70 @@ public class InMemoryMatierePremiereRepo implements MatierePremiereRepository {
         }
     }
 
+    @Override
+    public void updateFactureId(String idFactureInit, String idFactureNouveau){
+        String sql = "UPDATE MatierePremiere " +
+                "SET id_facture = '" + idFactureNouveau +"'" +
+                "WHERE  id_facture = '" + idFactureInit + "';";
 
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            int rowsAffected = preparedStatement.executeUpdate();
+
+            if (rowsAffected > 0) {
+                System.out.println("UpdateFactureID operation into MatierePremiere successful.");
+            } else {
+                System.out.println("UpdateFactureID operation into MatierePremiere failed.");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void updatePrix(String idFactureInit, double valeurDevise, double tauxReel){
+        String sql = "UPDATE MatierePremiere " +
+                "SET px_revient_devise = px_unitaire + " + tauxReel + "* px_unitaire , " +
+                "px_revient_local = px_unitaire * " + valeurDevise + " + " + tauxReel * valeurDevise + "* px_unitaire " +
+                "WHERE  id_facture = '" + idFactureInit + "';";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            int rowsAffected = preparedStatement.executeUpdate();
+
+            if (rowsAffected > 0) {
+                System.out.println("UpdatePrix operation into MatierePremiere successful.");
+            } else {
+                System.out.println("UpdatePrix operation into MatierePremiere failed.");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public Map<String, Object> getCategorieDesignation(String referenceMatPrem){
+        String sql = "SELECT id_reference, categorie, designation " +
+                "FROM MatierePremiere " +
+                "WHERE id_reference = '" + referenceMatPrem + "';";
+
+        try {
+            Statement statement = connection.createStatement();
+            var rs = statement.executeQuery(sql);
+            List<Map<String, Object>> result = new ArrayList<>();
+            if (!rs.isBeforeFirst()) {
+                return null;
+            }
+            while (rs.next()) {
+                Map<String, Object> resMap = new HashMap<>();
+                for (int i = 1; i <= rs.getMetaData().getColumnCount(); i++) {
+                    resMap.put(rs.getMetaData().getColumnName(i), rs.getObject(i));
+                }
+                result.add(resMap);
+            }
+            return result.getFirst();
+
+        } catch (SQLException e) {
+            System.out.println("Matiere Premiere - getCategorieDesignation - Error collecting data from MatierePremiere");
+            return null;
+        }
+    }
 }

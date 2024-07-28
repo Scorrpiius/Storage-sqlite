@@ -9,15 +9,15 @@ import javafx.stage.Stage;
 import storageapp.controller.mainController;
 import storageapp.service.DependencyManager;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
+
 import java.io.*;
+import java.net.URISyntaxException;
 import java.sql.*;
 import java.time.LocalDate;
 
 public class StorageApp extends Application {
     @Override
-    public void start(Stage stage) throws IOException, SQLException {
+    public void start(Stage stage) throws IOException, SQLException, URISyntaxException {
         DependencyManager dependencyManager = new DependencyManager();
         //Data alimentation
         //generateSampleData(dependencyManager);
@@ -34,7 +34,7 @@ public class StorageApp extends Application {
         stage.show();
     }
 
-    public void generateSampleData(DependencyManager dependencyManager) throws SQLException, IOException {
+    public void generateSampleData(DependencyManager dependencyManager) throws SQLException {
         String data =  "E:\\bird-thumbnail.jpg";
 
 
@@ -46,7 +46,7 @@ public class StorageApp extends Application {
 
 
         /* ----------- Devise ---------- */
-        dependencyManager.getDeviseRepository().create("Euro");
+        //dependencyManager.getDeviseRepository().create("Euro");
         dependencyManager.getDeviseRepository().create("Dollar");
 
         /* ----------- Fournisseur ----------- */
@@ -102,7 +102,7 @@ public class StorageApp extends Application {
         dependencyManager.getEntreeRepository().create("D1154/015/10/41", "20109", 300, 0.450,0.56,5.72 , "accessoire", "rings nickel", "nr", data);
 
         /* -------- Fiche de stock -------- */
-        dependencyManager.getFicheStockRepository().create("MTL. SALPA 0.4MM. REF.S NATURAL", "cat_1", "des_1",200, "pcs" );
+        dependencyManager.getFicheStockRepository().create("MTL.SALPA0.4MM.REF.SNATURAL", "cat_1", "des_1",200, "pcs" );
         dependencyManager.getFicheStockRepository().create("MTL. SALPA 0.8MM REF.S NATURAL", "cat_2", "des_2",200, "pcs");
         dependencyManager.getFicheStockRepository().create("MTL. TEXPUN BLANCO-12 40 GR. AUTOADHESIVO", "cat_1", "des_3",200, "pcs");
         dependencyManager.getFicheStockRepository().create("MILL. PAPEL SULFITO 42X75 BLANCO", "cat_1", "des_4",200,"pcs");
@@ -176,7 +176,7 @@ public class StorageApp extends Application {
         dependencyManager.getDesignationRepository().create("des_7");
         dependencyManager.getDesignationRepository().create("des_8");
 
-        dependencyManager.getUniteMesureRepository().create("pcs");
+        //dependencyManager.getUniteMesureRepository().create("pcs");
 
         dependencyManager.getConnection().commit();
     }

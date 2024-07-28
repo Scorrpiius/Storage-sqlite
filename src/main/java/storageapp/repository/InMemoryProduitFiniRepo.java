@@ -1,15 +1,13 @@
 package storageapp.repository;
 
+import javafx.embed.swing.SwingFXUtils;
+import javafx.scene.image.ImageView;
 import storageapp.model.ProduitFiniRepository;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Statement;
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.*;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,7 +16,6 @@ import java.util.Map;
 public class InMemoryProduitFiniRepo implements ProduitFiniRepository {
     private final Connection connection;
     public InMemoryProduitFiniRepo(Connection connection){ this.connection = connection;}
-
     private byte[] readFile(String file) {
         ByteArrayOutputStream bos = null;
         File f = new File(file);
@@ -34,14 +31,42 @@ public class InMemoryProduitFiniRepo implements ProduitFiniRepository {
         }
         return bos != null ? bos.toByteArray() : null;
     }
+    @Override
+    public void getPicture(String id, String filename, ImageView imageView) {
+        String selectSQL = "SELECT image FROM ProduitFini  where reference = '" + id + "';";
+        ResultSet rs;
+        PreparedStatement pstmt;
 
+        try {
+            pstmt = connection.prepareStatement(selectSQL);
+            rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                InputStream input = rs.getBinaryStream("image");
+                if(input == null) return;
+                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                byte[] buffer = new byte[1024];
+                int bytesRead;
+                while ((bytesRead = input.read(buffer)) != -1) {
+                    byteArrayOutputStream.write(buffer, 0, bytesRead);
+                }
+                byte[] imageBytes = byteArrayOutputStream.toByteArray();
+
+                ByteArrayInputStream inStreambj = new ByteArrayInputStream(imageBytes);
+                BufferedImage newImage = ImageIO.read(inStreambj);
+                imageView.setImage(SwingFXUtils.toFXImage(newImage, null));
+            }
+        } catch (SQLException | IOException e) {
+            System.out.println(e.getMessage());
+        }
+    }
     @Override
     public void create(String reference, String file){
-        String sql = "";
+        String sql;
         if(file == null){
             sql = "insert into ProduitFini values ('" + reference + "'," + null + ");";
         } else {
-            sql = "insert into MatierePremiere values ('" + reference + "', ? );";
+            sql = "insert into ProduitFini values ('" + reference + "', ? );";
         }
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
@@ -57,7 +82,6 @@ public class InMemoryProduitFiniRepo implements ProduitFiniRepository {
             throw new RuntimeException(e);
         }
     }
-
     @Override
     public List<Map<String, Object>> findAll(){
         String sql = "SELECT * FROM ProduitFini";
@@ -80,5 +104,49 @@ public class InMemoryProduitFiniRepo implements ProduitFiniRepository {
             System.out.println("Produit Fini - findAll - Error connecting to SQLite database");
             return null;
         }
+    }
+    @Override
+    public void updateProduitId(String idProduitInit, String idProduitNouveau){
+        String sql = "UPDATE ProduitFini " +
+                "SET reference = '" + idProduitNouveau + "' " +
+                "WHERE reference = '" + idProduitInit +"';";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            int rowsAffected = preparedStatement.executeUpdate();
+
+            if (rowsAffected > 0) {
+                System.out.println("UpdateProduitId operation into ProduitFini successful.");
+            } else {
+                System.out.println("UpdateProduitId operation into ProduitFini failed.");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    @Override
+    public Map<String, Object> findById(String idProduit){
+        String sql = "SELECT * FROM ProduitFini where reference = '" + idProduit + "';";
+
+        try {
+            Statement statement = connection.createStatement();
+            var rs = statement.executeQuery(sql);
+            List<Map<String, Object>> result = new ArrayList<>();
+            if (!rs.isBeforeFirst()) {
+                return null;
+            }
+            while (rs.next()) {
+                Map<String, Object> resMap = new HashMap<>();
+                for (int i = 1; i <= rs.getMetaData().getColumnCount(); i++) {
+                    resMap.put(rs.getMetaData().getColumnName(i), rs.getObject(i));
+                }
+                result.add(resMap);
+            }
+            return result.getFirst();
+
+        } catch (SQLException e) {
+            System.out.println("ProduitFini - findByProduitId - Error collecting data from ProduitFini");
+            return null;
+        }
+
     }
 }

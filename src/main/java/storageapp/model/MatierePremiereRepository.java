@@ -12,8 +12,11 @@ public interface MatierePremiereRepository {
     List<Map<String, Object>> findByFactureId(String id);
     List<Map<String, Object>> findAll();
     List<Map<String, Object>> getAllInfos(String matierePremiereId);
-    Map<String, Object> update(String factureId, String refInit, String reference, String categorie, String designation, String quantite, String tx_reel, String devise);
-    void update(String idInit, String idNouveaux, double txReel, double valueDevise);
+    void update(String factureId, String refInit, String reference, String categorie, String designation, String quantite, String pxUnit, String uniteMesure);
+    //void update(String idInit, String idNouveaux, double txReel, double valueDevise);
     void getPicture(String id, String filename, ImageView imageView);
     void delete(String idRef, String idFacture);
+    void updateFactureId(String idFactureInit, String idFactureNouveau);
+    void updatePrix(String idFacture, double valeurDevise, double tauxReel);
+    Map<String, Object> getCategorieDesignation(String referenceMatPrem);
 }

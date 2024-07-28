@@ -7,8 +7,6 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Side;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
@@ -17,7 +15,6 @@ import javafx.stage.StageStyle;
 import storageapp.StorageApp;
 import storageapp.service.DependencyManager;
 
-import javax.swing.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,9 +37,6 @@ public class mainController {
     }
     public void initialize(){
 
-        facturesTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-        bonSortieTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-        ficheStockTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         updateFactureTable();
         updateFicheStockTable();
         updateBonSortieTable();
@@ -67,7 +61,6 @@ public class mainController {
         updateDesignation();
     }
 
-    @FXML
     public void updateCommandesTable(){
         if (!commandeTable.getItems().isEmpty()) {
             commandeTable.getItems().clear();
@@ -96,22 +89,18 @@ public class mainController {
 
     }
 
-    public void openCommandeWindow(String commandeID, MouseEvent event) throws IOException {
-        Node source = (Node) event.getSource();
-        Stage oldStage = (Stage) source.getScene().getWindow();
-        oldStage.close();
-
+    public void openCommandeWindow(String commandeID, MouseEvent ignoredevent) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader();
         fxmlLoader.setLocation(StorageApp.class.getResource("commande.fxml"));
         fxmlLoader.setController(new commandeController(dependencyManager, commandeID));
         Scene scene = new Scene(fxmlLoader.load());
         Stage stage = new Stage();
+        stage.initStyle(StageStyle.UNDECORATED);
         stage.setTitle("Stockapp");
         stage.setScene(scene);
-        stage.show();
+        stage.showAndWait();
     }
 
-    @FXML
     public void updateBonSortieTable(){
         if (!bonSortieTable.getItems().isEmpty()) {
             bonSortieTable.getItems().clear();
@@ -140,7 +129,7 @@ public class mainController {
         });
     }
 
-    public void openBonWindow(String bonSortieID, MouseEvent event) throws IOException {
+    public void openBonWindow(String bonSortieID, MouseEvent ignoredevent) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader();
         fxmlLoader.setLocation(StorageApp.class.getResource("bonSortie.fxml"));
         fxmlLoader.setController(new bonSortieController(dependencyManager, bonSortieID));
@@ -154,7 +143,6 @@ public class mainController {
         updateBonSortieTable();
     }
 
-    @FXML
     public void updateProduitFiniTable(){
         if (!produitFiniTable.getItems().isEmpty()) {
             produitFiniTable.getItems().clear();
@@ -182,7 +170,7 @@ public class mainController {
         });
     }
 
-    public void openProduitFiniWindow(String produitId, MouseEvent e) throws IOException {
+    public void openProduitFiniWindow(String produitId, MouseEvent ignoredevent) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader();
         fxmlLoader.setLocation(StorageApp.class.getResource("produitFini.fxml"));
         fxmlLoader.setController(new produitFiniController(dependencyManager,produitId ));
@@ -192,9 +180,9 @@ public class mainController {
         stage.setTitle("Stockapp");
         stage.setScene(scene);
         stage.showAndWait();
+        updateProduitFiniTable();
 
     }
-    @FXML
     public void updateFactureTable() {
         if (!facturesTable.getItems().isEmpty()) {
             facturesTable.getItems().clear();
@@ -225,11 +213,7 @@ public class mainController {
         });
     }
 
-    public void openFactureWindow(String factureId, MouseEvent event) throws IOException {
-        /*Node source = (Node) event.getSource();
-        Stage oldStage = (Stage) source.getScene().getWindow();
-        oldStage.close();*/
-
+    public void openFactureWindow(String factureId, MouseEvent ignoredevent) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader();
         fxmlLoader.setLocation(StorageApp.class.getResource("facture.fxml"));
         fxmlLoader.setController(new factureController(dependencyManager, factureId));
@@ -272,9 +256,8 @@ public class mainController {
             return row;
         });
     }
-
     @FXML
-    protected void ajouterNouvelleFacture(ActionEvent e) throws IOException {
+    protected void ajouterNouvelleFacture(ActionEvent ignorede) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader();
         fxmlLoader.setLocation(StorageApp.class.getResource("nouvelleFacture.fxml"));
         fxmlLoader.setController(new nouvelleFactureController(dependencyManager));
@@ -287,9 +270,8 @@ public class mainController {
         updateFicheStockTable();
         updateFactureTable();
     }
-
     @FXML
-    protected void creerProduitFini(ActionEvent e) throws IOException {
+    protected void creerProduitFini(ActionEvent ignorede) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader();
         fxmlLoader.setLocation(StorageApp.class.getResource("nouveauProduitFini.fxml"));
         fxmlLoader.setController(new nouveauProduitFiniController(dependencyManager));
@@ -301,9 +283,8 @@ public class mainController {
         stage.showAndWait();
         updateProduitFiniTable();
     }
-
     @FXML
-    protected void creerBon(ActionEvent event) throws IOException {
+    protected void creerBon(ActionEvent ignoredevent) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader();
         fxmlLoader.setLocation(StorageApp.class.getResource("nouveauBonSortie.fxml"));
         fxmlLoader.setController(new nouveauBonController(dependencyManager));
@@ -318,7 +299,7 @@ public class mainController {
     }
 
     @FXML
-    protected void creerCommande(ActionEvent event) throws IOException {
+    protected void creerCommande(ActionEvent ignoredevent) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader();
         fxmlLoader.setLocation(StorageApp.class.getResource("nouvelleCommande.fxml"));
         fxmlLoader.setController(new nouvelleCommandeController(dependencyManager));
@@ -328,10 +309,12 @@ public class mainController {
         stage.setTitle("Stockapp");
         stage.setScene(scene);
         stage.showAndWait();
+        updateCommandesTable();
     }
 
     @FXML
-    protected void showFacture(ActionEvent event){
+    protected void showFacture(ActionEvent ignoredevent){
+        updateFactureTable();
         facturesTable.setVisible(true);
         ficheStockTable.setVisible(false);
         bonSortieTable.setVisible(false);
@@ -357,7 +340,8 @@ public class mainController {
     }
 
     @FXML
-    protected void showFiches(ActionEvent event){
+    protected void showFiches(ActionEvent ignoredevent){
+        updateFicheStockTable();
         facturesTable.setVisible(false);
         ficheStockTable.setVisible(true);
         bonSortieTable.setVisible(false);
@@ -380,8 +364,9 @@ public class mainController {
         designationFicheFiltre.setVisible(true);
         rechercheFicheFiltre.setVisible(true);
     }
+
     @FXML
-    protected void showCommandes(ActionEvent event){
+    protected void showCommandes(ActionEvent ignoredevent){
         facturesTable.setVisible(false);
         ficheStockTable.setVisible(false);
         bonSortieTable.setVisible(false);
@@ -405,7 +390,8 @@ public class mainController {
         rechercheFicheFiltre.setVisible(false);
     }
     @FXML
-    protected void showProduits(ActionEvent event){
+    protected void showProduits(ActionEvent ignoredevent){
+        updateProduitFiniTable();
         facturesTable.setVisible(false);
         ficheStockTable.setVisible(false);
         bonSortieTable.setVisible(false);
@@ -429,7 +415,8 @@ public class mainController {
         rechercheFicheFiltre.setVisible(false);
     }
     @FXML
-    protected void showBons(ActionEvent event){
+    protected void showBons(ActionEvent ignoredevent){
+        updateBonSortieTable();
         facturesTable.setVisible(false);
         ficheStockTable.setVisible(false);
         bonSortieTable.setVisible(true);
@@ -453,7 +440,6 @@ public class mainController {
         rechercheFicheFiltre.setVisible(false);
     }
 
-    @FXML
     public void updateCategorie(){
         List<Map<String, Object>> categories = dependencyManager.getCategorieRepository().findAll();
         List<String> categoriesList = new ArrayList<>();
@@ -465,7 +451,6 @@ public class mainController {
         categorieFicheFiltre.setEditable(true);
     }
 
-    @FXML
     public void updateDesignation(){
         List<Map<String, Object>> designations = dependencyManager.getDesignationRepository().findAll();
         List<String> designationsList = new ArrayList<>();
@@ -477,7 +462,6 @@ public class mainController {
         designationFicheFiltre.setEditable(true);
     }
 
-    @FXML
     public void updateReference(){
         List<Map<String, Object>> references = dependencyManager.getFicheStockRepository().getAllId();
         List<String> referencesList = new ArrayList<>();
@@ -489,7 +473,6 @@ public class mainController {
         referenceFicheFiltre.setEditable(true);
     }
 
-    @FXML
     public void updateFicheStock(List<Map<String, Object>> fichesStock){
         if (!ficheStockTable.getItems().isEmpty()) {
             ficheStockTable.getItems().clear();
@@ -520,7 +503,7 @@ public class mainController {
     }
 
     @FXML
-    public void rechercheFiche(ActionEvent event){
+    public void rechercheFiche(ActionEvent ignoredevent){
         String categorie = categorieFicheFiltre.getValue();
         String desgination = designationFicheFiltre.getValue();
         String reference = referenceFicheFiltre.getValue();
@@ -530,11 +513,7 @@ public class mainController {
         updateFicheStock(dependencyManager.getFicheStockRepository().filter(categorie, desgination, reference));
     }
 
-    public void openFicheStockWindow(String ficheStockId, MouseEvent event) throws IOException {
-        /*Node source = (Node) event.getSource();
-        Stage oldStage = (Stage) source.getScene().getWindow();
-        oldStage.close();*/
-
+    public void openFicheStockWindow(String ficheStockId, MouseEvent ignoredevent) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader();
         fxmlLoader.setLocation(StorageApp.class.getResource("ficheStock.fxml"));
         fxmlLoader.setController(new ficheStockController(dependencyManager, ficheStockId));

@@ -148,5 +148,24 @@ public class InMemoryProduitMatiereRepo implements ProduitFini_MatierePremiereRe
         }
     }
 
+    @Override
+    public void updateProduitId(String idProduitInit, String idProduitNouveau){
+        String sql = "UPDATE ProduitFini_MatierePremiere " +
+                "SET produit_reference = '" + idProduitNouveau + "' " +
+                "WHERE produit_reference = '" + idProduitInit +"';";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            int rowsAffected = preparedStatement.executeUpdate();
+
+            if (rowsAffected > 0) {
+                System.out.println("UpdateProduitId operation into ProduitFini_MatierePremiere successful.");
+            } else {
+                System.out.println("UpdateProduitId operation into ProduitFini_MatierePremiere failed.");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
 }

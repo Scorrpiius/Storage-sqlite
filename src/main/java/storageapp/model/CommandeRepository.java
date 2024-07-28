@@ -8,4 +8,5 @@ public interface CommandeRepository {
     void create (String id, String description, LocalDate date);
     List<Map<String, Object>> findAll();
     Map<String, Object> findById(String id);
+    void updateCommandeId(String idCommandeInit, String idCommandeNouveau);
 }

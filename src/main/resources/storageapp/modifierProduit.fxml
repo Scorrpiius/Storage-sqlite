@@ -43,10 +43,10 @@
                     <TableColumn fx:id="qteColumn" minWidth="0.0" prefWidth="75.0" text="Quantité" />
                 </columns>
             </TableView>
-            <Button layoutX="736.0" layoutY="14.0" mnemonicParsing="false" onAction="#retour" style="-fx-background-color: transparet;" text="X">
-            <font>
-               <Font name="System Bold" size="20.0" />
-            </font></Button>
+            <Button layoutX="736.0" layoutY="14.0" mnemonicParsing="false" onAction="#retour" style="-fx-background-color: transparent;" text="X">
+                <font>
+                    <Font name="System Bold" size="20.0" />
+                </font></Button>
             <Label layoutX="50.0" layoutY="167.0" text="Matières premières :">
                 <font>
                     <Font name="Inter Semi Bold" size="20.0" />
@@ -62,41 +62,29 @@
                     <Font name="Inter Semi Bold" size="15.0" />
                 </font>
             </Button>
-         <Label layoutX="420.0" layoutY="80.0" text="Image :">
-            <font>
-               <Font name="Inter Semi Bold" size="20.0" />
-            </font>
-         </Label>
-            <ImageView fx:id="img" fitHeight="228.0" fitWidth="345.0" layoutX="420.0" layoutY="150.0" pickOnBounds="true" preserveRatio="true" />
+            <Label layoutX="420.0" layoutY="80.0" text="Image :">
+                <font>
+                    <Font name="Inter Semi Bold" size="20.0" />
+                </font>
+            </Label>
             <Button layoutX="417.0" layoutY="105.0" mnemonicParsing="false" onAction="#loadImage" prefHeight="40.0" prefWidth="205.0" style="-fx-background-color: white; -fx-border-color: black; -fx-border-radius: 10;" text="Télécharger une image">
                 <font>
                     <Font name="Inter Semi Bold" size="12.0" />
                 </font>
             </Button>         <TextField fx:id="qte" layoutX="380.0" layoutY="410.0" prefHeight="40.0" prefWidth="100.0" style="-fx-background-color: ccecf0;" />
-         <Label layoutX="50.0" layoutY="380.0" text="Matière première :">
-            <font>
-               <Font name="Inter Semi Bold" size="20.0" />
-            </font>
-         </Label>
-         <Label layoutX="380.0" layoutY="380.0" text="Quantité :">
-            <font>
-               <Font name="Inter Semi Bold" size="20.0" />
-            </font>
-         </Label>
-         <ComboBox fx:id="matiereReferenceBox" layoutX="50.0" layoutY="410.0" prefHeight="40.0" prefWidth="310.0" style="-fx-background-color: ccecf0;" />
-         <Separator layoutY="60.0" prefWidth="800.0" />
-         <ChoiceBox fx:id="produitChoiceBox" layoutX="50.0" layoutY="546.0" prefHeight="40.0" prefWidth="250.0" style="-fx-background-color: ccecf0;" />
-         <Label layoutX="50.0" layoutY="520.0" text="Copier à partir d'un produit existant">
-            <font>
-               <Font name="Inter Semi Bold" size="20.0" />
-            </font>
-         </Label>
-         <Button onAction="#copier" layoutX="343.0" layoutY="546.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="100.0" style="-fx-background-color: ccecf0;" text="Copier">
-            <font>
-               <Font name="Inter Semi Bold" size="15.0" />
-            </font>
-         </Button>
-
+            <Label layoutX="50.0" layoutY="380.0" text="Matière première :">
+                <font>
+                    <Font name="Inter Semi Bold" size="20.0" />
+                </font>
+            </Label>
+            <Label layoutX="380.0" layoutY="380.0" text="Quantité :">
+                <font>
+                    <Font name="Inter Semi Bold" size="20.0" />
+                </font>
+            </Label>
+            <ComboBox fx:id="matiereReferenceBox" layoutX="50.0" layoutY="410.0" prefHeight="40.0" prefWidth="310.0" />
+            <Separator layoutY="60.0" prefWidth="800.0" />
+         <ImageView fx:id="img" fitHeight="228.0" fitWidth="345.0" layoutX="420.0" layoutY="150.0" pickOnBounds="true" preserveRatio="true" />
         </Pane>
 
     </center>

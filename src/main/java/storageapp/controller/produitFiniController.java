@@ -13,7 +13,9 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import storageapp.StorageApp;
 import storageapp.service.DependencyManager;
 
@@ -25,10 +27,12 @@ import java.util.Map;
 
 public class produitFiniController {
     @FXML
+    private ImageView img;
+    @FXML
     private Label titlePage;
     private final String produitID;
     @FXML
-    private TextField reference;
+    private TextField referenceProduit;
     private final DependencyManager dependencyManager;
     @FXML
     private TableView<Map<String, Object>> matierePremiereTable;
@@ -44,12 +48,17 @@ public class produitFiniController {
         titlePage.setAlignment(Pos.CENTER);
         updateMatiereTable();
         updateData();
-
+        loadImage();
     }
     @FXML
+    public void loadImage(){
+        dependencyManager.getProduitFiniRepository().getPicture(produitID, null, img);
+    }
+
+    @FXML
     public void updateData(){
-        reference.setText(produitID);
-        reference.setEditable(false);
+        referenceProduit.setText(produitID);
+        referenceProduit.setEditable(false);
     }
     @FXML
     public void updateMatiereTable(){
@@ -58,16 +67,33 @@ public class produitFiniController {
         }
 
         List<Map<String, Object>> matieresPremiere = dependencyManager.getProduitFiniMatierePremiereRepository().findByProduitId(produitID);
-        ObservableList<Map<String, Object>> observableMatierePremieres = FXCollections.observableArrayList(matieresPremiere);
-        matierePremiereTable.setItems(observableMatierePremieres);
+        if (matieresPremiere != null){
+            ObservableList<Map<String, Object>> observableMatierePremieres = FXCollections.observableArrayList(matieresPremiere);
+            matierePremiereTable.setItems(observableMatierePremieres);
 
-        refColumn.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().get("matiere_id")).asString());
-        qteColumn.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().get("quantite")).asString());
+            refColumn.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().get("matiere_id")).asString());
+            qteColumn.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().get("quantite")).asString());
+        }
+
     }
     public void retour(ActionEvent e) throws SQLException, IOException {
         Node source = (Node) e.getSource();
         Stage oldStage = (Stage) source.getScene().getWindow();
         oldStage.close();
     }
-    public void modifier(ActionEvent e){}
+    public void modifier(ActionEvent e) throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        fxmlLoader.setLocation(StorageApp.class.getResource("modifierProduit.fxml"));
+        fxmlLoader.setController(new modifierProduitFiniController(dependencyManager, produitID));
+        Scene scene = new Scene(fxmlLoader.load());
+        Stage stage = new Stage();
+        stage.initStyle(StageStyle.UNDECORATED);
+        stage.setTitle("Stockapp");
+        stage.setScene(scene);
+        stage.showAndWait();
+        Node source = (Node) e.getSource();
+        Stage oldStage = (Stage) source.getScene().getWindow();
+        oldStage.close();
+        //updateMatiereTable();
+    }
 }

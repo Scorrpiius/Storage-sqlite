@@ -66,7 +66,9 @@ public class InMemoryBonSortieRepo implements BonSortieRepository {
             Statement statement = connection.createStatement();
             var rs = statement.executeQuery(sql);
             List<Map<String, Object>> result = new ArrayList<>();
-
+            if (!rs.isBeforeFirst()) {
+                return null;
+            }
             while (rs.next()) {
                 Map<String, Object> resMap = new HashMap<>();
                 for (int i = 1; i <= rs.getMetaData().getColumnCount(); i++) {
@@ -94,6 +96,42 @@ public class InMemoryBonSortieRepo implements BonSortieRepository {
                 System.out.println("Update operation into BonSortie successful.");
             } else {
                 System.out.println("Update operation into BonSortie failed.");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void updateBonId(String idBonInit, String idBonNouveau) {
+        String sql = "UPDATE BonSortie SET id = '" + idBonNouveau +"' " +
+                "WHERE id = '" + idBonInit +"';";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            int rowsAffected = preparedStatement.executeUpdate();
+
+            if (rowsAffected > 0) {
+                System.out.println("UpdateBonId operation into BonSortie successful.");
+            } else {
+                System.out.println("UpdateBonId operation into BonSortie failed.");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void updateDate(String idBonInit, LocalDate date) {
+        String sql = "UPDATE BonSortie SET date = '" + date +"' " +
+                "WHERE id = '" + idBonInit +"';";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            int rowsAffected = preparedStatement.executeUpdate();
+
+            if (rowsAffected > 0) {
+                System.out.println("UpdateDate operation into BonSortie successful.");
+            } else {
+                System.out.println("UpdateDate operation into BonSortie failed.");
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);

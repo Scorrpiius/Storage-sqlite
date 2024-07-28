@@ -23,13 +23,13 @@ import java.util.Map;
 
 public class factureController {
     @FXML
-    private Label titlePage;
+    private Label titleLabel;
     private final String factureId;
     private final DependencyManager dependencyManager;
     @FXML
-    private TableView<Map<String, Object>> matPremTableau;
+    private TableView<Map<String, Object>> matierePremiereTable;
     @FXML
-    private TextField referenceFacture, dateFacture, valeurDevise, nomDevise, txTheo, txReel, fournisseurFacture;
+    private TextField referenceFactureField, dateFactureField, valeurDeviseField, nomDeviseField, tauxTheoField, tauxReelField, fournisseurFactureField;
     @FXML
     private TableColumn<Map<String, Object>, String> refMatPremCol, desMatPremCol, qteMatPremCol, pxUnitMatPremCol, pxRevientDeviseMatPremColumn, pxRevientLocalMatPremColumn, catMatPremCol;
 
@@ -38,19 +38,19 @@ public class factureController {
         this.factureId = factureId;
     }
     public void initialize(){
-        titlePage.setText("Facture N° " + factureId);
+        titleLabel.setText("Facture N° " + factureId);
         updateHistorique();
         updateAllData();
     }
     public void updateHistorique(){
         List<Map<String,Object>> historiqueData = dependencyManager.getEntreeRepository().findByFactureId(factureId);
 
-        if (!matPremTableau.getItems().isEmpty()) {
-            matPremTableau.getItems().clear();
+        if (!matierePremiereTable.getItems().isEmpty()) {
+            matierePremiereTable.getItems().clear();
         }
 
         ObservableList<Map<String, Object>> observableHistorique = FXCollections.observableArrayList(historiqueData);
-        matPremTableau.setItems(observableHistorique);
+        matierePremiereTable.setItems(observableHistorique);
 
         refMatPremCol.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().get("id_reference")).asString());
         desMatPremCol.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().get("designation")).asString());
@@ -70,21 +70,21 @@ public class factureController {
         String txTheo = String.valueOf(facture.get("tx_theo"));
         pxRevientDeviseMatPremColumn.setText("Prix de revient \n("+deviseName+")");
 
-        referenceFacture.setText(factureId);
-        this.fournisseurFacture.setText(fournisseur);
-        valeurDevise.setText(deviseValue);
-        nomDevise.setText(deviseName);
-        this.txTheo.setText(txTheo);
-        this.txReel.setText(txReel);
-        this.dateFacture.setText(date);
+        referenceFactureField.setText(factureId);
+        this.fournisseurFactureField.setText(fournisseur);
+        valeurDeviseField.setText(deviseValue);
+        nomDeviseField.setText(deviseName);
+        this.tauxTheoField.setText(txTheo);
+        this.tauxReelField.setText(txReel);
+        this.dateFactureField.setText(date);
 
-        referenceFacture.setEditable(false);
-        this.fournisseurFacture.setEditable(false);
-        valeurDevise.setEditable(false);
-        nomDevise.setEditable(false);
-        this.txTheo.setEditable(false);
-        this.txReel.setEditable(false);
-        this.dateFacture.setEditable(false);
+        referenceFactureField.setEditable(false);
+        this.fournisseurFactureField.setEditable(false);
+        valeurDeviseField.setEditable(false);
+        nomDeviseField.setEditable(false);
+        this.tauxTheoField.setEditable(false);
+        this.tauxReelField.setEditable(false);
+        this.dateFactureField.setEditable(false);
     }
     public void retour(ActionEvent event) throws IOException {
         Node source = (Node) event.getSource();
@@ -101,7 +101,10 @@ public class factureController {
         stage.setTitle("Stockapp");
         stage.setScene(scene);
         stage.showAndWait();
-        updateAllData();
-        updateHistorique();
+        Node source = (Node) event.getSource();
+        Stage oldStage = (Stage) source.getScene().getWindow();
+        oldStage.close();
+        /*updateAllData();
+        updateHistorique();*/
     }
 }

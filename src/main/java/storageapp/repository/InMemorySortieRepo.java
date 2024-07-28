@@ -57,9 +57,9 @@ public class InMemorySortieRepo implements SortieRepository {
     }
 
     @Override
-    public Map<String, Object> findById(int id, String id_bonSortie) {
-        String sql = "SELECT * FROM Sortie where id = " + id +
-                " and id_bonSortie = '" + id_bonSortie + "';";
+    public Map<String, Object> findByIds(String idMatPrem, String id_bonSortie) {
+        String sql = "SELECT * FROM Sortie where id_matierePremiere = '" + idMatPrem +
+                "' and id_bonSortie = '" + id_bonSortie + "';";
 
         try {
             Statement statement = connection.createStatement();
@@ -78,7 +78,7 @@ public class InMemorySortieRepo implements SortieRepository {
             return result.getFirst();
 
         } catch (SQLException e) {
-            System.out.println("Sortie - findById - Error collecting data from Sortie");
+            System.out.println("Sortie - findByIds - Error collecting data from Sortie");
             return null;
         }
     }
@@ -141,7 +141,7 @@ public class InMemorySortieRepo implements SortieRepository {
     }
 
     @Override
-    public String update(String idBonInit,String idBonNouveau) {
+    public void updateBonId(String idBonInit,String idBonNouveau) {
         String sql = "UPDATE Sortie " +
                 "SET id_bonSortie = '" + idBonNouveau +"' " +
                 "WHERE id_bonSortie = '" + idBonInit +"';";
@@ -150,20 +150,19 @@ public class InMemorySortieRepo implements SortieRepository {
             int rowsAffected = preparedStatement.executeUpdate();
 
             if (rowsAffected > 0) {
-                System.out.println("Update operation into Sortie successful.");
+                System.out.println("UpdateBonId operation into Sortie successful.");
             } else {
-                System.out.println("Update operation into Sortie failed.");
+                System.out.println("BonId operation into Sortie failed.");
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return null;
     }
 
     @Override
-    public void delete(String idSortie, String idBonSortie){
+    public void delete(String idMatPremiere, String idBonSortie){
         String sql = "DELETE FROM Sortie " +
-                " WHERE id = '" + idSortie + "' and id_bonSortie = '" + idBonSortie + "';";
+                " WHERE id_matierePremiere = '" + idMatPremiere + "' and id_bonSortie = '" + idBonSortie + "';";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             int rowsAffected = preparedStatement.executeUpdate();

@@ -18,33 +18,31 @@ import java.util.List;
 import java.util.Map;
 
 public class modifierBonController {
-    int selectSortieId, id;
+    int id, idInit;
+    private final String IDBON;
     @FXML
-    private Label titlePage;
+    private DatePicker dateBonPicker;
     @FXML
-    private TextField idBonField;
+    private TextArea descMatPremASortir;
+    private String selectSortieId, idBonInit;
     @FXML
-    private ComboBox<String> refMatPremSortir;
+    private ComboBox<String> refMatPremASortir;
+    private final DependencyManager dependencyManager;
     @FXML
-    private TextArea descMatSortir;
+    private TableView<Map<String, Object>> sortiesTable;
     @FXML
-    private DatePicker dateBon;
-    private DependencyManager dependencyManager;
+    private TextField qteMatPremEnStock, qteMatPremASortir, idBonField ;
     @FXML
-    private TableView<Map<String, Object>> sortiesTableau;
-    @FXML
-    private TextField qteMatStock, qteMatSortir ;
-    @FXML
-    private TableColumn<Map<String, Object>, String> idColumn, refColumn, qteColumn, descColumn;
-    private final String bonSortieId;
-    private String quantiteInit;
+    private TableColumn<Map<String, Object>, String> idSortieCol, refSortieCol, qteSortieCol, descrSortieCol;
+
     public modifierBonController(DependencyManager dependencyManager, String bonSortieId){
         this.dependencyManager = dependencyManager;
-        this.bonSortieId = bonSortieId;
+        this.idBonInit = bonSortieId;
+        this.IDBON = bonSortieId;
     }
 
     public void getLastId(){
-        List<Map<String, Object>> sorties = dependencyManager.getSortieRepository().getAllSortiesByBon(bonSortieId);
+        List<Map<String, Object>> sorties = dependencyManager.getSortieRepository().getAllSortiesByBon(idBonInit);
         for(Map<String, Object> sortie : sorties){
             this.id = (int) sortie.get("id");
         }
@@ -56,8 +54,6 @@ public class modifierBonController {
         updateReference();
         getLastId();
     }
-
-    @FXML
     public void updateReference(){
         List<Map<String, Object>> references = dependencyManager.getFicheStockRepository().getAllId();
         List<String> referencesList = new ArrayList<>();
@@ -65,45 +61,42 @@ public class modifierBonController {
         for(Map<String, Object> c : references){
             referencesList.add((String)c.get("id_matierePremiere"));
         }
-        refMatPremSortir.setItems(FXCollections.observableArrayList(referencesList));
-        refMatPremSortir.setEditable(true);
+        refMatPremASortir.setItems(FXCollections.observableArrayList(referencesList));
+        refMatPremASortir.setEditable(true);
+    }
+    public void updateQuantite(ActionEvent ignoredevent){
+        Map<String, Object> ficheStock = dependencyManager.getFicheStockRepository().findById(refMatPremASortir.getValue());
+        qteMatPremEnStock.setText(String.valueOf(ficheStock.get("quantite")));
     }
 
-    @FXML
-    public void updateQuantite(ActionEvent event){
-        Map<String, Object> ficheStock = dependencyManager.getFicheStockRepository().findById(refMatPremSortir.getValue());
-        qteMatStock.setText(String.valueOf(ficheStock.get("quantite")));
-    }
-
-    @FXML
     public void updateData(){
-        Map<String, Object> bonSortie = dependencyManager.getBonSortieRepository().findById(bonSortieId);
-        idBonField.setEditable(false);
-        dateBon.setEditable(false);
+        Map<String, Object> bonSortie = dependencyManager.getBonSortieRepository().findById(idBonInit);
+        idBonField.setEditable(true);
+        dateBonPicker.setEditable(true);
 
         idBonField.setText(String.valueOf(bonSortie.get("id")));
-        dateBon.setValue(LocalDate.parse(bonSortie.get("date").toString()));
+        dateBonPicker.setValue(LocalDate.parse(bonSortie.get("date").toString()));
     }
-    @FXML
     public void updateSortieTable(){
-        if (!sortiesTableau.getItems().isEmpty()) {
-            sortiesTableau.getItems().clear();
+        if (!sortiesTable.getItems().isEmpty()) {
+            sortiesTable.getItems().clear();
         }
 
-        List<Map<String, Object>> sorties = dependencyManager.getSortieRepository().getAllSortiesByBon(String.valueOf(bonSortieId));
+        List<Map<String, Object>> sorties = dependencyManager.getSortieRepository().getAllSortiesByBon(String.valueOf(idBonInit));
         ObservableList<Map<String, Object>> observableSorties = FXCollections.observableArrayList(sorties);
-        sortiesTableau.setItems(observableSorties);
+        sortiesTable.setItems(observableSorties);
 
-        idColumn.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().get("id")).asString());
-        refColumn.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().get("id_matierePremiere")).asString());
-        qteColumn.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().get("quantite")).asString());
-        descColumn.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().get("description")).asString());
+        idSortieCol.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().get("id")).asString());
+        refSortieCol.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().get("id_matierePremiere")).asString());
+        qteSortieCol.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().get("quantite")).asString());
+        descrSortieCol.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().get("description")).asString());
 
-        sortiesTableau.setRowFactory(tv -> {
+        sortiesTable.setRowFactory(tv -> {
             TableRow<Map<String, Object>> row = new TableRow<>();
             row.setOnMouseClicked(event -> {
                 if (!row.isEmpty()) {
-                    selectSortieId = (int) row.getItem().get("id");
+                    idInit = Integer.parseInt(row.getItem().get("id").toString());
+                    selectSortieId = row.getItem().get("id_matierePremiere").toString();
                     updateData(selectSortieId, event);
                 }
             });
@@ -111,13 +104,32 @@ public class modifierBonController {
         });
 
     }
+    private void updateData(String selectSortieId, MouseEvent ignoredevent) {
+        majId();
+        Map<String, Object> sortie = dependencyManager.getSortieRepository().findByIds(selectSortieId, idBonInit);
+        Map<String, Object> ficheStock = dependencyManager.getFicheStockRepository().findById((String) sortie.get("id_matierePremiere"));
 
-    @FXML
-    public void ajouterSortie(ActionEvent event){
-        String idMatPrem = refMatPremSortir.getValue();
-        String quantite = qteMatSortir.getText();
-        String description = this.descMatSortir.getText();
-        int nouvelleQuantite = Integer.parseInt(qteMatStock.getText()) - Integer.parseInt(quantite);
+        String reference = (String) sortie.get("id_matierePremiere");
+        String description = (String) sortie.get("description");
+        int quantite = (int) sortie.get("quantite");
+        int quantiteStockInit = (int) ficheStock.get("quantite");
+
+        this.refMatPremASortir.setValue(reference);
+        this.descMatPremASortir.setText(description);
+        this.qteMatPremASortir.setText(String.valueOf(quantite));
+        this.qteMatPremEnStock.setText(String.valueOf(quantiteStockInit));
+
+
+    }
+
+
+    public void ajouterSortie(ActionEvent ignoredevent){
+        majId();
+
+        String idMatPrem = refMatPremASortir.getValue();
+        String quantite = qteMatPremASortir.getText();
+        String description = this.descMatPremASortir.getText();
+        int nouvelleQuantite = Integer.parseInt(qteMatPremEnStock.getText()) - Integer.parseInt(quantite);
 
         if (nouvelleQuantite < 0){
             Alert alert = new Alert(Alert.AlertType.WARNING);
@@ -127,54 +139,57 @@ public class modifierBonController {
             alert.showAndWait();
             return;
         }
+        /* Retirer la quantité de la fiche de stock */
+        dependencyManager.getFicheStockRepository().updateQuantite(idMatPrem, nouvelleQuantite);
 
-        dependencyManager.getSortieRepository().create(this.id, idBonField.getText(), idMatPrem, description, Integer.parseInt(quantite));
+        /* Créer la sortie de la matière première */
+        dependencyManager.getSortieRepository().create(this.id, idBonInit, idMatPrem, description, Integer.parseInt(quantite));
         updateSortieTable();
         id++;
     }
-    @FXML
-    private void updateData(int selectSortieId, MouseEvent event) {
-        Map<String, Object> sortie = dependencyManager.getSortieRepository().findById(selectSortieId, idBonField.getText());
-        Map<String, Object> ficheStock = dependencyManager.getFicheStockRepository().findById((String) sortie.get("id_matierePremiere"));
+    public void supprimerSortie() {
+        majId();
 
-        String reference = (String) sortie.get("id_matierePremiere");
-        String description = (String) sortie.get("description");
-        int quantite = (int) sortie.get("quantite");
-        int quantiteStockInit = (int) ficheStock.get("quantite");
+        /* Supprimer la sortie associé */
+        String idMatPremiere = refMatPremASortir.getValue();
+        dependencyManager.getSortieRepository().delete(idMatPremiere, idBonInit);
 
-        this.refMatPremSortir.setValue(reference);
-        this.descMatSortir.setText(description);
-        this.qteMatSortir.setText(String.valueOf(quantite));
-        this.qteMatStock.setText(String.valueOf(quantiteStockInit));
-        quantiteInit = String.valueOf(quantite);
-
-
-    }
-    @FXML
-    public void supprimerSortie() throws SQLException {
-        String idSortie = String.valueOf(selectSortieId);
-        String idBonSortie = idBonField.getText();
-        dependencyManager.getSortieRepository().delete(idSortie, idBonSortie);
-
-        // Mettre à jour la fiche de stock
-        String quantiteSortie = qteMatSortir.getText();
-        String refMatPremiere = refMatPremSortir.getValue();
-        String quantiteStock = qteMatStock.getText();
+        /* Rajouter la quantité supprimée */
+        String quantiteSortie = qteMatPremASortir.getText();
+        String quantiteStock = qteMatPremEnStock.getText();
         int nouvelleQuantite = Integer.parseInt(quantiteStock) + Integer.parseInt(quantiteSortie);
-        dependencyManager.getFicheStockRepository().update(refMatPremiere, refMatPremiere, nouvelleQuantite, null, null);
+        dependencyManager.getFicheStockRepository().updateQuantite(idMatPremiere, nouvelleQuantite);
         updateSortieTable();
     }
-    @FXML
-    public void retour(ActionEvent event) throws SQLException {
-        dependencyManager.getConnection().rollback();
-        Node source = (Node) event.getSource();
-        Stage oldStage = (Stage) source.getScene().getWindow();
-        oldStage.close();
+    public void modifier(ActionEvent ignoredevent){
+        majId();
+        /* Modifier la fiche de stock */
+        int quantiteSortie, nouvelleQuantiteSortir, nouvelleQtStock, quantiteStock;
+        String idMatPrem = refMatPremASortir.getValue();
+        String quantite = qteMatPremASortir.getText();
+        String description = this.descMatPremASortir.getText();
+
+        quantiteSortie = Integer.parseInt(dependencyManager.getSortieRepository().findByIds(idMatPrem, idBonInit).get("quantite").toString());
+        nouvelleQuantiteSortir = Integer.parseInt(quantite);
+        quantiteStock = Integer.parseInt(dependencyManager.getFicheStockRepository().findById(idMatPrem).get("qauntite").toString());
+
+        nouvelleQtStock = quantiteStock + quantiteSortie - nouvelleQuantiteSortir;
+        dependencyManager.getFicheStockRepository().updateQuantite(idMatPrem, nouvelleQtStock);
+        dependencyManager.getSortieRepository().update(idInit,idBonField.getText(), Integer.parseInt(quantite),idMatPrem,description);
+        updateSortieTable();
     }
-    @FXML
     public void terminer(ActionEvent event) throws SQLException {
-        final LocalDate date = this.dateBon.getValue();
-        final boolean isValid = idBonField.getText()!= null && date != null;
+        if(!IDBON.equals(idBonField.getText())){
+            if (!(dependencyManager.getBonSortieRepository().findById(idBonField.getText()) == null)){
+                showAlert("Cette référence de bon existe déjà. Veuillez saisir une nouvelle référence");
+                return;
+            }
+        }
+
+
+        majId();
+        final LocalDate date = this.dateBonPicker.getValue();
+        final boolean isValid = date != null;
 
         if (!isValid) {
             Alert alert = new Alert(Alert.AlertType.WARNING);
@@ -185,33 +200,43 @@ public class modifierBonController {
             return;
         }
 
-        List<Map<String, Object>> sorties = dependencyManager.getSortieRepository().getAllSortiesByBon(bonSortieId);
-        for(Map<String, Object> sortie : sorties){
-            int qte = (int) sortie.get("quantite");
-            String refMatierePremiere = (String) sortie.get("id_matierePremiere");
-
-            Map<String, Object> ficheStock = dependencyManager.getFicheStockRepository().findById(refMatierePremiere);
-            int nouvelleQte = (int) ficheStock.get("quantite") - qte;
-
-            dependencyManager.getFicheStockRepository().update(refMatierePremiere, null, nouvelleQte, null, null);
-        }
-        dependencyManager.getBonSortieRepository().update(bonSortieId, idBonField.getText(), date);
-        dependencyManager.getSortieRepository().update(bonSortieId,idBonField.getText());
+        dependencyManager.getBonSortieRepository().updateDate(idBonInit, date);
 
         dependencyManager.getConnection().commit();
         Node source = (Node) event.getSource();
         Stage stage = (Stage) source.getScene().getWindow();
         stage.close();
     }
-    @FXML
-    public void modifier(ActionEvent event){
-        String idMatPrem = refMatPremSortir.getValue();
-        String quantite = qteMatSortir.getText();
-        String description = this.descMatSortir.getText();
+
+    public void majId(){
+        String idBonNouveau = idBonField.getText();
 
 
-        dependencyManager.getSortieRepository().update(selectSortieId,idBonField.getText(), Integer.parseInt(quantite),idMatPrem,description);
-        updateSortieTable();
+
+        /* Si les id sont différents faire la maj sinon ne rien faire */
+        if (!idBonNouveau.equals(idBonInit)){
+
+            /* MAJ */
+            dependencyManager.getBonSortieRepository().updateBonId(idBonInit, idBonNouveau);
+            if (!(dependencyManager.getSortieRepository().getAllSortiesByBon(idBonNouveau) == null)){
+                dependencyManager.getSortieRepository().updateBonId(idBonInit, idBonNouveau);
+            }
+        }
+        idBonInit = idBonNouveau;
+    }
+    public void retour(ActionEvent event) throws SQLException {
+        dependencyManager.getConnection().rollback();
+        Node source = (Node) event.getSource();
+        Stage oldStage = (Stage) source.getScene().getWindow();
+        oldStage.close();
+    }
+
+    private void showAlert(String contentText) {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("Warning Dialog");
+        alert.setHeaderText("Validation échouée");
+        alert.setContentText(contentText);
+        alert.showAndWait();
     }
 
 }
