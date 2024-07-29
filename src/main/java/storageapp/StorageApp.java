@@ -5,9 +5,11 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import storageapp.controller.mainController;
 import storageapp.service.DependencyManager;
+import storageapp.service.PreferencesManager;
 
 
 import java.io.*;
@@ -16,9 +18,33 @@ import java.sql.*;
 import java.time.LocalDate;
 
 public class StorageApp extends Application {
+    private PreferencesManager preferencesManager = new PreferencesManager();
+
     @Override
     public void start(Stage stage) throws IOException, SQLException, URISyntaxException {
-        DependencyManager dependencyManager = new DependencyManager();
+        String dbPath = preferencesManager.getDbPath();
+
+        if (dbPath == null || dbPath.isEmpty() || !new File(dbPath).exists()) {
+            // Si le fichier est introuvable ou non défini, demander à l'utilisateur de sélectionner un nouveau fichier
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Select Database File");
+            File selectedFile = fileChooser.showOpenDialog(stage);
+
+            if (selectedFile != null) {
+                dbPath = selectedFile.getAbsolutePath();
+                preferencesManager.setDbPath(dbPath);
+            } else {
+                System.out.println("No database file selected. Exiting application.");
+                return; // Arrête l'application si aucun fichier n'est sélectionné
+            }
+        }
+
+        DependencyManager dependencyManager = null;
+        if (dbPath != null) {
+            dependencyManager = new DependencyManager(dbPath);
+        }
+        
+
         //Data alimentation
         //generateSampleData(dependencyManager);
         FXMLLoader fxmlLoader = new FXMLLoader(StorageApp.class.getResource("main.fxml"));

@@ -1,9 +1,7 @@
 package storageapp.service;
 
-import storageapp.StorageApp;
 import storageapp.model.*;
 import storageapp.repository.*;
-
 
 import java.net.URISyntaxException;
 import java.sql.*;
@@ -24,22 +22,12 @@ public class DependencyManager {
     private final ProduitFini_MatierePremiereRepository produitFiniMatierePremiereRepository;
     private final CommandeRepository commandeRepository;
     private final CommandeProduitFiniRepository commandeProduitFiniRepository;
-    private final CommandeMatierePremiereRepository commandeMatierePremiereRepository;
     private final Connection connection;
 
-    public DependencyManager() throws SQLException, URISyntaxException {
+    public DependencyManager(String dbPath) throws SQLException, URISyntaxException {
         /* Connect to the database */
 
-        /* Créer la base de données */
-        //String jdbcUrl = "jdbc:sqlite:/C:\\Users\\NEWBOSS\\OneDrive\\Documents\\Logiciel de stockage\\sqlite-tools-win-x64-3460000\\storage.db";
-        //System.out.println("Hello");
-        System.out.println(StorageApp.class.getResource("storage.db").getFile());
-        String bd = String.valueOf(StorageApp.class.getResource("storage.db").getFile());
-        /*String modified_bd = bd.substring(4);
-        System.out.println(modified_bd);*/
-
-
-        connection = DriverManager.getConnection("jdbc:sqlite:" + bd);
+        connection = DriverManager.getConnection("jdbc:sqlite:" + dbPath);
         connection.setAutoCommit(false);
 
         factureRepository = new InMemoryFactureRepo(connection);
@@ -56,7 +44,6 @@ public class DependencyManager {
         produitFiniMatierePremiereRepository = new InMemoryProduitMatiereRepo(connection);
         commandeRepository = new InMemoryCommandeRepo(connection);
         commandeProduitFiniRepository = new InMemoryCommandeProduitRepo(connection);
-        commandeMatierePremiereRepository = new InMemoryCommandeMatierePremiereRepo(connection);
 
     }
 
@@ -81,5 +68,4 @@ public class DependencyManager {
     public ProduitFini_MatierePremiereRepository getProduitFiniMatierePremiereRepository(){ return produitFiniMatierePremiereRepository;}
     public CommandeRepository getCommandeRepository(){ return commandeRepository;}
     public CommandeProduitFiniRepository getCommandeProduitFiniRepository(){ return commandeProduitFiniRepository;}
-    public CommandeMatierePremiereRepository getCommandeMatierePremiereRepository(){ return commandeMatierePremiereRepository;}
 }
