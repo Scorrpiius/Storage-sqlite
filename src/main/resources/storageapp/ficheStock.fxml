@@ -79,6 +79,10 @@
          </Label>
          <TextField fx:id="pxUnitMoyen" layoutX="30.0" layoutY="545.0" prefHeight="40.0" style="-fx-background-color: ccecf0;" />
          <TextField fx:id="pxTotal" layoutX="290.0" layoutY="545.0" prefHeight="40.0" style="-fx-background-color: ccecf0;" />
+         <Button onAction="#imprimer" layoutX="724.0" layoutY="550.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="100.0" style="-fx-background-color: white; -fx-border-color: black; -fx-border-radius: 10;" text="Imprimer">
+            <font>
+               <Font name="Inter Semi Bold" size="15.0" />
+            </font></Button>
         </Pane>
     </center>
 

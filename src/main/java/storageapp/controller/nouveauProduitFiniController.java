@@ -46,7 +46,6 @@ public class nouveauProduitFiniController {
         updateProduit();
     }
 
-
     public void updateMatiereReferences(){
         java.util.List<Map<String, Object>> references = dependencyManager.getFicheStockRepository().getAllId();
         List<String> referencesList = new ArrayList<>();
@@ -93,6 +92,13 @@ public class nouveauProduitFiniController {
     public void ajouter(ActionEvent ignoredE) throws IOException {
         String referenceMatiereProduit = matiereReferenceBox.getValue();
         String quantite = qte.getText();
+
+        boolean allFieldsFilled = !quantite.isEmpty() && referenceMatiereProduit != null;
+
+        if(!allFieldsFilled){
+            accept();
+            return;
+        }
 
         /* Vérifier que cette référence n'existe pas déjà dans la liste */
         Optional<Map<String, Object>> result = listeMatieresPremieres.stream()
@@ -155,7 +161,12 @@ public class nouveauProduitFiniController {
     }
     public void finaliserSaisie(ActionEvent e) throws SQLException, IOException {
         final String produitReference = referenceProduit.getText();
+        boolean allFieldsFilled = !produitReference.isEmpty();
 
+        if(!allFieldsFilled){
+            accept();
+            return;
+        }
         /* Warning ID */
         if (!(dependencyManager.getProduitFiniRepository().findById(produitReference) == null)){
             showAlert();
@@ -227,6 +238,14 @@ public class nouveauProduitFiniController {
         alert.setHeaderText("Validation échouée");
         alert.setContentText("Cette référence de produit existe déjà. Veuillez saisir une nouvelle référence");
         alert.showAndWait();
+    }
+    private static void accept() {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("Warning Dialog");
+        alert.setHeaderText("Validation échouée");
+        alert.setContentText("Veuillez remplir tous les champs");
+        alert.showAndWait();
+        return;
     }
 
 }

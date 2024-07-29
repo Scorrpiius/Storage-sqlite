@@ -109,6 +109,13 @@ public class nouveauBonController {
         String quantite = qteMatPremASortir.getText();
         String description = this.descMatPremASortir.getText();
 
+        boolean allFieldsFilled = !quantite.isEmpty() && idMatPrem != null && !description.isEmpty();
+
+        if(!allFieldsFilled){
+            accept();
+            return;
+        }
+
         int nouvelleQuantite = Integer.parseInt(qteMatPremEnStock.getText()) - Integer.parseInt(quantite);
         if (nouvelleQuantite < 0){
             Alert alert = new Alert(Alert.AlertType.WARNING);
@@ -180,21 +187,20 @@ public class nouveauBonController {
     public void finaliserSaisie(ActionEvent event) throws SQLException, IOException {
         final String idBonSortie = idBonField.getText();
         final LocalDate date = this.dateBonPicker.getValue();
-        final boolean isValid = idBonSortie != null && date != null;
+
+        boolean allFieldsFilled = !idBonSortie.isEmpty() && date != null;
+
+        if(!allFieldsFilled){
+            accept();
+            return;
+        }
 
         if (!(dependencyManager.getBonSortieRepository().findById(idBonSortie) == null)){
             showAlert();
             return;
         }
 
-        if (!isValid) {
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("Warning Dialog");
-            alert.setHeaderText("Validation échouée");
-            alert.setContentText("Veuillez remplir tous les champs");
-            alert.showAndWait();
-            return;
-        }
+
 
         /* Création des sorties et mises à jour des fiches de stock */
         for(Map<String, Object> s : listSorties){
@@ -239,6 +245,13 @@ public class nouveauBonController {
         alert.showAndWait();
     }
 
+    private static void accept() {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("Warning Dialog");
+        alert.setHeaderText("Validation échouée");
+        alert.setContentText("Veuillez remplir tous les champs");
+        alert.showAndWait();
+    }
 
 
 }

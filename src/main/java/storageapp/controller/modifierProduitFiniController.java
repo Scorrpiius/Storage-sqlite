@@ -143,6 +143,13 @@ public class modifierProduitFiniController {
             }
         }
 
+        boolean allFieldsFilled = !referenceProduit.getText().isEmpty();
+
+        if(!allFieldsFilled){
+            accept();
+            return;
+        }
+
 
         majId();
         dependencyManager.getConnection().commit();
@@ -223,6 +230,13 @@ public class modifierProduitFiniController {
         alert.setTitle("Warning Dialog");
         alert.setHeaderText("Validation échouée");
         alert.setContentText("Cette référence de bon existe déjà. Veuillez saisir une nouvelle référence");
+        alert.showAndWait();
+    }
+    private static void accept() {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("Warning Dialog");
+        alert.setHeaderText("Validation échouée");
+        alert.setContentText("Veuillez remplir tous les champs");
         alert.showAndWait();
     }
 

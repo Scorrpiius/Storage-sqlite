@@ -86,6 +86,13 @@ public class nouvelleCommandeController {
         String idProduit = refProduitBox.getValue();
         String quantite = qteProduitField.getText();
 
+        boolean allFieldsFilled = !quantite.isEmpty() && idProduit != null;
+
+        if(!allFieldsFilled){
+            accept();
+            return;
+        }
+
         /* Vérifier que cette référence n'existe pas déjà dans la liste */
         Optional<Map<String, Object>> result = listeProduits.stream()
                 .filter(map -> idProduit.equals(map.get("id_ProduitFini")))
@@ -151,6 +158,14 @@ public class nouvelleCommandeController {
         final String descriptionCommande = this.descriptionCommande.getText();
         final LocalDate dateCommande = dateCommandePicker.getValue();
 
+        boolean allFieldsFilled = !idCommande.isEmpty()
+                && !descriptionCommande.isEmpty()
+                && dateCommande != null;
+
+        if(!allFieldsFilled){
+            accept();
+            return;
+        }
 
         if (!(dependencyManager.getCommandeRepository().findById(idCommande) == null)){
             showAlert();
@@ -181,5 +196,13 @@ public class nouvelleCommandeController {
         alert.setHeaderText("Validation échouée");
         alert.setContentText("Cette référence de commande existe déjà. Veuillez saisir une nouvelle référence");
         alert.showAndWait();
+    }
+    private static void accept() {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("Warning Dialog");
+        alert.setHeaderText("Validation échouée");
+        alert.setContentText("Veuillez remplir tous les champs");
+        alert.showAndWait();
+        return;
     }
 }

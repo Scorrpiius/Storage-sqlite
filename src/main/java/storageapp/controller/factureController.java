@@ -54,11 +54,17 @@ public class factureController {
 
         refMatPremCol.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().get("id_reference")).asString());
         desMatPremCol.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().get("designation")).asString());
+        catMatPremCol.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().get("categorie")).asString());
         qteMatPremCol.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().get("quantite")).asString());
         pxUnitMatPremCol.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().get("px_unitaire")).asString());
-        pxRevientDeviseMatPremColumn.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().get("px_revient_devise")).asString());
-        pxRevientLocalMatPremColumn.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().get("px_revient_local")).asString());
-        catMatPremCol.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().get("categorie")).asString());
+        pxRevientDeviseMatPremColumn.setCellValueFactory(cellData -> {
+            Object objet = cellData.getValue().get("px_revient_devise");
+            return new SimpleObjectProperty<>(String.format("%.2f", objet));
+        });
+        pxRevientLocalMatPremColumn.setCellValueFactory(cellData -> {
+            Object objet = cellData.getValue().get("px_revient_local");
+            return new SimpleObjectProperty<>(String.format("%.2f", objet));
+        });
     }
     public void updateAllData(){
         Map<String, Object> facture = dependencyManager.getFactureRepository().findById(factureId);

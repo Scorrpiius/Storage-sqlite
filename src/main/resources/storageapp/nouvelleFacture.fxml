@@ -76,7 +76,7 @@
                     <Font name="Inter Semi Bold" size="28.0" />
                 </font>
             </Label>
-            <TableView fx:id="matierePremiereTable" layoutX="42.0" layoutY="303.0" prefHeight="172.0" prefWidth="934.0">
+            <TableView fx:id="matierePremiereTable" layoutX="42.0" layoutY="303.0" prefHeight="172.0" prefWidth="934.0" stylesheets="@../css/tab.css">
                 <columns>
                     <TableColumn fx:id="refMatPremCol" prefWidth="180.0" text="Référence" />
                     <TableColumn fx:id="catMatPremCol" minWidth="0.0" prefWidth="130.0" text="Catégorie" />

@@ -207,24 +207,26 @@ public class modifierFactureController {
         majId();
         majPrix();
 
-        String categorie = catMatPremBox.getValue();
-        String reference = refMatPremBox.getValue();
-        String designation = desMatPremBox.getValue();
-        String quantite = qteMatPremField.getText();
-        String pxUnit = this.pxUnitMatPremField.getText();
-        String uniteMesure = uniteMesureMatPremBox.getValue();
+        final String categorie = catMatPremBox.getValue();
+        final String reference = refMatPremBox.getValue();
+        final String designation = desMatPremBox.getValue();
+        final String quantite = qteMatPremField.getText();
+        final String pxUnit = this.pxUnitMatPremField.getText();
+        final String uniteMesure = uniteMesureMatPremBox.getValue();
+        final String valeurDevise = valeurDeviseField.getText();
+        final String tauxReel = tauxReelField.getText();
 
-        boolean isValid = categorie != null && reference != null  && designation != null && quantite != null;
+        /* Vérifier que tous les éléments nécessaire ont été ajouté */
+        boolean allFieldsFilled = categorie != null
+                && reference != null && designation != null
+                && !quantite.isEmpty() && !pxUnit.isEmpty()
+                && uniteMesure != null && !valeurDevise.isEmpty()
+                && !tauxReel.isEmpty();
 
-        if (!isValid) {
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("Warning Dialog");
-            alert.setHeaderText("Validation échouée");
-            alert.setContentText("Veuillez remplir tous les champs");
-            alert.showAndWait();
+        if(!allFieldsFilled){
+            accept();
             return;
         }
-
         dependencyManager.getEntreeRepository().create(reference, idFactureInit, Integer.parseInt(quantite),Double.parseDouble(pxUnit),0.0 , 0.0, categorie, designation, uniteMesure, this.img);
         majPrix();
 
@@ -332,8 +334,16 @@ public class modifierFactureController {
         double tauxReel = Double.parseDouble(txReel);
 
         final boolean validFloats = isValidFloat(deviseValue) && isValidFloat(txReel) && isValidFloat(txTheo);
-        final boolean allFieldsFilled = fournisseur != null && deviseValue != null && date != null;
 
+        boolean allFieldsFilled = !referenceFactureField.getText().isEmpty()
+                && fournisseur != null && deviseName != null
+                && !txReel.isEmpty() && date != null
+                && !deviseValue.isEmpty() && !txTheo.isEmpty();
+
+        if(!allFieldsFilled){
+            accept();
+            return;
+        }
         if (!validFloats) {
             showAlert("Veuillez remplir des nombres dans les champs devise, taux d'approche réel et taux d'approche théorique");
         } else if (!allFieldsFilled) {
@@ -398,5 +408,12 @@ public class modifierFactureController {
         double tauxReel = Double.parseDouble(this.tauxReelField.getText());
 
         dependencyManager.getEntreeRepository().updatePrix(idFactureInit, valeurDevise, tauxReel);
+    }
+    private static void accept() {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("Warning Dialog");
+        alert.setHeaderText("Validation échouée");
+        alert.setContentText("Veuillez remplir tous les champs");
+        alert.showAndWait();
     }
 }

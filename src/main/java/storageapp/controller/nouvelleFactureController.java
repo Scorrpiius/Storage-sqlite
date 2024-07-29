@@ -22,6 +22,10 @@ import java.io.InputStream;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.*;
+import java.text.DecimalFormatSymbols;
+import java.text.DecimalFormat;
+import java.text.ParseException;
+
 
 public class nouvelleFactureController {
 
@@ -200,14 +204,27 @@ public class nouvelleFactureController {
         final String reference = refMatPremBox.getValue();
         final String designation = desMatPremBox.getValue();
         final String quantite = qteMatPremField.getText();
-        final String pxUnit = this.pxUnitMatPremField.getText();
+        final String pxUnit = pxUnitMatPremField.getText();
         final String uniteMesure = uniteMesureMatPremBox.getValue();
+        final String valeurDevise = valeurDeviseField.getText();
+        final String tauxReel = tauxReelField.getText();
 
         /* Vérifier que tous les éléments nécessaire ont été ajouté */
-        boolean isValid = categorie != null && reference != null  && designation != null && quantite != null;
+        boolean allFieldsFilled = categorie != null
+                && reference != null && designation != null
+                && !quantite.isEmpty() && !pxUnit.isEmpty()
+                && uniteMesure != null && !valeurDevise.isEmpty()
+                && !tauxReel.isEmpty();
 
-        if (!isValid) {
+        if(!allFieldsFilled){
             accept();
+            return;
+        }
+
+        /* Vérifier que la quantité est bien un entier */
+        if (!quantite.matches("-?\\d+")){
+            showAlert("La quantité doit être un nombre entier");
+            return;
         }
 
         /* Vérifier que cette référence n'existe pas déjà dans la liste */
@@ -271,7 +288,6 @@ public class nouvelleFactureController {
             }
         }
 
-
         /* Modifier les infos dans la liste */
         Map<String, Object> mp = listMatierePremiere.stream()
                 .filter(map -> refMatInit.equals(map.get("id_reference")))
@@ -305,10 +321,20 @@ public class nouvelleFactureController {
         final String tx_theo = tauxTheoField.getText();
         final String nom_devise = nomDeviseBox.getValue();
         final LocalDate date = this.dateFacturePicker.getValue();
+
         double tauxTheo = Double.parseDouble(tx_theo);
         double tauxReel = Double.parseDouble(tx_reel);
-
         double devise = Double.parseDouble(valeurDeviseField.getText());
+
+        boolean allFieldsFilled = !idFacture.isEmpty()
+                && fournisseur != null && nom_devise != null
+                && !tx_reel.isEmpty() && date != null
+                && !value_devise.isEmpty() && !tx_theo.isEmpty();
+
+        if(!allFieldsFilled){
+            accept();
+            return;
+        }
 
         if (!(dependencyManager.getFactureRepository().findById(idFacture) == null)){
             showAlert("Cette référence de facture existe déjà. Veuillez saisir une nouvelle référence");
@@ -317,7 +343,6 @@ public class nouvelleFactureController {
 
 
         final boolean validFloats = isValidFloat(value_devise) && isValidFloat(tx_reel) && isValidFloat(tx_theo);
-        final boolean allFieldsFilled = idFacture != null && fournisseur != null && value_devise != null && date != null;
 
         if (!validFloats) {
             showAlert("Veuillez remplir des nombres dans les champs devise, taux d'approche réel et taux d'approche théorique");
@@ -331,7 +356,6 @@ public class nouvelleFactureController {
             }
         }
 
-        assert value_devise != null;
         /* Création de toutes les matières premières et les fiches de stock corrspondantes */
         for(Map<String, Object> mp : listMatierePremiere){
             double pxUnit = Double.parseDouble(mp.get("px_unitaire").toString());
@@ -369,7 +393,6 @@ public class nouvelleFactureController {
                         mp.get("uniteMesure").toString()
                 );
             }
-
         }
 
         dependencyManager.getFactureRepository().create(
@@ -403,6 +426,7 @@ public class nouvelleFactureController {
         Stage oldStage = (Stage) source.getScene().getWindow();
         oldStage.close();
     }
+
     private void showAlert(String contentText) {
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle("Warning Dialog");
