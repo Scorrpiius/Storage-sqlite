@@ -38,9 +38,8 @@ public class DependencyManager {
         /* Créer la base de données */
         //String jdbcUrl = "jdbc:sqlite:/C:\\Users\\NEWBOSS\\OneDrive\\Documents\\Logiciel de stockage\\sqlite-tools-win-x64-3460000\\storage.db";
         String bd = String.valueOf(StorageApp.class.getResource("storage.db"));
-
-        System.out.println(bd.substring(4));
-        connection = DriverManager.getConnection("jdbc:sqlite" + bd.substring(4));
+        String modified_bd = bd.substring(4);
+        connection = DriverManager.getConnection("jdbc:sqlite" + modified_bd);
         connection.setAutoCommit(false);
 
         factureRepository = new InMemoryFactureRepo(connection);
