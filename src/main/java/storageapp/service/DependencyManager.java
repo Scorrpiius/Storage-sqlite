@@ -28,9 +28,8 @@ public class DependencyManager {
 
     public DependencyManager() throws SQLException, URISyntaxException {
         /* Connect to the database */
-        //String jdbcUrl = "jdbc:sqlite:/E:\\SQLite\\sqlite-tools-win-x64-3450200\\storage.db";
-        //String jdbcUrl = "src/main/resources/database/storage.db";
-        connection = DriverManager.getConnection("jdbc:sqlite:src/main/resources/database/storage.db");
+        String jdbcUrl = "jdbc:sqlite:/E:\\SQLite\\sqlite-tools-win-x64-3450200\\storage.db";
+        connection = DriverManager.getConnection(jdbcUrl);
         connection.setAutoCommit(false);
 
         factureRepository = new InMemoryFactureRepo(connection);
