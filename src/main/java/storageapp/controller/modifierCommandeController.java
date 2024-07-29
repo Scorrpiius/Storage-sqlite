@@ -99,59 +99,13 @@ public class modifierCommandeController {
     public void finaliserSaisie(ActionEvent e) throws SQLException {
         if(!IDCOMMANDE.equals(idCommandeField.getText())){
             if (!(dependencyManager.getCommandeRepository().findById(idCommandeField.getText()) == null)){
-                showAlert("Cette référence de commande existe déjà. Veuillez saisir une nouvelle référence");
+                showAlert();
                 return;
             }
         }
 
-
         majId();
-        //Si des produits ont été retirés il faut retirer leur quantité de
-
-
-
-        /*final String idCommande = id.getText();
-        final String descriptionCommande = description.getText();
-        final LocalDate dateCommande = date.getValue();
-        System.out.println(dateCommande);
-        dependencyManager.getCommandeRepository().update(idCommande, descriptionCommande, dateCommande);*/
-
-        // Créer le tableau de bord en même temps
-        // Chercher les produits associés à la commande
-        // Pour chaque produit, faire la liste des matières premières et calculer le total (qte produit * nbr de matières premières)
-
-        /*List<Map<String, Object>> listeBesoins = dependencyManager.getCommandeMatierePremiereRepository().findAll();
-        for(Map<String, Object> besoin : listeBesoins){
-            dependencyManager.getCommandeMatierePremiereRepository().delete(commandeId, (String) besoin.get("id_MatierePremiere"));
-        }
-        listeBesoins = new ArrayList<Map<String, Object>>();
-        List<Map<String, Object>> listeProduits = dependencyManager.getCommandeProduitFiniRepository().findByCommandeId(commandeId);
-        for (Map<String, Object> produit : listeProduits){
-
-            List<Map<String, Object>> listeMateriaux = dependencyManager.getProduitFiniMatierePremiereRepository().findByProduitId((String) produit.get("id_ProduitFini"));
-
-            for(Map<String, Object> matiere : listeMateriaux){
-                int qteTotale = (Integer)matiere.get("quantite")* (Integer) produit.get("quantite");
-                Map<String, Object> temp = new HashMap<>();
-                temp.put("reference", (String) matiere.get("matiere_id"));
-                temp.put("quantite", qteTotale);
-                int update = 0;
-
-                // Vérifier si la ref est déjà dans la liste, si oui ajouter au nombre sinon ajouter la nouvelle matière première
-                for(Map<String,Object> besoin : listeBesoins){
-                    if(besoin.get("reference").equals(matiere.get("matiere_id"))){
-                        int newQte = (Integer) besoin.get("quantite") + qteTotale;
-                        besoin.put("quantite", newQte);
-                        update = 1;
-                    }
-                }
-                if(update == 0){
-                    listeBesoins.add(temp);
-                }
-            }
-            System.out.println(listeBesoins);
-        }*/
-
+        dependencyManager.getCommandeRepository().updateInfos(idCommandeInit, descriptionCommande.getText(), dateCommandePicker.getValue());
         dependencyManager.getConnection().commit();
         Node source = (Node) e.getSource();
         Stage stage = (Stage) source.getScene().getWindow();
@@ -199,11 +153,11 @@ public class modifierCommandeController {
         idCommandeInit = idCommandeNouveau;
     }
 
-    private void showAlert(String contentText) {
+    private void showAlert() {
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle("Warning Dialog");
         alert.setHeaderText("Validation échouée");
-        alert.setContentText(contentText);
+        alert.setContentText("Cette référence de commande existe déjà. Veuillez saisir une nouvelle référence");
         alert.showAndWait();
     }
 }

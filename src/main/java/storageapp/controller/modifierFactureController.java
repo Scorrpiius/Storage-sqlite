@@ -377,6 +377,7 @@ public class modifierFactureController {
             return false;
         }
     }
+
     /* Met à jour la référence de la facture pour la facture et les différentes matières premières associés si il y a eu des estrangements */
     public void majId(){
         String idFactureNouveau = referenceFactureField.getText();

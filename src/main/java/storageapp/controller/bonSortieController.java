@@ -97,11 +97,10 @@ public class bonSortieController {
         Node source = (Node) event.getSource();
         Stage oldStage = (Stage) source.getScene().getWindow();
         oldStage.close();
-        //updateSortieTable();
     }
 
     @FXML
-    protected void imprimer(ActionEvent event) throws IOException {
+    protected void imprimer(ActionEvent event) {
         Node source = (Node) event.getSource();
         Stage primaryStage = (Stage) source.getScene().getWindow();
 

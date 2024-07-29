@@ -47,7 +47,6 @@ public class modifierProduitFiniController {
     }
     public void updateData(){
         referenceProduit.setText(idProduitInit);
-        // Load l'image de base
     }
     public void updateMatiereReferences(){
         List<Map<String, Object>> references = dependencyManager.getFicheStockRepository().getAllId();
@@ -95,7 +94,6 @@ public class modifierProduitFiniController {
     public void ajouter(ActionEvent ignoredE) throws IOException {
         majId();
 
-        //String referenceProduit = this.referenceProduit.getText();
         String referenceMatiereProduit = matiereReferenceBox.getValue();
 
         /* Vérifier que la matière première choisie existe bien dans les matières premières existantes
@@ -140,7 +138,7 @@ public class modifierProduitFiniController {
     public void finaliserSaisie(ActionEvent event) throws SQLException {
         if (!IDPRODUIT.equals(referenceProduit.getText())){
             if (!(dependencyManager.getProduitFiniRepository().findById(referenceProduit.getText()) == null)){
-                showAlert("Cette référence de bon existe déjà. Veuillez saisir une nouvelle référence");
+                showAlert();
                 return;
             }
         }
@@ -171,8 +169,6 @@ public class modifierProduitFiniController {
         Image image = new Image(stream);
         img.setImage(image);
 
-        String image1 = String.valueOf(selectedFile);
-
     }
 
     public void majId(){
@@ -181,7 +177,7 @@ public class modifierProduitFiniController {
         /* Si les id sont différents faire la maj sinon ne rien faire */
         if (!idProduitNouveau.equals(idProduitInit)){
             if (!(dependencyManager.getProduitFiniRepository().findById(idProduitNouveau) == null)){
-                showAlert("Cette référence de bon existe déjà. Veuillez saisir une nouvelle référence");
+                showAlert();
                 return;
             }
             /* MAJ */
@@ -189,7 +185,11 @@ public class modifierProduitFiniController {
             if (!(dependencyManager.getProduitFiniMatierePremiereRepository().findByProduitId(idProduitInit) == null)){
                 dependencyManager.getProduitFiniMatierePremiereRepository().updateProduitId(idProduitInit, idProduitNouveau);
             }
-            //dependencyManager.getFactureRepository().updateFactureId(idProduitInit, idProduitNouveau);
+
+            if(!(dependencyManager.getCommandeProduitFiniRepository().findByProduitId(idProduitInit) == null)){
+                System.out.println(dependencyManager.getCommandeProduitFiniRepository().findByProduitId(idProduitInit));
+                dependencyManager.getCommandeProduitFiniRepository().updateProduitId(idProduitInit, idProduitNouveau);
+            }
         }
         idProduitInit = idProduitNouveau;
     }
@@ -218,11 +218,11 @@ public class modifierProduitFiniController {
         return 2;
     }
 
-    private void showAlert(String contentText) {
+    private void showAlert() {
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle("Warning Dialog");
         alert.setHeaderText("Validation échouée");
-        alert.setContentText(contentText);
+        alert.setContentText("Cette référence de bon existe déjà. Veuillez saisir une nouvelle référence");
         alert.showAndWait();
     }
 

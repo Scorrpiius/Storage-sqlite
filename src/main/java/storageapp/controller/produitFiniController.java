@@ -94,6 +94,5 @@ public class produitFiniController {
         Node source = (Node) e.getSource();
         Stage oldStage = (Stage) source.getScene().getWindow();
         oldStage.close();
-        //updateMatiereTable();
     }
 }

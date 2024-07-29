@@ -9,7 +9,7 @@ public interface BonSortieRepository {
     void create(String id, LocalDate date);
     List<Map<String, Object>> findAll();
     Map<String, Object> findById(String id);
-    void update(String idInitial, String idFinal, LocalDate nouvelleDate);
+    //void update(String idInitial, String idFinal, LocalDate nouvelleDate);
     void updateBonId(String idBonInit, String idBonNouveau);
     void updateDate(String idBon, LocalDate date);
 

@@ -220,4 +220,23 @@ public class InMemoryCommandeProduitRepo implements CommandeProduitFiniRepositor
             throw new RuntimeException(e);
         }
     }
+
+    @Override
+    public void updateProduitId(String idProduitInit, String idProduitNouveau){
+        String sql = "UPDATE Commande_ProduitFini " +
+                "SET id_ProduitFini = '" + idProduitNouveau +"'" +
+                "WHERE id_ProduitFini = '" + idProduitInit +"';";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            int rowsAffected = preparedStatement.executeUpdate();
+
+            if (rowsAffected > 0) {
+                System.out.println("UpdateProduitId operation into Commande_ProduitFini successful.");
+            } else {
+                System.out.println("UpdateProduitId operation into Commande_ProduitFini failed.");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

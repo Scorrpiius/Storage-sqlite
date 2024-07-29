@@ -145,6 +145,7 @@ public class nouvelleCommandeController {
             updateProduitTable();
         }
     }
+    @FXML
     public void finaliserSaisie(ActionEvent e) throws SQLException {
         final String idCommande = idCommandeField.getText();
         final String descriptionCommande = this.descriptionCommande.getText();
@@ -152,51 +153,11 @@ public class nouvelleCommandeController {
 
 
         if (!(dependencyManager.getCommandeRepository().findById(idCommande) == null)){
-            showAlert("Cette référence de commande existe déjà. Veuillez saisir une nouvelle référence");
+            showAlert();
             return;
         }
 
         dependencyManager.getCommandeRepository().create(idCommande, descriptionCommande, dateCommande);
-
-        /* Créer le tableau de bord en même temps
-         * Chercher les produits associés à la commande
-         * Pour chaque produit, faire la liste des matières premières et calculer le total (qte produit * nbr de matières premières) */
-
-
-        /*List<Map<String, Object>> listeBesoins = new ArrayList<Map<String, Object>>();
-
-        for (Map<String, Object> p : listeProduits){
-
-            List<Map<String, Object>> listeMateriaux = dependencyManager.getProduitFiniMatierePremiereRepository().findByProduitId((String) p.get("id_ProduitFini"));
-
-            for(Map<String, Object> matiere : listeMateriaux){
-                int qteTotale = (Integer) matiere.get("quantite") * Integer.parseInt(p.get("quantite").toString());
-                Map<String, Object> temp = new HashMap<>();
-                temp.put("reference", (String) matiere.get("matiere_id"));
-                temp.put("quantite", qteTotale);
-                int update = 0;
-
-                // Vérifier si la ref est déjà dans la liste, si oui ajouter au nombre sinon ajouter la nouvelle matière première
-                for(Map<String,Object> besoin : listeBesoins){
-                    if(besoin.get("reference").equals(matiere.get("matiere_id"))){
-                        int newQte = (Integer) besoin.get("quantite") + qteTotale;
-                        besoin.put("quantite", newQte);
-                        update = 1;
-                    }
-                }
-                if(update == 0){
-                    listeBesoins.add(temp);
-                }
-            }
-        }
-
-        for(Map<String, Object> besoin : listeBesoins){
-            dependencyManager.getCommandeMatierePremiereRepository().create(
-                    idCommande,
-                    besoin.get("reference").toString(),
-                    Integer.parseInt(besoin.get("quantite").toString())
-            );
-        }*/
 
         for(Map<String, Object> p : listeProduits){
             dependencyManager.getCommandeProduitFiniRepository().create(idCommande, p.get("id_ProduitFini").toString(), Integer.parseInt(p.get("quantite").toString()));
@@ -214,11 +175,11 @@ public class nouvelleCommandeController {
         oldStage.close();
     }
 
-    private void showAlert(String contentText) {
+    private void showAlert() {
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle("Warning Dialog");
         alert.setHeaderText("Validation échouée");
-        alert.setContentText(contentText);
+        alert.setContentText("Cette référence de commande existe déjà. Veuillez saisir une nouvelle référence");
         alert.showAndWait();
     }
 }

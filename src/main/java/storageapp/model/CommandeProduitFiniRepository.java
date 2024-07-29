@@ -13,6 +13,7 @@ public interface CommandeProduitFiniRepository {
     void update(String idCommande, String idAncienProduit, String idNouveauProduit, String quantite);
     void delete(String idCommande, String idProduit);
     void updateCommandeId(String idCommandeInit, String idCommandeNouveau);
+    void updateProduitId(String idProduitInit, String idProduitNouveau);
 
 
 }

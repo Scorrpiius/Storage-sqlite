@@ -18,20 +18,17 @@ import java.util.List;
 import java.util.Map;
 
 public class tableauBesoinController {
-    private final String idCommande;
-    private DependencyManager dependencyManager;
+    private final DependencyManager dependencyManager;
     @FXML
     private TableView<Map<String, Object>> besoinsTable;
-    private List<Map<String, Object>> mps, listeProduits;
-    private List<Map<String, Object>> tableauBesoins;
-    @FXML
-    private TableColumn<Map<String, Object>, String> refProduitCol, qteProduitCol;
+    private final List<Map<String, Object>> mps;
+    private final List<Map<String, Object>> listeProduits;
+    private final List<Map<String, Object>> tableauBesoins;
     @FXML
     private ComboBox<String> referenceFicheFiltre, categorieFicheFiltre, designationFicheFiltre;
 
     public  tableauBesoinController(DependencyManager dependencyManager, String idCommande){
         this.dependencyManager = dependencyManager;
-        this.idCommande = idCommande;
         this.listeProduits = dependencyManager.getCommandeProduitFiniRepository().findByCommandeId(idCommande);
         this.mps = new ArrayList<>();
         this.tableauBesoins = new ArrayList<>();
@@ -49,7 +46,6 @@ public class tableauBesoinController {
             String idProduit = p.get("id_ProduitFini").toString();
 
             List<Map<String, Object>> listeMPs = dependencyManager.getProduitFiniMatierePremiereRepository().findByProduitId(idProduit);
-            List<Map<String, Object>> ligneTableauBesoin = new ArrayList<>();
 
             Map<String, Object> ligne = new HashMap<>();
             ligne.put("idProduit", idProduit);
@@ -59,15 +55,10 @@ public class tableauBesoinController {
                 int temp = Integer.parseInt(mp.get("quantite").toString());
                 ligne.put(mp.get("matiere_id").toString(), temp * quantiteProduit );
                 System.out.println(mp.get("matiere_id").toString());
-                Map<String, Object> temp_map = new HashMap<>();
-                //System.out.println(dependencyManager.getEntreeRepository().getCategorieDesignation(mp.get("matiere_id").toString()));
                 this.mps.add(dependencyManager.getEntreeRepository().getCategorieDesignation(mp.get("matiere_id").toString()));
             }
-            //ligneTableauBesoin.add(ligne);
             tableauBesoins.add(ligne);
         }
-        System.out.println(tableauBesoins);
-        System.out.println(mps);
         updateTableauBesoins(null, null, null);
 
     }
@@ -126,78 +117,51 @@ public class tableauBesoinController {
 
         /* Rajouter les columns au tableau */
         for(Map<String, Object> mp : this.mps) {
-            //System.out.println(mp);
-            if (categorie == null && reference != null && designation != null) {
-                if (mp.get("id_reference").toString().equals(reference) && mp.get("designation").toString().equals(designation)) {
-                    TableColumn<Map<String, Object>, String> temp_bis = new TableColumn<>(mp.get("id_reference").toString());
-                    besoinsTable.getColumns().add(temp_bis);
-                    temp_bis.setCellValueFactory(cellData -> {
-                        Object value = cellData.getValue().get(mp.get("id_reference").toString());
-                        return new SimpleObjectProperty<>(value != null ? value.toString() : "---");
-                    });
+            String columnKey = mp.get("id_reference").toString();
+
+            // Vérifie si la colonne existe déjà
+            boolean columnExists = besoinsTable.getColumns().stream()
+                    .anyMatch(col -> col.getText().equals(columnKey));
+
+            if (!columnExists) {
+                boolean shouldAddColumn = false;
+
+                if (reference != null && reference.equals(mp.get("id_reference").toString())) {
+                    shouldAddColumn = (categorie == null || categorie.equals(mp.get("categorie").toString())) &&
+                            (designation == null || designation.equals(mp.get("designation").toString()));
+                } else if (categorie != null && categorie.equals(mp.get("categorie").toString())) {
+                    shouldAddColumn = (reference == null || reference.equals(mp.get("id_reference").toString())) &&
+                            (designation == null || designation.equals(mp.get("designation").toString()));
+                } else if (designation != null && designation.equals(mp.get("designation").toString())) {
+                    shouldAddColumn = (reference == null || reference.equals(mp.get("id_reference").toString())) &&
+                            (categorie == null || categorie.equals(mp.get("categorie").toString()));
+                } else if (reference == null && categorie == null && designation == null) {
+                    shouldAddColumn = true;
                 }
-            } else if (reference == null && categorie != null && designation != null) {
-                if (mp.get("categorie").toString().equals(categorie) && mp.get("designation").toString().equals(designation)) {
-                    TableColumn<Map<String, Object>, String> temp_bis = new TableColumn<>(mp.get("id_reference").toString());
-                    besoinsTable.getColumns().add(temp_bis);
-                    temp_bis.setCellValueFactory(cellData -> {
-                        Object value = cellData.getValue().get(mp.get("id_reference").toString());
-                        return new SimpleObjectProperty<>(value != null ? value.toString() : "---");
-                    });
+
+                if (shouldAddColumn) {
+                    addColumn(columnKey);
                 }
-            } else if (designation == null && categorie != null && reference != null) {
-                if (mp.get("categorie").toString().equals(categorie) && mp.get("id_reference").toString().equals(reference)) {
-                    TableColumn<Map<String, Object>, String> temp_bis = new TableColumn<>(mp.get("id_reference").toString());
-                    besoinsTable.getColumns().add(temp_bis);
-                    temp_bis.setCellValueFactory(cellData -> {
-                        Object value = cellData.getValue().get(mp.get("id_reference").toString());
-                        return new SimpleObjectProperty<>(value != null ? value.toString() : "---");
-                    });
-                }
-            } else if (reference == null && categorie == null && designation != null) {
-                if (mp.get("designation").toString().equals(designation)) {
-                    TableColumn<Map<String, Object>, String> temp_bis = new TableColumn<>(mp.get("id_reference").toString());
-                    besoinsTable.getColumns().add(temp_bis);
-                    temp_bis.setCellValueFactory(cellData -> {
-                        Object value = cellData.getValue().get(mp.get("id_reference").toString());
-                        return new SimpleObjectProperty<>(value != null ? value.toString() : "---");
-                    });
-                }
-            } else if (reference == null && designation == null && categorie != null) {
-                if (mp.get("categorie").toString().equals(categorie)) {
-                    TableColumn<Map<String, Object>, String> temp_bis = new TableColumn<>(mp.get("id_reference").toString());
-                    besoinsTable.getColumns().add(temp_bis);
-                    temp_bis.setCellValueFactory(cellData -> {
-                        Object value = cellData.getValue().get(mp.get("id_reference").toString());
-                        return new SimpleObjectProperty<>(value != null ? value.toString() : "---");
-                    });
-                }
-            } else if (categorie == null && designation == null && reference != null) {
-                if (mp.get("id_reference").toString().equals(reference)) {
-                    TableColumn<Map<String, Object>, String> temp_bis = new TableColumn<>(mp.get("id_reference").toString());
-                    besoinsTable.getColumns().add(temp_bis);
-                    temp_bis.setCellValueFactory(cellData -> {
-                        Object value = cellData.getValue().get(mp.get("id_reference").toString());
-                        return new SimpleObjectProperty<>(value != null ? value.toString() : "---");
-                    });
-                }
-            } else if (reference == null && categorie == null && designation == null){
-                TableColumn<Map<String, Object>, String> temp_bis = new TableColumn<>(mp.get("id_reference").toString());
-                besoinsTable.getColumns().add(temp_bis);
-                temp_bis.setCellValueFactory(cellData -> {
-                    Object value = cellData.getValue().get(mp.get("id_reference").toString());
-                    return new SimpleObjectProperty<>(value != null ? value.toString() : "---");
-                });
             }
         }
     }
+
+    private void addColumn(String columnKey) {
+        TableColumn<Map<String, Object>, String> column = new TableColumn<>(columnKey);
+        besoinsTable.getColumns().add(column);
+        column.setCellValueFactory(cellData -> {
+            Object value = cellData.getValue().get(columnKey);
+            return new SimpleObjectProperty<>(value != null ? value.toString() : "---");
+        });
+    }
+
 
     public void retour(ActionEvent event) throws IOException, SQLException {
         Node source = (Node) event.getSource();
         Stage oldStage = (Stage) source.getScene().getWindow();
         oldStage.close();
     }
-    public void rechercheFiche(ActionEvent event) throws IOException, SQLException {
+    public void rechercheFiche(ActionEvent ignoredEvent) {
         String categorie = categorieFicheFiltre.getValue();
         String desgination = designationFicheFiltre.getValue();
         String reference = referenceFicheFiltre.getValue();

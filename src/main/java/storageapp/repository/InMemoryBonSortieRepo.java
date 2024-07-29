@@ -83,7 +83,7 @@ public class InMemoryBonSortieRepo implements BonSortieRepository {
             return null;
         }
     }
-    @Override
+    /*@Override
     public void update(String idInitial,String idFinal, LocalDate nouvelleDate) {
         String sql = "UPDATE BonSortie SET id = '" + idFinal +"', " +
                 "date = '" + nouvelleDate.toString() + "' " +
@@ -101,7 +101,7 @@ public class InMemoryBonSortieRepo implements BonSortieRepository {
             throw new RuntimeException(e);
         }
     }
-
+*/
     @Override
     public void updateBonId(String idBonInit, String idBonNouveau) {
         String sql = "UPDATE BonSortie SET id = '" + idBonNouveau +"' " +

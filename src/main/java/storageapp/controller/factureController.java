@@ -104,7 +104,5 @@ public class factureController {
         Node source = (Node) event.getSource();
         Stage oldStage = (Stage) source.getScene().getWindow();
         oldStage.close();
-        /*updateAllData();
-        updateHistorique();*/
     }
 }

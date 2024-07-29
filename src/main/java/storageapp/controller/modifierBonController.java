@@ -119,7 +119,6 @@ public class modifierBonController {
         this.qteMatPremASortir.setText(String.valueOf(quantite));
         this.qteMatPremEnStock.setText(String.valueOf(quantiteStockInit));
 
-
     }
 
 
@@ -163,6 +162,7 @@ public class modifierBonController {
     }
     public void modifier(ActionEvent ignoredevent){
         majId();
+
         /* Modifier la fiche de stock */
         int quantiteSortie, nouvelleQuantiteSortir, nouvelleQtStock, quantiteStock;
         String idMatPrem = refMatPremASortir.getValue();
@@ -181,11 +181,10 @@ public class modifierBonController {
     public void terminer(ActionEvent event) throws SQLException {
         if(!IDBON.equals(idBonField.getText())){
             if (!(dependencyManager.getBonSortieRepository().findById(idBonField.getText()) == null)){
-                showAlert("Cette référence de bon existe déjà. Veuillez saisir une nouvelle référence");
+                showAlert();
                 return;
             }
         }
-
 
         majId();
         final LocalDate date = this.dateBonPicker.getValue();
@@ -211,8 +210,6 @@ public class modifierBonController {
     public void majId(){
         String idBonNouveau = idBonField.getText();
 
-
-
         /* Si les id sont différents faire la maj sinon ne rien faire */
         if (!idBonNouveau.equals(idBonInit)){
 
@@ -231,11 +228,11 @@ public class modifierBonController {
         oldStage.close();
     }
 
-    private void showAlert(String contentText) {
+    private void showAlert() {
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle("Warning Dialog");
         alert.setHeaderText("Validation échouée");
-        alert.setContentText(contentText);
+        alert.setContentText("Cette référence de bon existe déjà. Veuillez saisir une nouvelle référence");
         alert.showAndWait();
     }
 

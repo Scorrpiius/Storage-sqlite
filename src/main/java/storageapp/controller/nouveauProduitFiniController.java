@@ -16,7 +16,6 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import storageapp.service.DependencyManager;
 
-import javax.swing.*;
 import java.io.*;
 import java.sql.SQLException;
 import java.util.*;
@@ -62,9 +61,7 @@ public class nouveauProduitFiniController {
         if (!matierePremiereTable.getItems().isEmpty()) {
             matierePremiereTable.getItems().clear();
         }
-        //String referenceProduit = reference.getText();
 
-        //List<Map<String, Object>> matieresPremiere = dependencyManager.getProduitFiniMatierePremiereRepository().findByProduitId(referenceProduit);
         ObservableList<Map<String, Object>> observableMatierePremieres = FXCollections.observableArrayList(listeMatieresPremieres);
         matierePremiereTable.setItems(observableMatierePremieres);
 
@@ -83,9 +80,6 @@ public class nouveauProduitFiniController {
         });
     }
     public void updateData(String matierePremiereId, MouseEvent ignoredEvent){
-        //Map<String, Object> matierePremiere = dependencyManager.getProduitFiniMatierePremiereRepository().findByIds(reference.getText(), matierePremiereId);
-        //int quantite = (int) matierePremiere.get("quantite");
-
         Map<String, Object> mp = listeMatieresPremieres.stream()
                 .filter(map -> matierePremiereId.equals(map.get("matiere_id")))
                 .findFirst()
@@ -97,7 +91,6 @@ public class nouveauProduitFiniController {
 
 
     public void ajouter(ActionEvent ignoredE) throws IOException {
-        //String referenceProduit = reference.getText();
         String referenceMatiereProduit = matiereReferenceBox.getValue();
         String quantite = qte.getText();
 
@@ -145,7 +138,6 @@ public class nouveauProduitFiniController {
         mp.put("matiere_id", newMatierePremiere);
         mp.put("quantite", quantite);
 
-        //dependencyManager.getProduitFiniMatierePremiereRepository().update(reference.getText(), matiereInit, newMatierePremiere, quantite);
         updateMatiereTable();
     }
 
@@ -160,15 +152,13 @@ public class nouveauProduitFiniController {
             listeMatieresPremieres.remove(mp.get());
             updateMatiereTable();
         }
-        //dependencyManager.getProduitFiniMatierePremiereRepository().delete(reference.getText(), matiereReferenceBox.getValue());
-        //updateMatiereTable();
     }
     public void finaliserSaisie(ActionEvent e) throws SQLException, IOException {
         final String produitReference = referenceProduit.getText();
 
         /* Warning ID */
         if (!(dependencyManager.getProduitFiniRepository().findById(produitReference) == null)){
-            showAlert("Cette référence de produit existe déjà. Veuillez saisir une nouvelle référence");
+            showAlert();
             return;
         }
 
@@ -227,17 +217,15 @@ public class nouveauProduitFiniController {
         String idProduit = produitChoiceBox.getValue();
 
         /* Récupérer les liens */
-        List<Map<String, Object>> listeMPs = dependencyManager.getProduitFiniMatierePremiereRepository().findByProduitId(idProduit);
-
-        listeMatieresPremieres = listeMPs;
+        listeMatieresPremieres = dependencyManager.getProduitFiniMatierePremiereRepository().findByProduitId(idProduit);
         referenceProduit.setText(idProduit);
         updateMatiereTable();
     }
-    private void showAlert(String contentText) {
+    private void showAlert() {
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle("Warning Dialog");
         alert.setHeaderText("Validation échouée");
-        alert.setContentText(contentText);
+        alert.setContentText("Cette référence de produit existe déjà. Veuillez saisir une nouvelle référence");
         alert.showAndWait();
     }
 

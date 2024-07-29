@@ -72,7 +72,6 @@ public class nouveauBonController {
         });
     }
     private void updateData(String selectSortieId, MouseEvent ignoredEvent) {
-        //Map<String, Object> sortie = dependencyManager.getSortieRepository().findById(refMatSortirInit, idBonField.getText());
         Map<String, Object> s = listSorties.stream()
                 .filter(map -> selectSortieId.equals(map.get("id_matierePremiere")))
                 .findFirst()
@@ -166,8 +165,6 @@ public class nouveauBonController {
         updateSortiesTable();
     }
     public void supprimerSortie(ActionEvent ignoredEvent){
-        //Mettre à jour les identifiants dans le tableau également (ou pas je sais pas si c'est important, ca reste un id unique à la fin)
-        //dependencyManager.getSortieRepository().delete(String.valueOf(refMatSortirInit), idBonField.getText());
         Optional<Map<String, Object>> s = listSorties.stream()
                 .filter(map -> refMatPremASortir.getValue().equals(map.get("id_matierePremiere")))
                 .findFirst();
@@ -186,7 +183,7 @@ public class nouveauBonController {
         final boolean isValid = idBonSortie != null && date != null;
 
         if (!(dependencyManager.getBonSortieRepository().findById(idBonSortie) == null)){
-            showAlert("Cette référence de bon existe déjà. Veuillez saisir une nouvelle référence");
+            showAlert();
             return;
         }
 
@@ -198,18 +195,6 @@ public class nouveauBonController {
             alert.showAndWait();
             return;
         }
-
-        /*List<Map<String, Object>> sorties = dependencyManager.getSortieRepository().getAllSortiesByBon(idBonField.getText());
-        for(Map<String, Object> sortie : sorties){
-            int qte = (int) sortie.get("quantite");
-            String refMatierePremiere = (String) sortie.get("id_matierePremiere");
-
-            Map<String, Object> ficheStock = dependencyManager.getFicheStockRepository().findById(refMatierePremiere);
-            int nouvelleQte = (int) ficheStock.get("quantite") - qte;
-
-            dependencyManager.getFicheStockRepository().update(refMatierePremiere, null, nouvelleQte, null, null);
-
-        }*/
 
         /* Création des sorties et mises à jour des fiches de stock */
         for(Map<String, Object> s : listSorties){
@@ -232,7 +217,6 @@ public class nouveauBonController {
 
         }
         dependencyManager.getBonSortieRepository().create(idBonSortie, date);
-        //dependencyManager.getSortieRepository().update(idBonInit,idBonNouveau);
 
         dependencyManager.getConnection().commit();
         Node source = (Node) event.getSource();
@@ -247,11 +231,11 @@ public class nouveauBonController {
         Stage oldStage = (Stage) source.getScene().getWindow();
         oldStage.close();
     }
-    private void showAlert(String contentText) {
+    private void showAlert() {
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle("Warning Dialog");
         alert.setHeaderText("Validation échouée");
-        alert.setContentText(contentText);
+        alert.setContentText("Cette référence de bon existe déjà. Veuillez saisir une nouvelle référence");
         alert.showAndWait();
     }
 

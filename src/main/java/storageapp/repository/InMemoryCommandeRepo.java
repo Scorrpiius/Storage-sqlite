@@ -21,7 +21,6 @@ public class InMemoryCommandeRepo implements CommandeRepository {
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             int rowsAffected = preparedStatement.executeUpdate();
-
             if (rowsAffected > 0) {
                 System.out.println("Insert operation into Commande successful.");
             } else {
@@ -65,7 +64,9 @@ public class InMemoryCommandeRepo implements CommandeRepository {
             Statement statement = connection.createStatement();
             var rs = statement.executeQuery(sql);
             List<Map<String, Object>> result = new ArrayList<>();
-
+            if (!rs.isBeforeFirst()) {
+                return null;
+            }
             while (rs.next()) {
                 Map<String, Object> resMap = new HashMap<>();
                 for (int i = 1; i <= rs.getMetaData().getColumnCount(); i++) {
@@ -86,6 +87,25 @@ public class InMemoryCommandeRepo implements CommandeRepository {
         String sql = "UPDATE Commande " +
                 "SET id = '" + idCommandeNouveau +"'" +
                 "WHERE id = '" + idCommandeInit +"';";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            int rowsAffected = preparedStatement.executeUpdate();
+
+            if (rowsAffected > 0) {
+                System.out.println("UpdateCommandeId operation into Commande successful.");
+            } else {
+                System.out.println("UpdateCommandeId operation into Commande failed.");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void updateInfos(String idCommande, String description, LocalDate date){
+        String sql = "UPDATE Commande " +
+                "SET description = '" + description +"', " +
+                "WHERE id = '" + idCommande +"';";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             int rowsAffected = preparedStatement.executeUpdate();
