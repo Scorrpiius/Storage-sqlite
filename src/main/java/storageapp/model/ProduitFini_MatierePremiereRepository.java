@@ -11,4 +11,5 @@ public interface ProduitFini_MatierePremiereRepository {
     void update(String produitId, String matiereInit, String newMatiere, String quantite);
     void delete(String produitId, String matiereId);
     void updateProduitId(String idProduitInit, String idProduitNouveau);
+    void deleteAll(String produitId);
 }

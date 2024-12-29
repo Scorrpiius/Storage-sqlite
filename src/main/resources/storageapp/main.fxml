@@ -5,116 +5,118 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane style="-fx-background-color: F0EADE;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
-    <Label fx:id="facture" layoutY="97.0" text="Factures" AnchorPane.leftAnchor="220" AnchorPane.topAnchor="150.0">
+<AnchorPane fx:id="anchorPane" style="-fx-background-color: EEEEEE;" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1">
+   <AnchorPane fx:id="centralPane" layoutX="300.0" layoutY="120.0" style="-fx-background-color: #ffffff; -fx-border-radius: 10;" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="300.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="120.0" />
+    <!--<Label fx:id="facture" layoutX="316.0" layoutY="148.0" style="-fx-font-weight: bold;" text="Factures" AnchorPane.leftAnchor="320.0" AnchorPane.topAnchor="140.0">
         <font>
             <Font name="Inter Semi Bold" size="24.0" />
         </font>
     </Label>
-    <Button fx:id="createFacture" mnemonicParsing="false" onAction="#ajouterNouvelleFacture" prefHeight="40.0" style="-fx-background-color: #4C4845;" text="+ Ajouter nouvelle facture" textFill="WHITE" AnchorPane.bottomAnchor="150.0" AnchorPane.rightAnchor="40.0">
+    <Button fx:id="createFacture" mnemonicParsing="false" onAction="#ajouterNouvelleFacture" prefHeight="40.0" prefWidth="120.0" style="-fx-background-color: #1366D9; -fx-border-radius: 8;" text="Ajouter facture" textFill="WHITE" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="150.0">
       <font>
          <Font name="System Bold" size="12.0" />
-      </font></Button>
-    <Label fx:id="bonSortie" text="Bon de sortie" visible="false" AnchorPane.leftAnchor="220" AnchorPane.topAnchor="150.0">
+      </font></Button>-->
+    <!--<Label fx:id="bonSortie" style="-fx-font-weight: bold;" text="Bons de sortie" visible="false" AnchorPane.leftAnchor="320.0" AnchorPane.topAnchor="140.0">
         <font>
             <Font name="Inter Semi Bold" size="24.0" />
         </font>
     </Label>
-    <TableView fx:id="bonSortieTable" stylesheets="@../css/tab.css" visible="false" AnchorPane.bottomAnchor="200.0" AnchorPane.leftAnchor="220" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="190.0" VBox.vgrow="ALWAYS">
+    <TableView fx:id="bonSortieTable" stylesheets="@../css/tab.css" visible="false" AnchorPane.bottomAnchor="50.0" AnchorPane.leftAnchor="320.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="200.0" VBox.vgrow="ALWAYS">
         <columns>
-            <TableColumn fx:id="idBonColumn" text="ID" />
-            <TableColumn fx:id="dateBonColumn" text="Date" />
+            <TableColumn fx:id="idBonColumn" prefWidth="152.0" text="ID" />
+            <TableColumn fx:id="dateBonColumn" minWidth="8.0" prefWidth="288.9999694824219" text="Date" />
         </columns>
     </TableView>
-    <Button fx:id="createBonSortie" mnemonicParsing="false" onAction="#creerBon" prefHeight="40.0" style="-fx-background-color: #4C4845;" text="Créer un nouveau bon de sortie" textFill="WHITE" visible="false" AnchorPane.bottomAnchor="150.0" AnchorPane.rightAnchor="40.0">
+    <Button fx:id="createBonSortie" mnemonicParsing="false" onAction="#creerBon" prefHeight="40.0" prefWidth="166.0" style="-fx-background-color: #1366D9; -fx-border-radius: 4;" text="Ajouter un bon de sortie" textFill="WHITE" visible="false" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="150.0">
     <font>
         <Font name="System Bold" size="12.0" />
     </font>
-    </Button>
-    <Label fx:id="ficheStock" text="Fiche de stock" visible="false" AnchorPane.leftAnchor="220" AnchorPane.topAnchor="150.0">
+    </Button>-->
+    <!--<Label fx:id="ficheStock" style="-fx-font-weight: bold;" text="Fiches de stock" visible="false" AnchorPane.leftAnchor="320.0" AnchorPane.topAnchor="140.0">
         <font>
             <Font name="Inter Semi Bold" size="24.0" />
         </font>
     </Label>
-    <TableView fx:id="ficheStockTable" stylesheets="@../css/tab.css" visible="false" AnchorPane.bottomAnchor="200.0" AnchorPane.leftAnchor="220" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="250.0" VBox.vgrow="ALWAYS">
+    <TableView fx:id="ficheStockTable" stylesheets="@../css/tab.css" visible="false" AnchorPane.bottomAnchor="50.0" AnchorPane.leftAnchor="320.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="200.0" VBox.vgrow="ALWAYS">
         <columns>
-            <TableColumn fx:id="refFicheStockColumn" text="Référence" />
-            <TableColumn fx:id="catFicheStockColumn" text="Catégorie" />
-            <TableColumn fx:id="desFicheStockColumn" text="Désignation" />
-            <TableColumn fx:id="qteFicheStockColumn" text="Quantité" />
+            <TableColumn fx:id="refFicheStockColumn" prefWidth="199.0" text="Référence" />
+            <TableColumn fx:id="catFicheStockColumn" prefWidth="160.19998168945312" text="Catégorie" />
+            <TableColumn fx:id="desFicheStockColumn" minWidth="0.0" prefWidth="150.5999755859375" text="Désignation" />
+            <TableColumn fx:id="qteFicheStockColumn" prefWidth="251.20001220703125" text="Quantité" />
         </columns>
-    </TableView>
-    <Label fx:id="produitFini" text="Produit Fini" visible="false" AnchorPane.leftAnchor="220" AnchorPane.topAnchor="150.0">
+    </TableView>-->
+    <!--<Label fx:id="produitFini" style="-fx-font-weight: bold;" text="Produits Finis" visible="false" AnchorPane.leftAnchor="320.0" AnchorPane.topAnchor="140.0">
         <font>
             <Font name="Inter Semi Bold" size="24.0" />
         </font>
     </Label>
-    <TableView fx:id="produitFiniTable" stylesheets="@../css/tab.css" visible="false" AnchorPane.bottomAnchor="200.0" AnchorPane.leftAnchor="220" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="190.0" VBox.vgrow="ALWAYS">
+    <TableView fx:id="produitFiniTable" stylesheets="@../css/tab.css" visible="false" AnchorPane.bottomAnchor="50.0" AnchorPane.leftAnchor="320.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="200.0" VBox.vgrow="ALWAYS">
         <columns>
-            <TableColumn fx:id="refProduitFiniColumn" text="Référence" />
+            <TableColumn fx:id="refProduitFiniColumn" prefWidth="256.99998474121094" text="Référence" />
         </columns>
     </TableView>
-    <Button fx:id="createProduit" mnemonicParsing="false" onAction="#creerProduitFini" prefHeight="40.0" style="-fx-background-color: #4C4845;" text="Créer un produit fini" textFill="WHITE" visible="false" AnchorPane.bottomAnchor="150.0" AnchorPane.rightAnchor="40.0">
+    <Button fx:id="createProduit" mnemonicParsing="false" onAction="#creerProduitFini" prefHeight="40.0" prefWidth="149.0" style="-fx-background-color: #1366D9; -fx-border-radius: 4;" text="Ajouter un produit fini" textFill="WHITE" visible="false" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="150.0">
         <font>
             <Font name="System Bold" size="12.0" />
         </font>
-    </Button>
-    <Label fx:id="commande" text="Commande" visible="false" AnchorPane.leftAnchor="220" AnchorPane.topAnchor="150.0">
+    </Button>-->
+    <!--<Label fx:id="commande" style="-fx-font-weight: bold;" text="Commandes" visible="false" AnchorPane.leftAnchor="320.0" AnchorPane.topAnchor="140.0">
         <font>
             <Font name="Inter Semi Bold" size="24.0" />
         </font>
     </Label>
-    <TableView fx:id="commandeTable" stylesheets="@../css/tab.css" visible="false" AnchorPane.bottomAnchor="200.0" AnchorPane.leftAnchor="220" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="190.0" VBox.vgrow="ALWAYS">
+    <TableView fx:id="commandeTable" stylesheets="@../css/tab.css" visible="false" AnchorPane.bottomAnchor="50.0" AnchorPane.leftAnchor="320.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="200.0" VBox.vgrow="ALWAYS">
         <columns>
-            <TableColumn fx:id="idCommandeColumn" text="Référence" />
+            <TableColumn fx:id="idCommandeColumn" prefWidth="332.99998474121094" text="Référence" />
         </columns>
     </TableView>
-    <Button fx:id="createCommande" mnemonicParsing="false" onAction="#creerCommande" prefHeight="40.0" style="-fx-background-color: #4C4845;" text="Créer une commande" textFill="WHITE" visible="false" AnchorPane.bottomAnchor="150.0" AnchorPane.rightAnchor="40.0">
+    <Button fx:id="createCommande" mnemonicParsing="false" onAction="#creerCommande" prefHeight="40.0" prefWidth="150.0" style="-fx-background-color: #1366D9; -fx-border-radius: 4;" text="Ajouter une commande" textFill="WHITE" visible="false" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="150.0">
         <font>
             <Font name="System Bold" size="12.0" />
         </font>
-    </Button>
-    <VBox prefHeight="400.0" prefWidth="200.0" style="-fx-background-color: linear-gradient(#F0EADE, #333333);" AnchorPane.bottomAnchor="0" AnchorPane.topAnchor="0">
-        <Button mnemonicParsing="false" onAction="#showFacture" prefHeight="40.0" prefWidth="200.0" style="-fx-background-color: transparent;" text="Factures" textFill="WHITE">
+    </Button>-->
+    <VBox prefHeight="400.0" prefWidth="280.0" style="-fx-background-color: FFFFFF;" AnchorPane.bottomAnchor="0" AnchorPane.topAnchor="0">
+        <Button fx:id="factures" alignment="BOTTOM_LEFT" mnemonicParsing="false" onAction="#showFacture" prefHeight="40.0" prefWidth="280.0" style="-fx-background-color: transparent;-fx-font-weight: bold;" text="Factures">
             <VBox.margin>
-                <Insets top="150.0" />
+                <Insets top="130.0" />
             </VBox.margin>
         <font>
-            <Font name="System Bold" size="23.0" />
+            <Font name="System Bold" size="24.0" />
         </font>
         </Button>
-        <Button mnemonicParsing="false" onAction="#showFiches" prefHeight="40.0" prefWidth="200.0" style="-fx-background-color: transparent;" text="Fiches de stock" textFill="WHITE">
+        <Button fx:id="fiches" alignment="BOTTOM_LEFT" mnemonicParsing="false" onAction="#showFiches" prefHeight="40.0" prefWidth="280.0" style="-fx-background-color: transparent;-fx-font-weight: bold;" text="Fiches de stock">
         <font>
-            <Font name="System Bold" size="23.0" />
+            <Font name="System Bold" size="24.0" />
         </font>
         </Button>
-        <Button mnemonicParsing="false" onAction="#showBons" prefHeight="40.0" prefWidth="200.0" style="-fx-background-color: transparent;" text="Bons de sortie" textFill="WHITE">
+        <Button fx:id="bons" alignment="BOTTOM_LEFT" mnemonicParsing="false" onAction="#showBons" prefHeight="40.0" prefWidth="280.0" style="-fx-background-color: transparent;-fx-font-weight: bold;" text="Bons de sortie">
         <font>
-            <Font name="System Bold" size="23.0" />
+            <Font name="System Bold" size="24.0" />
         </font>
         </Button>
-        <Button mnemonicParsing="false" onAction="#showProduits" prefHeight="40.0" prefWidth="200.0" style="-fx-background-color: transparent;" text="Produits fini" textFill="WHITE">
+        <Button fx:id="produits" alignment="BOTTOM_LEFT" mnemonicParsing="false" onAction="#showProduits" prefHeight="40.0" prefWidth="280.0" style="-fx-background-color: transparent;-fx-font-weight: bold;" text="Produits fini">
         <font>
-            <Font name="System Bold" size="23.0" />
+            <Font name="System Bold" size="24.0" />
         </font>
         </Button>
-        <Button mnemonicParsing="false" onAction="#showCommandes" prefHeight="40.0" prefWidth="200.0" style="-fx-background-color: transparent;" text="Commandes" textFill="WHITE">
+        <Button fx:id="commandes" alignment="BOTTOM_LEFT" mnemonicParsing="false" onAction="#showCommandes" prefHeight="40.0" prefWidth="280.0" style="-fx-background-color: transparent;-fx-font-weight: bold;" text="Commandes">
         <font>
-            <Font name="System Bold" size="23.0" />
+            <Font name="System Bold" size="24.0" />
         </font>
         </Button>
     </VBox>
-    <Pane layoutX="200.0" layoutY="-14.0" prefHeight="140.0" prefWidth="410.0" style="-fx-background-color: #333333;" AnchorPane.leftAnchor="200.0" AnchorPane.rightAnchor="-1.0" />
-    <TableView fx:id="facturesTable" layoutX="211.0" layoutY="127.0" prefHeight="400.0" prefWidth="576.0" stylesheets="@../css/tab.css" AnchorPane.bottomAnchor="200.0" AnchorPane.leftAnchor="220" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="190.0" VBox.vgrow="ALWAYS">
+    <Pane layoutX="284.0" layoutY="-3.0" prefHeight="83.0" prefWidth="858.0" style="-fx-background-color: #ffffff;" AnchorPane.leftAnchor="284.0" AnchorPane.rightAnchor="-1.0" />
+    <!--<TableView fx:id="facturesTable" layoutX="220.0" layoutY="188.0" prefHeight="400.0" prefWidth="576.0" stylesheets="@../css/tab.css" AnchorPane.bottomAnchor="50.0" AnchorPane.leftAnchor="320.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="200.0" VBox.vgrow="ALWAYS">
         <columns>
             <TableColumn fx:id="idFactureColumn" prefWidth="208.2000274658203" text="ID" />
-            <TableColumn fx:id="dateFactureColumn" prefWidth="96.19998168945312" text="Date" />
-            <TableColumn fx:id="fournisseurFactureColumn" prefWidth="160.60003662109375" text="Fournisseur" />
-            <TableColumn fx:id="nbrFactureColumn" prefWidth="107.20004882812498" text="Nombre d'entrées" />
+            <TableColumn fx:id="dateFactureColumn" prefWidth="125.79998779296875" text="Date" />
+            <TableColumn fx:id="fournisseurFactureColumn" prefWidth="165.4000244140625" text="Fournisseur" />
+            <TableColumn fx:id="nbrFactureColumn" prefWidth="257.4000244140625" text="Nombre d'entrées" />
         </columns>
-    </TableView>
-   <ComboBox fx:id="referenceFicheFiltre" prefHeight="40.0" prefWidth="200.0" AnchorPane.leftAnchor="220.0" AnchorPane.topAnchor="200.0" />
-   <ComboBox fx:id="categorieFicheFiltre" layoutX="399.0" layoutY="640.0" prefHeight="40.0" prefWidth="200.0" AnchorPane.leftAnchor="450.0" AnchorPane.topAnchor="200.0" />
-   <ComboBox fx:id="designationFicheFiltre" layoutX="576.0" layoutY="640.0" prefHeight="40.0" prefWidth="200.0" AnchorPane.leftAnchor="680.0" AnchorPane.topAnchor="200.0" />
-   <Button fx:id="rechercheFicheFiltre" layoutX="423.0" layoutY="676.0" mnemonicParsing="false" onAction="#rechercheFiche" prefHeight="40.0" text="Recherche" AnchorPane.leftAnchor="920.0" AnchorPane.topAnchor="200.0" />
+    </TableView>-->
+   <!--<ComboBox fx:id="referenceFicheFiltre" prefHeight="40.0" prefWidth="200.0" style="-fx-background-color: #D9EBFF;" visible="false" AnchorPane.rightAnchor="570.0" AnchorPane.topAnchor="150.0" />
+   <ComboBox fx:id="categorieFicheFiltre" layoutX="399.0" layoutY="640.0" prefHeight="40.0" prefWidth="200.0" style="-fx-background-color: #D9EBFF;" visible="false" AnchorPane.rightAnchor="350.0" AnchorPane.topAnchor="150.0" />
+   <ComboBox fx:id="designationFicheFiltre" layoutX="576.0" layoutY="640.0" prefHeight="40.0" prefWidth="200.0" style="-fx-background-color: #D9EBFF;" visible="false" AnchorPane.rightAnchor="130.0" AnchorPane.topAnchor="150.0" />
+   <Button fx:id="rechercheFicheFiltre" layoutX="423.0" layoutY="676.0" mnemonicParsing="false" onAction="#rechercheFiche" prefHeight="40.0" style="-fx-background-color: #D9EBFF;" text="Recherche" visible="false" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="150.0" />
+   --><!--<TilePane fx:id="ficheCards" layoutX="200.0" layoutY="262.0" prefHeight="390.0" prefWidth="792.0" AnchorPane.bottomAnchor="200.0" AnchorPane.leftAnchor="200.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="200.0" />-->
 </AnchorPane>

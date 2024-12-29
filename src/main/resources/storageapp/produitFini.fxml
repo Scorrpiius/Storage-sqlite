@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="570.0" style="-fx-background-color: #ffffff;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="570.0" style="-fx-background-color: #ffffff;" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1">
     <right>
 
     </right>
@@ -54,6 +54,11 @@
             </Label>
             <ImageView fx:id="img" fitHeight="240.0" fitWidth="241.0" layoutX="321.0" layoutY="123.0" pickOnBounds="true" preserveRatio="true" />
          <Separator layoutY="60.0" prefWidth="570.0" />
+         <Button layoutX="293.0" layoutY="546.0" mnemonicParsing="false" onAction="#supprimerProduit" prefHeight="40.0" style="-fx-background-color: D04848FF; -fx-border-color: D04848FF; -fx-border-radius: 10;" text="Supprimer le produit">
+            <font>
+               <Font name="Inter Semi Bold" size="15.0" />
+            </font>
+         </Button>
         </Pane>
     </center>
 

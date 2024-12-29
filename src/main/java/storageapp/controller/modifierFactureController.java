@@ -3,6 +3,7 @@ package storageapp.controller;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -60,6 +61,31 @@ public class modifierFactureController {
         updateUniteMesure();
         updateReference();
     }
+    public void autoCompletion(ComboBox<String> comboBox, List<String> referencesList ){
+        TextField textField = comboBox.getEditor();
+        FilteredList<String> filteredItems = new FilteredList<>(FXCollections.observableArrayList(referencesList), p -> true);
+
+        textField.textProperty().addListener((obs, oldValue, newValue) -> {
+            final TextField editor = comboBox.getEditor();
+            final String selected = comboBox.getSelectionModel().getSelectedItem();
+
+            if (selected == null || !selected.equals(editor.getText())) {
+                filterItems(filteredItems, newValue, comboBox);
+                comboBox.show();
+            }
+        });
+        comboBox.setItems(filteredItems);
+    }
+    private void filterItems(FilteredList<String> filteredItems, String filter, ComboBox<String> comboBox) {
+        filteredItems.setPredicate(item -> {
+            if (filter == null || filter.isEmpty()) {
+                return true;
+            }
+            String lowerCaseFilter = filter.toLowerCase();
+            return item.toLowerCase().contains(lowerCaseFilter);
+        });
+    }
+
     public void updateAllData(){
         Map<String, Object> facture = dependencyManager.getFactureRepository().findById(idFactureInit);
         String fournisseur = (String) facture.get("fournisseur");
@@ -87,6 +113,8 @@ public class modifierFactureController {
         }
         fournisseurFactureBox.setItems(FXCollections.observableArrayList(fournisseursList));
         fournisseurFactureBox.setEditable(true);
+
+        autoCompletion(fournisseurFactureBox, fournisseursList);
     }
     public void updateUniteMesure(){
         List<Map<String, Object>> uniteMesures = dependencyManager.getUniteMesureRepository().findAll();
@@ -96,6 +124,8 @@ public class modifierFactureController {
         }
         uniteMesureMatPremBox.setItems(FXCollections.observableArrayList(uniteMesuresList));
         uniteMesureMatPremBox.setEditable(true);
+
+        autoCompletion(uniteMesureMatPremBox, uniteMesuresList);
     }
     public void updateReference(){
         List<Map<String, Object>> references = dependencyManager.getFicheStockRepository().getAllId();
@@ -106,6 +136,8 @@ public class modifierFactureController {
         }
         refMatPremBox.setItems(FXCollections.observableArrayList(referencesList));
         refMatPremBox.setEditable(true);
+
+        autoCompletion(refMatPremBox, referencesList);
     }
     public void updateDesignation(){
         List<Map<String, Object>> designations = dependencyManager.getDesignationRepository().findAll();
@@ -116,6 +148,8 @@ public class modifierFactureController {
         }
         desMatPremBox.setItems(FXCollections.observableArrayList(designationsList));
         desMatPremBox.setEditable(true);
+
+        autoCompletion(desMatPremBox, designationsList);
     }
     public void updateCategorie(){
         List<Map<String, Object>> categories = dependencyManager.getCategorieRepository().findAll();
@@ -126,6 +160,8 @@ public class modifierFactureController {
         }
         catMatPremBox.setItems(FXCollections.observableArrayList(categoriesList));
         catMatPremBox.setEditable(true);
+
+        autoCompletion(catMatPremBox, categoriesList);
     }
     public void updateDevise(){
         List<Map<String, Object>> devises = dependencyManager.getDeviseRepository().findAll();
@@ -136,6 +172,8 @@ public class modifierFactureController {
         }
         nomDeviseBox.setItems(FXCollections.observableArrayList(devisesList));
         nomDeviseBox.setEditable(true);
+
+        autoCompletion(nomDeviseBox, devisesList);
     }
     public void updateEntreeTable(){
         if (!matierePremiereTable.getItems().isEmpty()) {
@@ -227,6 +265,7 @@ public class modifierFactureController {
             accept();
             return;
         }
+
         dependencyManager.getEntreeRepository().create(reference, idFactureInit, Integer.parseInt(quantite),Double.parseDouble(pxUnit),0.0 , 0.0, categorie, designation, uniteMesure, this.img);
         majPrix();
 
@@ -254,8 +293,18 @@ public class modifierFactureController {
         if (uniteMesureDB == null){
             dependencyManager.getUniteMesureRepository().create(uniteMesure);
         }
+        uniteMesureMatPremBox.setValue("");
+        refMatPremBox.setValue("");
+        catMatPremBox.setValue("");
+        desMatPremBox.setValue("");
+        pxUnitMatPremField.setText("");
+        qteMatPremField.setText("");
+
         updateEntreeTable();
-    }
+        updateCategorie();
+        updateDesignation();
+        updateReference();
+        updateUniteMesure();    }
     public void loadImage(ActionEvent event) throws IOException {
         Node source = (Node) event.getSource();
         Stage currentStage = (Stage) source.getScene().getWindow();
@@ -296,7 +345,18 @@ public class modifierFactureController {
         dependencyManager.getEntreeRepository().update(idFactureInit, refMatInit, reference, categorie, designation, quantite, pxUnit, uniteMesure);
         dependencyManager.getFicheStockRepository().update(refMatInit, reference, nouvelleQteStock ,categorie, designation);
 
+        uniteMesureMatPremBox.setValue("");
+        refMatPremBox.setValue("");
+        catMatPremBox.setValue("");
+        desMatPremBox.setValue("");
+        pxUnitMatPremField.setText("");
+        qteMatPremField.setText("");
+
         updateEntreeTable();
+        updateCategorie();
+        updateDesignation();
+        updateReference();
+        updateUniteMesure();
     }
     public void supprimerMatPrem(ActionEvent ignoredE) throws SQLException {
         /* Faire la maje de l'id de facture si il y a eu des modifications + la maj des prix */

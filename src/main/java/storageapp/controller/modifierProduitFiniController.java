@@ -3,6 +3,7 @@ package storageapp.controller;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -45,6 +46,31 @@ public class modifierProduitFiniController {
         updateMatiereReferences();
         updateMatiereTable();
     }
+    public void autoCompletion(ComboBox<String> comboBox, List<String> referencesList ){
+        TextField textField = comboBox.getEditor();
+        FilteredList<String> filteredItems = new FilteredList<>(FXCollections.observableArrayList(referencesList), p -> true);
+
+        textField.textProperty().addListener((obs, oldValue, newValue) -> {
+            final TextField editor = comboBox.getEditor();
+            final String selected = comboBox.getSelectionModel().getSelectedItem();
+
+            if (selected == null || !selected.equals(editor.getText())) {
+                filterItems(filteredItems, newValue, comboBox);
+                comboBox.show();
+            }
+        });
+        comboBox.setItems(filteredItems);
+    }
+    private void filterItems(FilteredList<String> filteredItems, String filter, ComboBox<String> comboBox) {
+        filteredItems.setPredicate(item -> {
+            if (filter == null || filter.isEmpty()) {
+                return true;
+            }
+            String lowerCaseFilter = filter.toLowerCase();
+            return item.toLowerCase().contains(lowerCaseFilter);
+        });
+    }
+
     public void updateData(){
         referenceProduit.setText(idProduitInit);
     }
@@ -57,6 +83,7 @@ public class modifierProduitFiniController {
         }
         matiereReferenceBox.setItems(FXCollections.observableArrayList(referencesList));
         matiereReferenceBox.setEditable(true);
+        autoCompletion(matiereReferenceBox, referencesList);
     }
     public void updateMatiereTable(){
         if (!matierePremiereTable.getItems().isEmpty()) {
@@ -109,8 +136,9 @@ public class modifierProduitFiniController {
         String quantite = qte.getText();
 
         dependencyManager.getProduitFiniMatierePremiereRepository().create(idProduitInit, referenceMatiereProduit, Integer.parseInt(quantite));
-        updateMatiereTable();
-    }
+        matiereReferenceBox.setValue("");
+        qte.setText("");
+        updateMatiereTable();    }
     public void modifier(ActionEvent ignoredE) throws IOException {
         majId();
 
@@ -126,6 +154,8 @@ public class modifierProduitFiniController {
 
         String quantite = qte.getText();
         dependencyManager.getProduitFiniMatierePremiereRepository().update(idProduitInit, matiereInit, newMatierePremiere, quantite);
+        matiereReferenceBox.setValue("");
+        qte.setText("");
         updateMatiereTable();
     }
     public void supprimerMatiere(){

@@ -149,4 +149,21 @@ public class InMemoryProduitFiniRepo implements ProduitFiniRepository {
         }
 
     }
+    @Override
+    public void delete(String idProduit){
+        String sql = "DELETE FROM ProduitFini " +
+                "WHERE reference = '" + idProduit + "';";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            int rowsAffected = preparedStatement.executeUpdate();
+
+            if (rowsAffected > 0) {
+                System.out.println("Delete operation into ProduitFini successful.");
+            } else {
+                System.out.println("Delete operation into ProduitFini failed.");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

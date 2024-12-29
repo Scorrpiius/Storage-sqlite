@@ -16,6 +16,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import jfxtras.styles.jmetro.JMetro;
+import jfxtras.styles.jmetro.Style;
 import storageapp.StorageApp;
 import storageapp.service.DependencyManager;
 
@@ -86,6 +88,7 @@ public class produitFiniController {
         fxmlLoader.setLocation(StorageApp.class.getResource("modifierProduit.fxml"));
         fxmlLoader.setController(new modifierProduitFiniController(dependencyManager, produitID));
         Scene scene = new Scene(fxmlLoader.load());
+        JMetro jMetro = new JMetro(scene, Style.LIGHT);
         Stage stage = new Stage();
         stage.initStyle(StageStyle.UNDECORATED);
         stage.setTitle("Stockapp");
@@ -94,5 +97,16 @@ public class produitFiniController {
         Node source = (Node) e.getSource();
         Stage oldStage = (Stage) source.getScene().getWindow();
         oldStage.close();
+    }
+    public void supprimerProduit(ActionEvent e) throws IOException, SQLException {
+        String produitToDelete = referenceProduit.getText();
+        dependencyManager.getProduitFiniMatierePremiereRepository().deleteAll(produitToDelete);
+        dependencyManager.getProduitFiniRepository().delete(produitToDelete);
+        dependencyManager.getConnection().commit();
+        Node source = (Node) e.getSource();
+        Stage oldStage = (Stage) source.getScene().getWindow();
+        oldStage.close();
+
+
     }
 }

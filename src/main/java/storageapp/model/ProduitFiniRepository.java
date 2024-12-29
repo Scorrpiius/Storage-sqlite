@@ -11,6 +11,7 @@ public interface ProduitFiniRepository {
     void updateProduitId(String idProduitInit, String idProduitNouveau);
     Map<String,Object> findById(String idProduit);
     void getPicture(String id, String filename, ImageView imageView);
+    void delete(String idProduit);
 
 
 }

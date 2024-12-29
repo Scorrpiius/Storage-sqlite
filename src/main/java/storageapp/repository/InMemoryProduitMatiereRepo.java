@@ -149,6 +149,24 @@ public class InMemoryProduitMatiereRepo implements ProduitFini_MatierePremiereRe
     }
 
     @Override
+    public void deleteAll(String produitId){
+        String sql = "DELETE FROM ProduitFini_MatierePremiere " +
+                " WHERE produit_reference = '" + produitId + "';";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            int rowsAffected = preparedStatement.executeUpdate();
+
+            if (rowsAffected > 0) {
+                System.out.println("DeleteAll operation into ProduitFini_MatierePremiere successful.");
+            } else {
+                System.out.println("DeleteAll operation into ProduitFini_MatierePremiere failed.");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
     public void updateProduitId(String idProduitInit, String idProduitNouveau){
         String sql = "UPDATE ProduitFini_MatierePremiere " +
                 "SET produit_reference = '" + idProduitNouveau + "' " +

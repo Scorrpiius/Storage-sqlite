@@ -27,7 +27,7 @@ public class DependencyManager {
     public DependencyManager(String dbPath) throws SQLException, URISyntaxException {
         /* Connect to the database */
 
-        connection = DriverManager.getConnection("jdbc:sqlite:" + dbPath);
+        connection = DriverManager.getConnection("jdbc:sqlite:E:\\SQLite\\sqlite-tools-win-x64-3450200\\storage.db");
         connection.setAutoCommit(false);
 
         factureRepository = new InMemoryFactureRepo(connection);

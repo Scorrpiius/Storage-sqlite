@@ -3,6 +3,7 @@ package storageapp.controller;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -41,6 +42,31 @@ public class nouvelleCommandeController {
     public void initialize(){
         updateProduit();
     }
+    public void autoCompletion(ComboBox<String> comboBox, List<String> referencesList ){
+        TextField textField = comboBox.getEditor();
+        FilteredList<String> filteredItems = new FilteredList<>(FXCollections.observableArrayList(referencesList), p -> true);
+
+        textField.textProperty().addListener((obs, oldValue, newValue) -> {
+            final TextField editor = comboBox.getEditor();
+            final String selected = comboBox.getSelectionModel().getSelectedItem();
+
+            if (selected == null || !selected.equals(editor.getText())) {
+                filterItems(filteredItems, newValue, comboBox);
+                comboBox.show();
+            }
+        });
+        comboBox.setItems(filteredItems);
+    }
+    private void filterItems(FilteredList<String> filteredItems, String filter, ComboBox<String> comboBox) {
+        filteredItems.setPredicate(item -> {
+            if (filter == null || filter.isEmpty()) {
+                return true;
+            }
+            String lowerCaseFilter = filter.toLowerCase();
+            return item.toLowerCase().contains(lowerCaseFilter);
+        });
+    }
+
     public void updateProduit(){
         List<Map<String, Object>> produits = dependencyManager.getProduitFiniRepository().findAll();
         List<String> produitList = new ArrayList<>();
@@ -50,6 +76,8 @@ public class nouvelleCommandeController {
         }
         refProduitBox.setItems(FXCollections.observableArrayList(produitList));
         refProduitBox.setEditable(true);
+
+        autoCompletion(refProduitBox, produitList);
     }
     public void updateProduitTable(){
         if (!produitTable.getItems().isEmpty()) {
@@ -108,6 +136,8 @@ public class nouvelleCommandeController {
         mp.put("quantite", quantite);
 
         listeProduits.add(mp);
+        refProduitBox.setValue("");
+        qteProduitField.setText("");
         updateProduitTable();
 
     }
@@ -138,6 +168,8 @@ public class nouvelleCommandeController {
         p.put("id_ProduitFini", newProduit);
         p.put("quantite", quantite);
 
+        refProduitBox.setValue("");
+        qteProduitField.setText("");
         updateProduitTable();
     }
     public void supprimerProduit(){

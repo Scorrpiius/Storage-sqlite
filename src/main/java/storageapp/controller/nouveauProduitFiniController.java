@@ -3,6 +3,7 @@ package storageapp.controller;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -45,6 +46,31 @@ public class nouveauProduitFiniController {
         updateMatiereReferences();
         updateProduit();
     }
+    public void autoCompletion(ComboBox<String> comboBox, List<String> referencesList ){
+        TextField textField = comboBox.getEditor();
+        FilteredList<String> filteredItems = new FilteredList<>(FXCollections.observableArrayList(referencesList), p -> true);
+
+        textField.textProperty().addListener((obs, oldValue, newValue) -> {
+            final TextField editor = comboBox.getEditor();
+            final String selected = comboBox.getSelectionModel().getSelectedItem();
+
+            if (selected == null || !selected.equals(editor.getText())) {
+                filterItems(filteredItems, newValue, comboBox);
+                comboBox.show();
+            }
+        });
+        comboBox.setItems(filteredItems);
+    }
+    private void filterItems(FilteredList<String> filteredItems, String filter, ComboBox<String> comboBox) {
+        filteredItems.setPredicate(item -> {
+            if (filter == null || filter.isEmpty()) {
+                return true;
+            }
+            String lowerCaseFilter = filter.toLowerCase();
+            return item.toLowerCase().contains(lowerCaseFilter);
+        });
+    }
+
 
     public void updateMatiereReferences(){
         java.util.List<Map<String, Object>> references = dependencyManager.getFicheStockRepository().getAllId();
@@ -55,6 +81,8 @@ public class nouveauProduitFiniController {
         }
         matiereReferenceBox.setItems(FXCollections.observableArrayList(referencesList));
         matiereReferenceBox.setEditable(true);
+
+        autoCompletion(matiereReferenceBox, referencesList);
     }
     public void updateMatiereTable(){
         if (!matierePremiereTable.getItems().isEmpty()) {
@@ -115,7 +143,10 @@ public class nouveauProduitFiniController {
         mp.put("quantite", quantite);
 
         listeMatieresPremieres.add(mp);
+        matiereReferenceBox.setValue("");
+        qte.setText("");
         updateMatiereTable();
+        updateMatiereReferences();
     }
     public void modifier(ActionEvent ignoredE) throws IOException {
         String newMatierePremiere = matiereReferenceBox.getValue();
@@ -144,8 +175,9 @@ public class nouveauProduitFiniController {
         mp.put("matiere_id", newMatierePremiere);
         mp.put("quantite", quantite);
 
-        updateMatiereTable();
-    }
+        matiereReferenceBox.setValue("");
+        qte.setText("");
+        updateMatiereTable();    }
 
     public void supprimerMatiere(){
         Optional<Map<String, Object>> mp = listeMatieresPremieres.stream()
@@ -221,6 +253,7 @@ public class nouveauProduitFiniController {
             produitsList.add((String) c.get("reference"));
         }
         produitChoiceBox.setItems(FXCollections.observableArrayList(produitsList));
+
     }
 
     public void copier(ActionEvent ignoredEvent){

@@ -4,6 +4,7 @@ package storageapp.controller;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -76,6 +77,8 @@ public class nouvelleFactureController {
         }
         catMatPremBox.setItems(FXCollections.observableArrayList(categoriesList));
         catMatPremBox.setEditable(true);
+
+        autoCompletion(catMatPremBox, categoriesList);
     }
     public void updateDesignation(){
         List<Map<String, Object>> designations = dependencyManager.getDesignationRepository().findAll();
@@ -86,6 +89,8 @@ public class nouvelleFactureController {
         }
         desMatPremBox.setItems(FXCollections.observableArrayList(designationsList));
         desMatPremBox.setEditable(true);
+
+        autoCompletion(desMatPremBox, designationsList);
     }
     public void updateReference(){
         List<Map<String, Object>> references = dependencyManager.getFicheStockRepository().getAllId();
@@ -101,7 +106,36 @@ public class nouvelleFactureController {
         }
         refMatPremBox.setItems(FXCollections.observableArrayList(referencesList));
         refMatPremBox.setEditable(true);
+
+        autoCompletion(refMatPremBox, referencesList);
+
     }
+
+    public void autoCompletion(ComboBox<String> comboBox, List<String> referencesList ){
+        TextField textField = comboBox.getEditor();
+        FilteredList<String> filteredItems = new FilteredList<>(FXCollections.observableArrayList(referencesList), p -> true);
+
+        textField.textProperty().addListener((obs, oldValue, newValue) -> {
+            final TextField editor = comboBox.getEditor();
+            final String selected = comboBox.getSelectionModel().getSelectedItem();
+
+            if (selected == null || !selected.equals(editor.getText())) {
+                filterItems(filteredItems, newValue, comboBox);
+                comboBox.show();
+            }
+        });
+        comboBox.setItems(filteredItems);
+    }
+    private void filterItems(FilteredList<String> filteredItems, String filter, ComboBox<String> comboBox) {
+        filteredItems.setPredicate(item -> {
+            if (filter == null || filter.isEmpty()) {
+                return true;
+            }
+            String lowerCaseFilter = filter.toLowerCase();
+            return item.toLowerCase().contains(lowerCaseFilter);
+        });
+    }
+
     public void updateUniteMesure(){
         List<Map<String, Object>> uniteMesures = dependencyManager.getUniteMesureRepository().findAll();
         List<String> uniteMesuresList = new ArrayList<>();
@@ -110,6 +144,8 @@ public class nouvelleFactureController {
         }
         uniteMesureMatPremBox.setItems(FXCollections.observableArrayList(uniteMesuresList));
         uniteMesureMatPremBox.setEditable(true);
+
+        autoCompletion(uniteMesureMatPremBox, uniteMesuresList);
     }
     public void updateFournisseur(){
         List<Map<String, Object>> fournisseurs = dependencyManager.getFournisseurRepository().findAll();
@@ -120,6 +156,8 @@ public class nouvelleFactureController {
         }
         fournisseurFactureBox.setItems(FXCollections.observableArrayList(fournisseursList));
         fournisseurFactureBox.setEditable(true);
+
+        autoCompletion(fournisseurFactureBox, fournisseursList);
     }
     public void updateDevise(){
         List<Map<String, Object>> devises = dependencyManager.getDeviseRepository().findAll();
@@ -130,6 +168,8 @@ public class nouvelleFactureController {
         }
         nomDeviseBox.setItems(FXCollections.observableArrayList(devisesList));
         nomDeviseBox.setEditable(true);
+
+        autoCompletion(nomDeviseBox, devisesList);
     }
     public void updateEntreeTable(){
         if (!matierePremiereTable.getItems().isEmpty()) {
@@ -260,9 +300,15 @@ public class nouvelleFactureController {
         if (uniteMesureDB == null){
             dependencyManager.getUniteMesureRepository().create(uniteMesure);
         }
+
+        uniteMesureMatPremBox.setValue("");
+        refMatPremBox.setValue("");
+        catMatPremBox.setValue("");
+        desMatPremBox.setValue("");
+        pxUnitMatPremField.setText("");
+        qteMatPremField.setText("");
+
         updateEntreeTable();
-        updateDevise();
-        updateFournisseur();
         updateCategorie();
         updateDesignation();
         updateReference();
@@ -301,7 +347,18 @@ public class nouvelleFactureController {
         mp.put("px_unitaire", pxUnit);
         mp.put("uniteMesure", uniteMesure);
 
+        uniteMesureMatPremBox.setValue("");
+        refMatPremBox.setValue("");
+        catMatPremBox.setValue("");
+        desMatPremBox.setValue("");
+        pxUnitMatPremField.setText("");
+        qteMatPremField.setText("");
+
         updateEntreeTable();
+        updateCategorie();
+        updateDesignation();
+        updateReference();
+        updateUniteMesure();
     }
     public void supprimerMatPrem(ActionEvent ignoredE) {
         /* Récupérer la position de la matière première à supprimer (créer une méthode qui report l'index de l'élément recherché) */

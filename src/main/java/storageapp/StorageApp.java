@@ -7,9 +7,12 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import jfxtras.styles.jmetro.JMetro;
+import jfxtras.styles.jmetro.Style;
 import storageapp.controller.mainController;
 import storageapp.service.DependencyManager;
 import storageapp.service.PreferencesManager;
+import storageapp.service.SGBDScript;
 
 
 import java.io.*;
@@ -23,12 +26,13 @@ public class StorageApp extends Application {
     @Override
     public void start(Stage stage) throws IOException, SQLException, URISyntaxException {
         String dbPath = preferencesManager.getDbPath();
+        SGBDScript sgbdScript = new SGBDScript(stage);
 
         if (dbPath == null || dbPath.isEmpty() || !new File(dbPath).exists()) {
-            // Si le fichier est introuvable ou non défini, demander à l'utilisateur de sélectionner un nouveau fichier
-            FileChooser fileChooser = new FileChooser();
-            fileChooser.setTitle("Select Database File");
-            File selectedFile = fileChooser.showOpenDialog(stage);
+            sgbdScript.createDB();
+            /*FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Select Database File");*/
+            File selectedFile = sgbdScript.getDB();
 
             if (selectedFile != null) {
                 dbPath = selectedFile.getAbsolutePath();
@@ -41,9 +45,10 @@ public class StorageApp extends Application {
 
         DependencyManager dependencyManager = null;
         if (dbPath != null) {
+            System.out.println(dbPath);
             dependencyManager = new DependencyManager(dbPath);
         }
-        
+
 
         //Data alimentation
         //generateSampleData(dependencyManager);
@@ -56,6 +61,8 @@ public class StorageApp extends Application {
         Scene scene = new Scene(root);
         stage.setTitle("Stockapp");
         stage.setMaximized(true);
+
+        JMetro jMetro = new JMetro(root, Style.LIGHT);
         stage.setScene(scene);
         stage.show();
     }

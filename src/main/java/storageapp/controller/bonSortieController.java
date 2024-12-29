@@ -15,6 +15,8 @@ import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import jfxtras.styles.jmetro.JMetro;
+import jfxtras.styles.jmetro.Style;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
@@ -88,7 +90,9 @@ public class bonSortieController {
         FXMLLoader fxmlLoader = new FXMLLoader();
         fxmlLoader.setLocation(StorageApp.class.getResource("modifierBon.fxml"));
         fxmlLoader.setController(new modifierBonController(dependencyManager, bonSortieId));
+
         Scene scene = new Scene(fxmlLoader.load());
+        JMetro jMetro = new JMetro(scene, Style.LIGHT);
         Stage stage = new Stage();
         stage.initStyle(StageStyle.UNDECORATED);
         stage.setTitle("Stockapp");

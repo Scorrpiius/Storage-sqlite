@@ -11,6 +11,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import jfxtras.styles.jmetro.JMetro;
+import jfxtras.styles.jmetro.Style;
 import storageapp.StorageApp;
 import storageapp.service.DependencyManager;
 
@@ -68,6 +70,7 @@ public class commandeController {
         fxmlLoader.setLocation(StorageApp.class.getResource("modifierCommande.fxml"));
         fxmlLoader.setController(new modifierCommandeController(dependencyManager, commandeId));
         Scene scene = new Scene(fxmlLoader.load());
+        JMetro jMetro = new JMetro(scene, Style.LIGHT);
         Stage stage = new Stage();
         stage.initStyle(StageStyle.UNDECORATED);
         stage.setTitle("Stockapp");
@@ -85,6 +88,7 @@ public class commandeController {
         fxmlLoader.setLocation(StorageApp.class.getResource("tableauBesoin.fxml"));
         fxmlLoader.setController(new tableauBesoinController(dependencyManager, commandeId));
         Scene scene = new Scene(fxmlLoader.load());
+        JMetro jMetro = new JMetro(scene, Style.LIGHT);
         Stage stage = new Stage();
         stage.initStyle(StageStyle.UNDECORATED);
         stage.setTitle("Stockapp");

@@ -14,6 +14,8 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import jfxtras.styles.jmetro.JMetro;
+import jfxtras.styles.jmetro.Style;
 import storageapp.StorageApp;
 import storageapp.service.DependencyManager;
 
@@ -102,6 +104,7 @@ public class factureController {
         fxmlLoader.setLocation(StorageApp.class.getResource("modifierFacture.fxml"));
         fxmlLoader.setController(new modifierFactureController(dependencyManager, factureId));
         Scene scene = new Scene(fxmlLoader.load());
+        JMetro jMetro = new JMetro(scene, Style.LIGHT);
         Stage stage = new Stage();
         stage.initStyle(StageStyle.UNDECORATED);
         stage.setTitle("Stockapp");
