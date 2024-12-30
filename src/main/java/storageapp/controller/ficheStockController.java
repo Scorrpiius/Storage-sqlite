@@ -5,12 +5,14 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -18,6 +20,7 @@ import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.font.PDTrueTypeFont;
 import org.apache.pdfbox.pdmodel.font.encoding.WinAnsiEncoding;
+import storageapp.StorageApp;
 import storageapp.service.DependencyManager;
 
 
@@ -27,7 +30,8 @@ import java.util.List;
 import java.util.Map;
 
 public class ficheStockController {
-
+    @FXML
+    private AnchorPane root;
     @FXML
     private ImageView img;
     @FXML
@@ -41,24 +45,24 @@ public class ficheStockController {
     @FXML
     private TableColumn<Map<String, Object>, String> idColumn, dateColumn, pxUnitColumn, pxRevientDeviseColumn, pxRevientLocalColumn, qteColumn;
 
-    public ficheStockController(DependencyManager dependencyManager, String ficheStockId){
+    public ficheStockController(DependencyManager dependencyManager, String ficheStockId, AnchorPane root){
         this.dependencyManager = dependencyManager;
         this.ficheStockId = ficheStockId;
+        this.root = root;
     }
-
     public void initialize(){
         titlePage.setText("Fiche de stock - Produit " + ficheStockId);
         updateHistorique();
         updateAllData();
         updatePrix();
-        loadImage();
-    }
+        telechargerImage();
+        historiqueTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
+    }
     @FXML
-    public void loadImage(){
+    public void telechargerImage(){
         dependencyManager.getEntreeRepository().getPicture(ficheStockId, null, img);
     }
-
     @FXML
     public void updatePrix(){
         List<Map<String,Object>> data = dependencyManager.getEntreeRepository().getAllInfos(ficheStockId);
@@ -75,7 +79,6 @@ public class ficheStockController {
         this.pxTotal.setEditable(false);
         this.pxUnitMoyen.setEditable(false);
     }
-
     public void updateHistorique(){
         List<Map<String,Object>> historiqueData = dependencyManager.getEntreeRepository().getAllInfos(ficheStockId);
         if (!historiqueTable.getItems().isEmpty()) {
@@ -98,7 +101,6 @@ public class ficheStockController {
             return new SimpleObjectProperty<>(String.format("%.2f", objet));
         });
     }
-
     public void updateAllData(){
         Map<String, Object> ficheStock = dependencyManager.getFicheStockRepository().findById(ficheStockId);
         String categorie = (String) ficheStock.get("categorie");
@@ -117,12 +119,6 @@ public class ficheStockController {
         this.quantite.setEditable(false);
         this.reference.setEditable(false);
         this.uniteMesure.setEditable(false);
-    }
-
-    public void retour(ActionEvent event) throws IOException {
-        Node source = (Node) event.getSource();
-        Stage oldStage = (Stage) source.getScene().getWindow();
-        oldStage.close();
     }
 
     public void imprimer(ActionEvent event) {
@@ -181,4 +177,14 @@ public class ficheStockController {
             document.save(file);
         }
     }
+
+    public void retourAccueil(ActionEvent event) throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        fxmlLoader.setLocation(StorageApp.class.getResource("accueilFiche.fxml"));
+        fxmlLoader.setController(new accueilFiche(dependencyManager, root));
+        AnchorPane newLoadedPane = fxmlLoader.load();
+        newLoadedPane.setPrefSize(root.getWidth(), root.getHeight());
+        root.getChildren().setAll(newLoadedPane);
+    }
+
 }

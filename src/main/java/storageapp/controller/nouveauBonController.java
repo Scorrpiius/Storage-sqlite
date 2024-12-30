@@ -6,10 +6,14 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import org.controlsfx.control.textfield.TextFields;
+import storageapp.StorageApp;
 import storageapp.service.DependencyManager;
 
 import java.io.IOException;
@@ -18,6 +22,8 @@ import java.time.LocalDate;
 import java.util.*;
 
 public class nouveauBonController {
+    @FXML
+    private AnchorPane root;
     private String selectSortieId;
     @FXML
     private DatePicker dateBonPicker;
@@ -36,38 +42,18 @@ public class nouveauBonController {
 
 
 
-    public nouveauBonController(DependencyManager dependencyManager){
+    public nouveauBonController(DependencyManager dependencyManager, AnchorPane root) {
         this.dependencyManager = dependencyManager;
         this.listSorties = new ArrayList<>();
+        this.root = root;
     }
     public void initialize(){
+
         updateReference();
+        sortiesTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+
     }
 
-    public void autoCompletion(ComboBox<String> comboBox, List<String> referencesList ){
-        TextField textField = comboBox.getEditor();
-        FilteredList<String> filteredItems = new FilteredList<>(FXCollections.observableArrayList(referencesList), p -> true);
-
-        textField.textProperty().addListener((obs, oldValue, newValue) -> {
-            final TextField editor = comboBox.getEditor();
-            final String selected = comboBox.getSelectionModel().getSelectedItem();
-
-            if (selected == null || !selected.equals(editor.getText())) {
-                filterItems(filteredItems, newValue, comboBox);
-                comboBox.show();
-            }
-        });
-        comboBox.setItems(filteredItems);
-    }
-    private void filterItems(FilteredList<String> filteredItems, String filter, ComboBox<String> comboBox) {
-        filteredItems.setPredicate(item -> {
-            if (filter == null || filter.isEmpty()) {
-                return true;
-            }
-            String lowerCaseFilter = filter.toLowerCase();
-            return item.toLowerCase().contains(lowerCaseFilter);
-        });
-    }
 
     public void updateSortiesTable(){
         if (!sortiesTable.getItems().isEmpty()) {
@@ -122,6 +108,9 @@ public class nouveauBonController {
             referencesList.add((String)c.get("id_matierePremiere"));
         }
         refMatPremASortir.setItems(FXCollections.observableArrayList(referencesList));
+        refMatPremASortir.setEditable(true);
+
+        TextFields.bindAutoCompletion(refMatPremASortir.getEditor(), refMatPremASortir.getItems());
     }
     public void updateQuantite(ActionEvent ignoredEvent){
         Map<String, Object> ficheStock = dependencyManager.getFicheStockRepository().findById(refMatPremASortir.getValue());
@@ -129,7 +118,7 @@ public class nouveauBonController {
     }
 
 
-    public void ajouter(ActionEvent ignoredEvent) throws IOException, SQLException {
+    public void ajouterSortie(ActionEvent ignoredEvent) throws IOException, SQLException {
         String idMatPrem = refMatPremASortir.getValue();
         String quantite = qteMatPremASortir.getText();
         String description = this.descMatPremASortir.getText();
@@ -169,7 +158,7 @@ public class nouveauBonController {
 
         updateSortiesTable();
     }
-    public void modifier(ActionEvent ignoredEvent) throws IOException {
+    public void modifierSortie(ActionEvent ignoredEvent) throws IOException {
         String idMatPrem = refMatPremASortir.getValue();
         String quantite = qteMatPremASortir.getText();
         String description = this.descMatPremASortir.getText();
@@ -209,7 +198,7 @@ public class nouveauBonController {
         }
 
     }
-    public void finaliserSaisie(ActionEvent event) throws SQLException, IOException {
+    public void finaliserBonSortie(ActionEvent event) throws SQLException, IOException {
         final String idBonSortie = idBonField.getText();
         final LocalDate date = this.dateBonPicker.getValue();
 
@@ -250,17 +239,23 @@ public class nouveauBonController {
         dependencyManager.getBonSortieRepository().create(idBonSortie, date);
 
         dependencyManager.getConnection().commit();
-        Node source = (Node) event.getSource();
-        Stage stage = (Stage) source.getScene().getWindow();
-        stage.close();
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        fxmlLoader.setLocation(StorageApp.class.getResource("accueilBon.fxml"));
+        fxmlLoader.setController(new accueilBon(dependencyManager, root));
+        AnchorPane newLoadedPane = fxmlLoader.load();
+        newLoadedPane.setPrefSize(root.getWidth(), root.getHeight());
+        root.getChildren().setAll(newLoadedPane);
     }
 
 
-    public void retour(ActionEvent event) throws IOException, SQLException {
+    public void retourAccueil(ActionEvent event) throws IOException, SQLException {
         dependencyManager.getConnection().rollback();
-        Node source = (Node) event.getSource();
-        Stage oldStage = (Stage) source.getScene().getWindow();
-        oldStage.close();
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        fxmlLoader.setLocation(StorageApp.class.getResource("accueilBon.fxml"));
+        fxmlLoader.setController(new accueilBon(dependencyManager, root));
+        AnchorPane newLoadedPane = fxmlLoader.load();
+        newLoadedPane.setPrefSize(root.getWidth(), root.getHeight());
+        root.getChildren().setAll(newLoadedPane);
     }
     private void showAlert() {
         Alert alert = new Alert(Alert.AlertType.WARNING);

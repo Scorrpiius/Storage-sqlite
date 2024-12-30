@@ -6,10 +6,14 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import org.controlsfx.control.textfield.TextFields;
+import storageapp.StorageApp;
 import storageapp.service.DependencyManager;
 
 import java.io.IOException;
@@ -20,6 +24,10 @@ import java.util.List;
 import java.util.Map;
 
 public class modifierCommandeController {
+    @FXML
+    private AnchorPane root;
+    @FXML
+    private Label titlePage;
     private final String IDCOMMANDE;
     @FXML
     private TextArea descriptionCommande;
@@ -37,39 +45,19 @@ public class modifierCommandeController {
     private TableColumn<Map<String, Object>, String> idProduitCol, qteProduitCol;
 
 
-    public modifierCommandeController(DependencyManager dependencyManager, String commandeId){
+    public modifierCommandeController(DependencyManager dependencyManager, String commandeId, AnchorPane root){
         this.dependencyManager = dependencyManager;
         this.idCommandeInit = commandeId;
         this.IDCOMMANDE = commandeId;
+        this.root = root;
     }
     public void initialize(){
+        titlePage.setText("Modifier la commande N° "+ IDCOMMANDE);
         updateProduit();
         updateProduitTable();
         updateAllData();
-    }
-    public void autoCompletion(ComboBox<String> comboBox, List<String> referencesList ){
-        TextField textField = comboBox.getEditor();
-        FilteredList<String> filteredItems = new FilteredList<>(FXCollections.observableArrayList(referencesList), p -> true);
+        produitTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
-        textField.textProperty().addListener((obs, oldValue, newValue) -> {
-            final TextField editor = comboBox.getEditor();
-            final String selected = comboBox.getSelectionModel().getSelectedItem();
-
-            if (selected == null || !selected.equals(editor.getText())) {
-                filterItems(filteredItems, newValue, comboBox);
-                comboBox.show();
-            }
-        });
-        comboBox.setItems(filteredItems);
-    }
-    private void filterItems(FilteredList<String> filteredItems, String filter, ComboBox<String> comboBox) {
-        filteredItems.setPredicate(item -> {
-            if (filter == null || filter.isEmpty()) {
-                return true;
-            }
-            String lowerCaseFilter = filter.toLowerCase();
-            return item.toLowerCase().contains(lowerCaseFilter);
-        });
     }
 
     public void updateAllData(){
@@ -87,8 +75,7 @@ public class modifierCommandeController {
         }
         refProduitBox.setItems(FXCollections.observableArrayList(produitList));
         refProduitBox.setEditable(true);
-
-        autoCompletion(refProduitBox, produitList);
+        TextFields.bindAutoCompletion(refProduitBox.getEditor(), refProduitBox.getItems());
     }
     public void updateProduitTable(){
         if (!produitTable.getItems().isEmpty()) {
@@ -119,12 +106,16 @@ public class modifierCommandeController {
         refProduitBox.setValue(produitId);
         qteProduitField.setText(String.valueOf(quantite));
     }
-    public void retour(ActionEvent event) throws IOException {
-        Node source = (Node) event.getSource();
-        Stage oldStage = (Stage) source.getScene().getWindow();
-        oldStage.close();
+    public void retourCommande(ActionEvent event) throws IOException, SQLException {
+        dependencyManager.getConnection().rollback();
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        fxmlLoader.setLocation(StorageApp.class.getResource("commande.fxml"));
+        fxmlLoader.setController(new commandeController(dependencyManager, idCommandeInit, root));
+        AnchorPane newLoadedPane = fxmlLoader.load();
+        newLoadedPane.setPrefSize(root.getWidth(), root.getHeight());
+        root.getChildren().setAll(newLoadedPane);
     }
-    public void finaliserSaisie(ActionEvent e) throws SQLException {
+    public void finaliserModifCommande(ActionEvent e) throws SQLException, IOException {
         if(!IDCOMMANDE.equals(idCommandeField.getText())){
             if (!(dependencyManager.getCommandeRepository().findById(idCommandeField.getText()) == null)){
                 showAlert();
@@ -135,12 +126,15 @@ public class modifierCommandeController {
         majId();
         dependencyManager.getCommandeRepository().updateInfos(idCommandeInit, descriptionCommande.getText(), dateCommandePicker.getValue());
         dependencyManager.getConnection().commit();
-        Node source = (Node) e.getSource();
-        Stage stage = (Stage) source.getScene().getWindow();
-        stage.close();
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        fxmlLoader.setLocation(StorageApp.class.getResource("commande.fxml"));
+        fxmlLoader.setController(new commandeController(dependencyManager, idCommandeInit, root));
+        AnchorPane newLoadedPane = fxmlLoader.load();
+        newLoadedPane.setPrefSize(root.getWidth(), root.getHeight());
+        root.getChildren().setAll(newLoadedPane);
 
     }
-    public void modifier(){
+    public void modifierProduit(){
         majId();
 
         String newProduit = refProduitBox.getValue();
@@ -149,7 +143,7 @@ public class modifierCommandeController {
         refProduitBox.setValue("");
         qteProduitField.setText("");
         updateProduitTable();    }
-    public void supprimer(){
+    public void supprimerProduit(){
         majId();
 
         String produitToDelete = refProduitBox.getValue();
@@ -157,7 +151,7 @@ public class modifierCommandeController {
         dependencyManager.getCommandeProduitFiniRepository().delete(idCommandeInit, produitToDelete);
         updateProduitTable();
     }
-    public void ajouter(){
+    public void ajouterProduit(){
         majId();
 
         String idProduit = refProduitBox.getValue();
@@ -182,7 +176,6 @@ public class modifierCommandeController {
         }
         idCommandeInit = idCommandeNouveau;
     }
-
     private void showAlert() {
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle("Warning Dialog");

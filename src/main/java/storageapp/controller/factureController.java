@@ -6,24 +6,20 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
-import jfxtras.styles.jmetro.JMetro;
-import jfxtras.styles.jmetro.Style;
+import javafx.scene.layout.AnchorPane;
 import storageapp.StorageApp;
 import storageapp.service.DependencyManager;
-
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
 public class factureController {
+    @FXML
+    private AnchorPane root;
     @FXML
     private Label titleLabel;
     private final String factureId;
@@ -35,15 +31,19 @@ public class factureController {
     @FXML
     private TableColumn<Map<String, Object>, String> refMatPremCol, desMatPremCol, qteMatPremCol, pxUnitMatPremCol, pxRevientDeviseMatPremColumn, pxRevientLocalMatPremColumn, catMatPremCol;
 
-    public factureController(DependencyManager dependencyManager, String factureId){
+    public factureController(DependencyManager dependencyManager, String factureId, AnchorPane root){
         this.dependencyManager = dependencyManager;
         this.factureId = factureId;
+        this.root = root;
     }
     public void initialize(){
         titleLabel.setText("Facture N° " + factureId);
         updateHistorique();
         updateAllData();
+        matierePremiereTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+
     }
+
     public void updateHistorique(){
         List<Map<String,Object>> historiqueData = dependencyManager.getEntreeRepository().findByFactureId(factureId);
 
@@ -94,24 +94,24 @@ public class factureController {
         this.tauxReelField.setEditable(false);
         this.dateFactureField.setEditable(false);
     }
-    public void retour(ActionEvent event) throws IOException {
-        Node source = (Node) event.getSource();
-        Stage oldStage = (Stage) source.getScene().getWindow();
-        oldStage.close();
+
+    public void retourAccueil(ActionEvent event) throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        fxmlLoader.setLocation(StorageApp.class.getResource("accueilFacture.fxml"));
+        fxmlLoader.setController(new accueilFacture(dependencyManager, root));
+
+        AnchorPane newLoadedPane = fxmlLoader.load();
+        newLoadedPane.setPrefSize(root.getWidth(), root.getHeight());
+        root.getChildren().setAll(newLoadedPane);
     }
-    public void modifier(ActionEvent event) throws IOException {
+    public void modifierFacture(ActionEvent event) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader();
         fxmlLoader.setLocation(StorageApp.class.getResource("modifierFacture.fxml"));
-        fxmlLoader.setController(new modifierFactureController(dependencyManager, factureId));
-        Scene scene = new Scene(fxmlLoader.load());
-        JMetro jMetro = new JMetro(scene, Style.LIGHT);
-        Stage stage = new Stage();
-        stage.initStyle(StageStyle.UNDECORATED);
-        stage.setTitle("Stockapp");
-        stage.setScene(scene);
-        stage.showAndWait();
-        Node source = (Node) event.getSource();
-        Stage oldStage = (Stage) source.getScene().getWindow();
-        oldStage.close();
+        fxmlLoader.setController(new modifierFactureController(dependencyManager, factureId, root));
+
+        AnchorPane newLoadedPane = fxmlLoader.load();
+        newLoadedPane.setPrefSize(root.getWidth(), root.getHeight());
+        root.getChildren().setAll(newLoadedPane);
+
     }
 }

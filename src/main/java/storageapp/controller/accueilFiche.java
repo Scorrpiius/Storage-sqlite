@@ -3,22 +3,15 @@ package storageapp.controller;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.effect.ColorAdjust;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.TilePane;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
-import jfxtras.styles.jmetro.JMetro;
-import jfxtras.styles.jmetro.Style;
+import org.controlsfx.control.textfield.TextFields;
 import storageapp.StorageApp;
+import storageapp.model.FicheStockRepository;
 import storageapp.service.DependencyManager;
 
 import java.io.IOException;
@@ -28,30 +21,29 @@ import java.util.Map;
 
 public class accueilFiche {
     @FXML
-    private AnchorPane anchorPane;
-    @FXML
-    private TilePane ficheCards;
+    private AnchorPane root;
     private DependencyManager dependencyManager;
     @FXML
-    private TableView<Map<String, Object>> ficheStockTable, bonSortieTable, facturesTable, produitFiniTable, commandeTable;
+    private TableView<Map<String, Object>> ficheStockTable;
     @FXML
-    private TableColumn<Map<String, Object>, String> idFactureColumn, nbrFactureColumn, fournisseurFactureColumn, dateFactureColumn, refProduitFiniColumn, refFicheStockColumn, catFicheStockColumn, desFicheStockColumn, qteFicheStockColumn, idBonColumn, dateBonColumn, idCommandeColumn;
-    @FXML
-    private Button createCommande, createFacture, createProduit, createBonSortie, rechercheFicheFiltre, factures, fiches, produits, bons, commandes;
-    @FXML
-    private Label facture, commande, produitFini, bonSortie, ficheStock;
+    private TableColumn<Map<String, Object>, String> refFicheStockColumn, catFicheStockColumn, desFicheStockColumn, qteFicheStockColumn;
     @FXML
     private ComboBox<String> referenceFicheFiltre, categorieFicheFiltre, designationFicheFiltre;
 
-    public accueilFiche(DependencyManager dependencyManager) {
+    public accueilFiche(DependencyManager dependencyManager, AnchorPane root) {
         this.dependencyManager = dependencyManager;
+        this.root = root;
     }
+
     public void initialize() {
         updateFicheStockTable();
         updateCategorie();
         updateDesignation();
         updateReference();
+        ficheStockTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+
     }
+    
     public void updateFicheStockTable() {
         if (!ficheStockTable.getItems().isEmpty()) {
             ficheStockTable.getItems().clear();
@@ -112,22 +104,11 @@ public class accueilFiche {
     public void openFicheStockWindow(String ficheStockId, MouseEvent ignoredevent) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader();
         fxmlLoader.setLocation(StorageApp.class.getResource("ficheStock.fxml"));
-        fxmlLoader.setController(new ficheStockController(dependencyManager, ficheStockId));
-        ColorAdjust dim = new ColorAdjust();
-        dim.setBrightness(-0.4);
+        fxmlLoader.setController(new ficheStockController(dependencyManager, ficheStockId, root));
 
-        Node source = (Node) ignoredevent.getSource();
-        Stage oldStage = (Stage) source.getScene().getWindow();
-        oldStage.getScene().getRoot().setEffect(dim);
-        Scene scene = new Scene(fxmlLoader.load());
-        JMetro jMetro = new JMetro(scene, Style.LIGHT);
-        Stage stage = new Stage();
-        stage.initStyle(StageStyle.UNDECORATED);
-        stage.setTitle("Stockapp");
-        stage.setScene(scene);
-        stage.showAndWait();
-        dim.setBrightness(0);
-        oldStage.getScene().getRoot().setEffect(dim);
+        AnchorPane newLoadedPane = fxmlLoader.load();
+        newLoadedPane.setPrefSize(root.getWidth(), root.getHeight());
+        root.getChildren().setAll(newLoadedPane);
     }
 
     @FXML
@@ -148,10 +129,12 @@ public class accueilFiche {
         for(Map<String, Object> c : categories){
             categoriesList.add((String)c.get("nom"));
         }
+        ObservableList<String> items = FXCollections.observableArrayList(categoriesList);
         categorieFicheFiltre.setItems(FXCollections.observableArrayList(categoriesList));
         categorieFicheFiltre.setEditable(true);
+        TextFields.bindAutoCompletion(categorieFicheFiltre.getEditor(), categorieFicheFiltre.getItems());
 
-        autoCompletion(categorieFicheFiltre, categoriesList);
+
     }
     public void updateDesignation(){
         List<Map<String, Object>> designations = dependencyManager.getDesignationRepository().findAll();
@@ -160,12 +143,12 @@ public class accueilFiche {
         for(Map<String, Object> c : designations){
             designationsList.add((String)c.get("nom"));
         }
+        ObservableList<String> items = FXCollections.observableArrayList(designationsList);
         designationFicheFiltre.setItems(FXCollections.observableArrayList(designationsList));
         designationFicheFiltre.setEditable(true);
-
-        autoCompletion(designationFicheFiltre, designationsList);
-
+        TextFields.bindAutoCompletion(designationFicheFiltre.getEditor(), designationFicheFiltre.getItems());
     }
+
     public void updateReference(){
         List<Map<String, Object>> references = dependencyManager.getFicheStockRepository().getAllId();
         List<String> referencesList = new ArrayList<>();
@@ -173,35 +156,11 @@ public class accueilFiche {
         for(Map<String, Object> c : references){
             referencesList.add((String)c.get("id_matierePremiere"));
         }
+        ObservableList<String> items = FXCollections.observableArrayList(referencesList);
         referenceFicheFiltre.setItems(FXCollections.observableArrayList(referencesList));
         referenceFicheFiltre.setEditable(true);
 
-        autoCompletion(referenceFicheFiltre, referencesList);
-    }
-
-    public void autoCompletion(ComboBox<String> comboBox, List<String> referencesList ){
-        TextField textField = comboBox.getEditor();
-        FilteredList<String> filteredItems = new FilteredList<>(FXCollections.observableArrayList(referencesList), p -> true);
-
-        textField.textProperty().addListener((obs, oldValue, newValue) -> {
-            final TextField editor = comboBox.getEditor();
-            final String selected = comboBox.getSelectionModel().getSelectedItem();
-
-            if (selected == null || !selected.equals(editor.getText())) {
-                filterItems(filteredItems, newValue, comboBox);
-                comboBox.show();
-            }
-        });
-        comboBox.setItems(filteredItems);
-    }
-    private void filterItems(FilteredList<String> filteredItems, String filter, ComboBox<String> comboBox) {
-        filteredItems.setPredicate(item -> {
-            if (filter == null || filter.isEmpty()) {
-                return true;
-            }
-            String lowerCaseFilter = filter.toLowerCase();
-            return item.toLowerCase().contains(lowerCaseFilter);
-        });
+        TextFields.bindAutoCompletion(referenceFicheFiltre.getEditor(), referenceFicheFiltre.getItems());
     }
 
 }

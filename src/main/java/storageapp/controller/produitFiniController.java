@@ -7,17 +7,12 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
-import jfxtras.styles.jmetro.JMetro;
-import jfxtras.styles.jmetro.Style;
+import javafx.scene.layout.AnchorPane;
 import storageapp.StorageApp;
 import storageapp.service.DependencyManager;
 
@@ -28,6 +23,8 @@ import java.util.Map;
 
 
 public class produitFiniController {
+    @FXML
+    private AnchorPane root;
     @FXML
     private ImageView img;
     @FXML
@@ -41,22 +38,26 @@ public class produitFiniController {
     @FXML
     private TableColumn<Map<String, Object>, String> refColumn, qteColumn;
 
-    public produitFiniController(DependencyManager dependencyManager, String produitID){
+    public produitFiniController(DependencyManager dependencyManager, String produitID, AnchorPane root) {
         this.dependencyManager = dependencyManager;
         this.produitID = produitID;
+        this.root = root;
     }
+
     public void initialize(){
         titlePage.setText("Produit " + produitID);
         titlePage.setAlignment(Pos.CENTER);
         updateMatiereTable();
         updateData();
-        loadImage();
-    }
-    @FXML
-    public void loadImage(){
-        dependencyManager.getProduitFiniRepository().getPicture(produitID, null, img);
+        telechargerImage();
+        matierePremiereTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+
     }
 
+    @FXML
+    public void telechargerImage(){
+        dependencyManager.getProduitFiniRepository().getPicture(produitID, null, img);
+    }
     @FXML
     public void updateData(){
         referenceProduit.setText(produitID);
@@ -78,34 +79,34 @@ public class produitFiniController {
         }
 
     }
-    public void retour(ActionEvent e) throws SQLException, IOException {
-        Node source = (Node) e.getSource();
-        Stage oldStage = (Stage) source.getScene().getWindow();
-        oldStage.close();
+
+    public void retourAccueil(ActionEvent e) throws SQLException, IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        fxmlLoader.setLocation(StorageApp.class.getResource("accueilProduit.fxml"));
+        fxmlLoader.setController(new accueilProduit(dependencyManager, root));
+        AnchorPane newLoadedPane = fxmlLoader.load();
+        newLoadedPane.setPrefSize(root.getWidth(), root.getHeight());
+        root.getChildren().setAll(newLoadedPane);
     }
-    public void modifier(ActionEvent e) throws IOException {
+    public void modifierProduit(ActionEvent e) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader();
         fxmlLoader.setLocation(StorageApp.class.getResource("modifierProduit.fxml"));
-        fxmlLoader.setController(new modifierProduitFiniController(dependencyManager, produitID));
-        Scene scene = new Scene(fxmlLoader.load());
-        JMetro jMetro = new JMetro(scene, Style.LIGHT);
-        Stage stage = new Stage();
-        stage.initStyle(StageStyle.UNDECORATED);
-        stage.setTitle("Stockapp");
-        stage.setScene(scene);
-        stage.showAndWait();
-        Node source = (Node) e.getSource();
-        Stage oldStage = (Stage) source.getScene().getWindow();
-        oldStage.close();
+        fxmlLoader.setController(new modifierProduitFiniController(dependencyManager, produitID, root));
+        AnchorPane newLoadedPane = fxmlLoader.load();
+        newLoadedPane.setPrefSize(root.getWidth(), root.getHeight());
+        root.getChildren().setAll(newLoadedPane);
     }
     public void supprimerProduit(ActionEvent e) throws IOException, SQLException {
         String produitToDelete = referenceProduit.getText();
         dependencyManager.getProduitFiniMatierePremiereRepository().deleteAll(produitToDelete);
         dependencyManager.getProduitFiniRepository().delete(produitToDelete);
         dependencyManager.getConnection().commit();
-        Node source = (Node) e.getSource();
-        Stage oldStage = (Stage) source.getScene().getWindow();
-        oldStage.close();
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        fxmlLoader.setLocation(StorageApp.class.getResource("accueilProduit.fxml"));
+        fxmlLoader.setController(new accueilProduit(dependencyManager, root));
+        AnchorPane newLoadedPane = fxmlLoader.load();
+        newLoadedPane.setPrefSize(root.getWidth(), root.getHeight());
+        root.getChildren().setAll(newLoadedPane);
 
 
     }

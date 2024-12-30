@@ -5,12 +5,17 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import org.controlsfx.control.textfield.TextFields;
+import storageapp.StorageApp;
 import storageapp.service.DependencyManager;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -19,6 +24,10 @@ import java.util.Map;
 
 public class modifierBonController {
     int id, idInit;
+    @FXML
+    private Label titlePage;
+    @FXML
+    private AnchorPane root;
     private final String IDBON;
     @FXML
     private DatePicker dateBonPicker;
@@ -35,10 +44,11 @@ public class modifierBonController {
     @FXML
     private TableColumn<Map<String, Object>, String> idSortieCol, refSortieCol, qteSortieCol, descrSortieCol;
 
-    public modifierBonController(DependencyManager dependencyManager, String bonSortieId){
+    public modifierBonController(DependencyManager dependencyManager, String bonSortieId, AnchorPane root){
         this.dependencyManager = dependencyManager;
         this.idBonInit = bonSortieId;
         this.IDBON = bonSortieId;
+        this.root = root;
     }
 
     public void getLastId(){
@@ -49,10 +59,13 @@ public class modifierBonController {
         this.id++;
     }
     public void initialize(){
+        titlePage.setText("Modifier le bon de sortie N° "+ idBonInit);
         updateSortieTable();
         updateData();
         updateReference();
         getLastId();
+        sortiesTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+
     }
     public void updateReference(){
         List<Map<String, Object>> references = dependencyManager.getFicheStockRepository().getAllId();
@@ -63,6 +76,8 @@ public class modifierBonController {
         }
         refMatPremASortir.setItems(FXCollections.observableArrayList(referencesList));
         refMatPremASortir.setEditable(true);
+
+        TextFields.bindAutoCompletion(refMatPremASortir.getEditor(), refMatPremASortir.getItems());
     }
     public void updateQuantite(ActionEvent ignoredevent){
         Map<String, Object> ficheStock = dependencyManager.getFicheStockRepository().findById(refMatPremASortir.getValue());
@@ -160,7 +175,7 @@ public class modifierBonController {
         dependencyManager.getFicheStockRepository().updateQuantite(idMatPremiere, nouvelleQuantite);
         updateSortieTable();
     }
-    public void modifier(ActionEvent ignoredevent){
+    public void modifierSortie(ActionEvent ignoredevent){
         majId();
 
         /* Modifier la fiche de stock */
@@ -178,7 +193,7 @@ public class modifierBonController {
         dependencyManager.getSortieRepository().update(idInit,idBonField.getText(), Integer.parseInt(quantite),idMatPrem,description);
         updateSortieTable();
     }
-    public void terminer(ActionEvent event) throws SQLException {
+    public void finaliserModifBonSortie(ActionEvent event) throws SQLException, IOException {
         if(!IDBON.equals(idBonField.getText())){
             if (!(dependencyManager.getBonSortieRepository().findById(idBonField.getText()) == null)){
                 showAlert();
@@ -202,9 +217,12 @@ public class modifierBonController {
         dependencyManager.getBonSortieRepository().updateDate(idBonInit, date);
 
         dependencyManager.getConnection().commit();
-        Node source = (Node) event.getSource();
-        Stage stage = (Stage) source.getScene().getWindow();
-        stage.close();
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        fxmlLoader.setLocation(StorageApp.class.getResource("bonSortie.fxml"));
+        fxmlLoader.setController(new bonSortieController(dependencyManager, idBonInit, root));
+        AnchorPane newLoadedPane = fxmlLoader.load();
+        newLoadedPane.setPrefSize(root.getWidth(), root.getHeight());
+        root.getChildren().setAll(newLoadedPane);
     }
 
     public void majId(){
@@ -221,11 +239,14 @@ public class modifierBonController {
         }
         idBonInit = idBonNouveau;
     }
-    public void retour(ActionEvent event) throws SQLException {
+    public void retourBon(ActionEvent event) throws SQLException, IOException {
         dependencyManager.getConnection().rollback();
-        Node source = (Node) event.getSource();
-        Stage oldStage = (Stage) source.getScene().getWindow();
-        oldStage.close();
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        fxmlLoader.setLocation(StorageApp.class.getResource("bonSortie.fxml"));
+        fxmlLoader.setController(new bonSortieController(dependencyManager, idBonInit, root));
+        AnchorPane newLoadedPane = fxmlLoader.load();
+        newLoadedPane.setPrefSize(root.getWidth(), root.getHeight());
+        root.getChildren().setAll(newLoadedPane);
     }
 
     private void showAlert() {

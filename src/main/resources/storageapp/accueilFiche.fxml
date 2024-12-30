@@ -4,23 +4,24 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
+<?import org.controlsfx.control.SearchableComboBox?>
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1">
     <ComboBox fx:id="referenceFicheFiltre" prefHeight="40.0" prefWidth="200.0" style="-fx-background-color: #D9EBFF;" AnchorPane.rightAnchor="570.0" AnchorPane.topAnchor="60.0" />
     <ComboBox fx:id="categorieFicheFiltre" layoutX="399.0" layoutY="640.0" prefHeight="40.0" prefWidth="200.0" style="-fx-background-color: #D9EBFF;" AnchorPane.rightAnchor="350.0" AnchorPane.topAnchor="60.0" />
     <ComboBox fx:id="designationFicheFiltre" layoutX="576.0" layoutY="640.0" prefHeight="40.0" prefWidth="200.0" style="-fx-background-color: #D9EBFF;" AnchorPane.rightAnchor="130.0" AnchorPane.topAnchor="60.0" />
     <Button fx:id="rechercheFicheFiltre" layoutX="423.0" layoutY="676.0" mnemonicParsing="false" onAction="#rechercheFiche" prefHeight="40.0" style="-fx-background-color: #D9EBFF;" text="Recherche" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="60.0" />
 
-    <Label fx:id="ficheStock" style="-fx-font-weight: bold;" text="Fiches de stock" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="30.0">
+    <Label fx:id="ficheStock" style="-fx-font-weight: bold;" text="Fiches de stock" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="15.0">
         <font>
             <Font name="Inter Semi Bold" size="24.0" />
         </font>
     </Label>
     <TableView fx:id="ficheStockTable" stylesheets="@../css/tab.css" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="120.0" VBox.vgrow="ALWAYS">
         <columns>
-            <TableColumn fx:id="refFicheStockColumn" prefWidth="199.0" text="Référence" />
-            <TableColumn fx:id="catFicheStockColumn" prefWidth="160.19998168945312" text="Catégorie" />
-            <TableColumn fx:id="desFicheStockColumn" minWidth="0.0" prefWidth="150.5999755859375" text="Désignation" />
-            <TableColumn fx:id="qteFicheStockColumn" prefWidth="251.20001220703125" text="Quantité" />
+            <TableColumn fx:id="refFicheStockColumn" prefWidth="250.0" text="Référence" />
+            <TableColumn fx:id="catFicheStockColumn" prefWidth="250.0" text="Catégorie" />
+            <TableColumn fx:id="desFicheStockColumn" minWidth="0.0" prefWidth="250.0" text="Désignation" />
+            <TableColumn fx:id="qteFicheStockColumn" prefWidth="100.0" text="Quantité" />
         </columns>
     </TableView>
 </AnchorPane>

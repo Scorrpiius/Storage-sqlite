@@ -5,9 +5,12 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import storageapp.StorageApp;
 import storageapp.service.DependencyManager;
 
 import java.io.IOException;
@@ -18,6 +21,9 @@ import java.util.List;
 import java.util.Map;
 
 public class tableauBesoinController {
+    @FXML
+    private AnchorPane root;
+    private String idCommande;
     private final DependencyManager dependencyManager;
     @FXML
     private TableView<Map<String, Object>> besoinsTable;
@@ -27,24 +33,25 @@ public class tableauBesoinController {
     @FXML
     private ComboBox<String> referenceFicheFiltre, categorieFicheFiltre, designationFicheFiltre;
 
-    public  tableauBesoinController(DependencyManager dependencyManager, String idCommande){
+    public  tableauBesoinController(DependencyManager dependencyManager, String idCommande, AnchorPane root){
         this.dependencyManager = dependencyManager;
         this.listeProduits = dependencyManager.getCommandeProduitFiniRepository().findByCommandeId(idCommande);
         this.mps = new ArrayList<>();
         this.tableauBesoins = new ArrayList<>();
-        /* Création du tableau de besoin */
-
+        this.root = root;
+        this.idCommande = idCommande;
     }
     public void initialize(){
 
         updateCategorie();
         updateDesignation();
         updateReference();
+        besoinsTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+
 
         for (Map<String, Object> p : listeProduits) {
             int quantiteProduit = Integer.parseInt(p.get("quantite").toString());
             String idProduit = p.get("id_ProduitFini").toString();
-
             List<Map<String, Object>> listeMPs = dependencyManager.getProduitFiniMatierePremiereRepository().findByProduitId(idProduit);
 
             Map<String, Object> ligne = new HashMap<>();
@@ -93,6 +100,7 @@ public class tableauBesoinController {
         referenceFicheFiltre.setItems(FXCollections.observableArrayList(referencesList));
         referenceFicheFiltre.setEditable(true);
     }
+
     public void updateTableauBesoins(String reference, String categorie, String designation){
         if (!besoinsTable.getItems().isEmpty()) {
             besoinsTable.getItems().clear();
@@ -104,14 +112,17 @@ public class tableauBesoinController {
 
         ObservableList<Map<String, Object>> observableBesoins = FXCollections.observableArrayList(tableauBesoins);
         besoinsTable.setItems(observableBesoins);
+
         TableColumn<Map<String, Object>, String> temp = new TableColumn<>("Reference produit");
         temp.setId("refProduitCol");
         temp.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().get("idProduit")).asString());
+
         besoinsTable.getColumns().add(temp);
 
         temp = new TableColumn<>("Quantité produit");
         temp.setId("qteProduitCol");
         temp.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().get("quantiteProduit")).asString());
+
         besoinsTable.getColumns().add(temp);
 
 
@@ -145,7 +156,6 @@ public class tableauBesoinController {
             }
         }
     }
-
     private void addColumn(String columnKey) {
         TableColumn<Map<String, Object>, String> column = new TableColumn<>(columnKey);
         besoinsTable.getColumns().add(column);
@@ -154,12 +164,14 @@ public class tableauBesoinController {
             return new SimpleObjectProperty<>(value != null ? value.toString() : "---");
         });
     }
-
-
-    public void retour(ActionEvent event) throws IOException, SQLException {
-        Node source = (Node) event.getSource();
-        Stage oldStage = (Stage) source.getScene().getWindow();
-        oldStage.close();
+    public void retourCommande(ActionEvent event) throws IOException, SQLException {
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        fxmlLoader.setLocation(StorageApp.class.getResource("commande.fxml"));
+        fxmlLoader.setController(new commandeController(dependencyManager,idCommande, root));
+        AnchorPane newLoadedPane = fxmlLoader.load();
+        newLoadedPane.setMinHeight(root.getHeight());
+        newLoadedPane.setMinWidth(root.getWidth());
+        root.getChildren().setAll(newLoadedPane);
     }
     public void rechercheFiche(ActionEvent ignoredEvent) {
         String categorie = categorieFicheFiltre.getValue();

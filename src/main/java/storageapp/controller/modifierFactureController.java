@@ -6,13 +6,17 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import org.controlsfx.control.textfield.TextFields;
+import storageapp.StorageApp;
 import storageapp.service.DependencyManager;
 
 import java.io.File;
@@ -26,6 +30,8 @@ import java.util.List;
 import java.util.Map;
 
 public class modifierFactureController {
+    @FXML
+    private AnchorPane root;
     @FXML
     private Label titlePage;
     @FXML
@@ -45,13 +51,14 @@ public class modifierFactureController {
     @FXML
     private TableColumn<Map<String, Object>, String> refMatPremCol, desMatPremCol, catMatPremCol, qteMatPremCol, pxUnitMatPremCol, pxRevientDeviseMatPremColumn, pxRevientLocalMatPremColumn;
 
-    public modifierFactureController(DependencyManager dependencyManager, String factureId){
+    public modifierFactureController(DependencyManager dependencyManager, String factureId, AnchorPane root){
         this.dependencyManager = dependencyManager;
         this.idFactureInit = factureId;
         this.IDFACTURE = factureId;
+        this.root = root;
     }
     public void initialize(){
-        titlePage.setText("Facture N° " + idFactureInit);
+        titlePage.setText("Modifier la facture N° " + idFactureInit);
         updateAllData();
         updateEntreeTable();
         updateDevise();
@@ -60,6 +67,8 @@ public class modifierFactureController {
         updateDesignation();
         updateUniteMesure();
         updateReference();
+        matierePremiereTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+
     }
     public void autoCompletion(ComboBox<String> comboBox, List<String> referencesList ){
         TextField textField = comboBox.getEditor();
@@ -113,8 +122,8 @@ public class modifierFactureController {
         }
         fournisseurFactureBox.setItems(FXCollections.observableArrayList(fournisseursList));
         fournisseurFactureBox.setEditable(true);
+        TextFields.bindAutoCompletion(fournisseurFactureBox.getEditor(), fournisseurFactureBox.getItems());
 
-        autoCompletion(fournisseurFactureBox, fournisseursList);
     }
     public void updateUniteMesure(){
         List<Map<String, Object>> uniteMesures = dependencyManager.getUniteMesureRepository().findAll();
@@ -124,8 +133,8 @@ public class modifierFactureController {
         }
         uniteMesureMatPremBox.setItems(FXCollections.observableArrayList(uniteMesuresList));
         uniteMesureMatPremBox.setEditable(true);
+        TextFields.bindAutoCompletion(uniteMesureMatPremBox.getEditor(), uniteMesureMatPremBox.getItems());
 
-        autoCompletion(uniteMesureMatPremBox, uniteMesuresList);
     }
     public void updateReference(){
         List<Map<String, Object>> references = dependencyManager.getFicheStockRepository().getAllId();
@@ -136,8 +145,8 @@ public class modifierFactureController {
         }
         refMatPremBox.setItems(FXCollections.observableArrayList(referencesList));
         refMatPremBox.setEditable(true);
+        TextFields.bindAutoCompletion(refMatPremBox.getEditor(), refMatPremBox.getItems());
 
-        autoCompletion(refMatPremBox, referencesList);
     }
     public void updateDesignation(){
         List<Map<String, Object>> designations = dependencyManager.getDesignationRepository().findAll();
@@ -148,8 +157,8 @@ public class modifierFactureController {
         }
         desMatPremBox.setItems(FXCollections.observableArrayList(designationsList));
         desMatPremBox.setEditable(true);
+        TextFields.bindAutoCompletion(desMatPremBox.getEditor(), desMatPremBox.getItems());
 
-        autoCompletion(desMatPremBox, designationsList);
     }
     public void updateCategorie(){
         List<Map<String, Object>> categories = dependencyManager.getCategorieRepository().findAll();
@@ -160,8 +169,8 @@ public class modifierFactureController {
         }
         catMatPremBox.setItems(FXCollections.observableArrayList(categoriesList));
         catMatPremBox.setEditable(true);
+        TextFields.bindAutoCompletion(catMatPremBox.getEditor(), catMatPremBox.getItems());
 
-        autoCompletion(catMatPremBox, categoriesList);
     }
     public void updateDevise(){
         List<Map<String, Object>> devises = dependencyManager.getDeviseRepository().findAll();
@@ -172,8 +181,7 @@ public class modifierFactureController {
         }
         nomDeviseBox.setItems(FXCollections.observableArrayList(devisesList));
         nomDeviseBox.setEditable(true);
-
-        autoCompletion(nomDeviseBox, devisesList);
+        TextFields.bindAutoCompletion(nomDeviseBox.getEditor(), nomDeviseBox.getItems());
     }
     public void updateEntreeTable(){
         if (!matierePremiereTable.getItems().isEmpty()) {
@@ -305,7 +313,7 @@ public class modifierFactureController {
         updateDesignation();
         updateReference();
         updateUniteMesure();    }
-    public void loadImage(ActionEvent event) throws IOException {
+    public void telechargerImage(ActionEvent event) throws IOException {
         Node source = (Node) event.getSource();
         Stage currentStage = (Stage) source.getScene().getWindow();
 
@@ -319,7 +327,7 @@ public class modifierFactureController {
 
         this.img = String.valueOf(selectedFile);
     }
-    public void modifier() throws IOException, SQLException {
+    public void modifierMatierePremiere() throws IOException, SQLException {
         /* Maj si l'id facture a été modifié et des prix si modifications de la devise  */
         majId();
         majPrix();
@@ -358,7 +366,7 @@ public class modifierFactureController {
         updateReference();
         updateUniteMesure();
     }
-    public void supprimerMatPrem(ActionEvent ignoredE) throws SQLException {
+    public void supprimerMatierePremiere(ActionEvent ignoredE) throws SQLException {
         /* Faire la maje de l'id de facture si il y a eu des modifications + la maj des prix */
         majId();
         majPrix();
@@ -373,7 +381,7 @@ public class modifierFactureController {
         dependencyManager.getEntreeRepository().delete(refToDelete, idFactureInit);
         updateEntreeTable();
     }
-    public void finir(ActionEvent event) throws SQLException {
+    public void finaliserModifFacture(ActionEvent event) throws SQLException, IOException {
         if(!IDFACTURE.equals(referenceFactureField.getText())){
             if (!(dependencyManager.getFactureRepository().findById(referenceFactureField.getText()) == null)){
                 showAlert("Cette référence de facture existe déjà. Veuillez saisir une nouvelle référence");
@@ -422,15 +430,23 @@ public class modifierFactureController {
         dependencyManager.getFactureRepository().updateOtherInfo(idFactureInit, date, fournisseur,tauxTheo, tauxReel, Double.parseDouble(deviseValue), deviseName ,nbrEntree);
 
         dependencyManager.getConnection().commit();
-        Node source = (Node) event.getSource();
-        Stage stage = (Stage) source.getScene().getWindow();
-        stage.close();
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        fxmlLoader.setLocation(StorageApp.class.getResource("facture.fxml"));
+        fxmlLoader.setController(new factureController(dependencyManager, idFactureInit, root));
+
+        AnchorPane newLoadedPane = fxmlLoader.load();
+        newLoadedPane.setPrefSize(root.getWidth(), root.getHeight());
+        root.getChildren().setAll(newLoadedPane);
     }
-    public void retour(ActionEvent event) throws SQLException, IOException {
+    public void retourFacture(ActionEvent event) throws SQLException, IOException {
         dependencyManager.getConnection().rollback();
-        Node source = (Node) event.getSource();
-        Stage oldStage = (Stage) source.getScene().getWindow();
-        oldStage.close();
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        fxmlLoader.setLocation(StorageApp.class.getResource("facture.fxml"));
+        fxmlLoader.setController(new factureController(dependencyManager, idFactureInit, root));
+
+        AnchorPane newLoadedPane = fxmlLoader.load();
+        newLoadedPane.setPrefSize(root.getWidth(), root.getHeight());
+        root.getChildren().setAll(newLoadedPane);
     }
     private void showAlert(String contentText) {
         Alert alert = new Alert(Alert.AlertType.WARNING);

@@ -4,87 +4,85 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640.0" prefWidth="850.0" style="-fx-background-color: #ffffff;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
-    <right>
-
-    </right>
-    <bottom>
-    </bottom>
-    <left>
-
-    </left>
-    <center>
-        <Pane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-            <Label layoutX="30.0" layoutY="160.0" text="Date :" textFill="#2e3333">
-                <font>
-                    <Font name="Inter Semi Bold" size="20.0" />
-                </font>
-            </Label>
-            <Label layoutX="30.0" layoutY="70.0" text="ID :" textFill="#2e3333">
-                <font>
-                    <Font name="Inter Semi Bold" size="20.0" />
-                </font>
-            </Label>
-            <Button layoutX="400.0" layoutY="450.0" onAction="#ajouter" prefHeight="40.0" prefWidth="110.0" style="-fx-background-color: #529c3f; -fx-border-color: #529c3f; -fx-border-radius: 20;" text="Ajouter">
-                <font>
-                    <Font name="Inter Semi Bold" size="15.0" />
-                </font>
-            </Button>
-            <TextField fx:id="idCommandeField" layoutX="30.0" layoutY="100.0" prefHeight="40.0" prefWidth="310.0" style="-fx-background-color: ccecf0;" />
-            <DatePicker fx:id="dateCommandePicker" layoutX="30.0" layoutY="190.0" prefHeight="40.0" prefWidth="310.0" />
-            <Button layoutX="746.0" layoutY="586.0" mnemonicParsing="false" onAction="#finaliserSaisie" prefHeight="40.0" style="-fx-background-color: white; -fx-border-color: black; -fx-border-radius: 10;" text="Terminer">
-                <font>
-                    <Font name="Inter Semi Bold" size="15.0" />
-                </font>
-            </Button>
-            <Label layoutX="50.0" layoutY="20.0" text="Ajouter une nouvelle commande" textFill="#2e3333">
-                <font>
-                    <Font name="Inter Semi Bold" size="24.0" />
-                </font>
-            </Label>
-            <TableView stylesheets="@../css/tab.css" fx:id="produitTable" layoutX="30.0" layoutY="290.0" prefHeight="160.0" prefWidth="310.0">
-                <columns>
-                    <TableColumn fx:id="idProduitCol" prefWidth="136.0" text="ID" />
-                    <TableColumn fx:id="qteProduitCol" minWidth="0.0" prefWidth="110.79998779296875" text="Quantité" />
-                </columns>
-            </TableView>
-            <Button layoutX="795.0" layoutY="14.0" mnemonicParsing="false" onAction="#retour" style="-fx-background-color: white;" text="X">
+<AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" style="-fx-background-color: #ffffff;-fx-background-radius: 20; -fx-border-radius: 20;" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1">
+        <Label layoutX="17.0" layoutY="162.0" text="Date" textFill="#6f7482" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="170.0">
             <font>
-               <Font name="System Bold" size="20.0" />
-            </font></Button>
-            <Label layoutX="30.0" layoutY="260.0" text="Liste des produits :">
-                <font>
-                    <Font name="Inter Semi Bold" size="20.0" />
-                </font>
-            </Label>
-            <Button layoutX="660.0" layoutY="450.0" mnemonicParsing="false" onAction="#modifier" prefHeight="40.0" prefWidth="110.0" style="-fx-background-color: white; -fx-border-color: grey; -fx-border-radius: 10;" text="Modifier">
-                <font>
-                    <Font name="Inter Semi Bold" size="15.0" />
-                </font>
-            </Button>
-            <Button alignment="CENTER" layoutX="530.0" layoutY="450.0" mnemonicParsing="false" onAction="#supprimerProduit" prefHeight="40.0" prefWidth="110.0" style="-fx-background-color: #d04848; -fx-border-radius: 10;" text="Supprimer">
-                <font>
-                    <Font name="Inter Semi Bold" size="15.0" />
-                </font>
-            </Button>
-         <Label layoutX="400.0" layoutY="70.0" text="Description :">
-            <font>
-               <Font name="Inter Semi Bold" size="20.0" />
+                <Font name="Inter Regular" size="14.0" />
             </font>
-         </Label>
-         <TextArea fx:id="descriptionCommande" layoutX="400.0" layoutY="100.0" prefHeight="130.0" prefWidth="310.0" />
-         <Label layoutX="400.0" layoutY="260.0" text="Produits :">
+        </Label>
+        <Label layoutX="15.0" layoutY="107.0" text="Référence" textFill="#6f7482" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="110.0">
             <font>
-               <Font name="Inter Semi Bold" size="20.0" />
-            </font></Label>
-         <Label layoutX="400.0" layoutY="360.0" text="Quantité :">
+                <Font name="Inter Regular" size="14.0" />
+            </font>
+        </Label>
+        <Button layoutX="394.0" layoutY="434.0" onAction="#ajouterProduit" prefHeight="40.0" prefWidth="100.0" style="-fx-background-color: #007AFF; -fx-border-color: #007AFF; -fx-border-radius: 5; -fx-background-radius: 5;" text="Ajouter" AnchorPane.leftAnchor="390.0">
             <font>
-               <Font name="Inter Semi Bold" size="20.0" />
-            </font></Label>
-         <ComboBox fx:id="refProduitBox" layoutX="400.0" layoutY="290.0" prefHeight="40.0" prefWidth="310.0" style="-fx-background-color: ccecf0;" />
-         <TextField fx:id="qteProduitField" layoutX="400.0" layoutY="390.0" prefHeight="40.0" prefWidth="130.0" style="-fx-background-color: ccecf0;" />
-         <Separator layoutY="60.0" prefWidth="850.0" />
-        </Pane>
-    </center>
-
-</BorderPane>
+                <Font name="Inter Semi Bold" size="15.0" />
+            </font>
+        </Button>
+        <TextField fx:id="idCommandeField" layoutX="106.0" layoutY="96.0" prefHeight="40.0" prefWidth="310.0" style="-fx-background-color: ccecf0;" AnchorPane.leftAnchor="100.0" AnchorPane.topAnchor="100.0" />
+        <DatePicker fx:id="dateCommandePicker" layoutX="106.0" layoutY="160.0" prefHeight="40.0" prefWidth="310.0" AnchorPane.leftAnchor="100.0" AnchorPane.topAnchor="160.0" />
+        <Button layoutX="746.0" layoutY="586.0" mnemonicParsing="false" onAction="#retourAccueil" prefHeight="40.0" style="-fx-background-color: white; -fx-border-color: black; -fx-border-radius: 5; -fx-background-radius: 5;" text="Annuler" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="10.0">
+            <font>
+                <Font name="Inter Semi Bold" size="15.0" />
+            </font>
+        </Button>
+        <Label layoutX="50.0" layoutY="20.0" text="Ajouter une nouvelle commande" textFill="#2e3333" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="15.0">
+            <font>
+                <Font name="System Bold" size="20.0" />
+            </font>
+        </Label>
+        <TableView fx:id="produitTable" layoutX="30.0" layoutY="250.0" stylesheets="@../css/tab.css" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="30.0" AnchorPane.topAnchor="250.0">
+            <columns>
+                <TableColumn fx:id="idProduitCol" prefWidth="200.0" text="ID" />
+                <TableColumn fx:id="qteProduitCol" minWidth="0.0" prefWidth="110.79998779296875" text="Quantité" />
+            </columns>
+        </TableView>
+        <Label layoutX="30.0" layoutY="220.0" text="Liste des produits" AnchorPane.leftAnchor="30.0" AnchorPane.topAnchor="220.0">
+            <font>
+                <Font name="System Bold" size="16.0" />
+            </font>
+        </Label>
+        <Button layoutX="654.0" layoutY="434.0" mnemonicParsing="false" onAction="#modifierProduit" prefHeight="40.0" prefWidth="100.0" style="-fx-background-color: white; -fx-border-color: black; -fx-border-radius: 5; -fx-background-radius: 5;" text="Modifier" AnchorPane.leftAnchor="610.0">
+            <font>
+                <Font name="Inter Semi Bold" size="15.0" />
+            </font>
+        </Button>
+        <Button alignment="CENTER" layoutX="524.0" layoutY="434.0" mnemonicParsing="false" onAction="#supprimerProduit" prefHeight="40.0" prefWidth="100.0" style="-fx-background-color: #D04848; -fx-border-radius: 5; -fx-background-radius: 5; -fx-border-color: #D04848;" text="Supprimer" AnchorPane.leftAnchor="500.0">
+            <font>
+                <Font name="Inter Semi Bold" size="15.0" />
+            </font>
+        </Button>
+     <Label layoutX="425.0" layoutY="107.0" text="Description " textFill="#6f7482" AnchorPane.leftAnchor="430.0" AnchorPane.topAnchor="110.0">
+        <font>
+           <Font name="Inter Regular" size="14.0" />
+        </font>
+     </Label>
+     <TextArea fx:id="descriptionCommande" layoutX="505.0" layoutY="97.0" prefHeight="100.0" prefWidth="310.0" style="-fx-background-color: ccecf0;" AnchorPane.leftAnchor="520.0" />
+     <Label layoutX="390.0" layoutY="310.0" text="Produits" textFill="#6f7482" AnchorPane.leftAnchor="390.0" AnchorPane.topAnchor="310.0">
+        <font>
+           <Font name="Inter Regular" size="14.0" />
+        </font></Label>
+     <Label layoutX="390.0" layoutY="380.0" text="Quantité" textFill="#6f7482" AnchorPane.leftAnchor="390.0" AnchorPane.topAnchor="380.0">
+        <font>
+           <Font name="Inter Regular" size="14.0" />
+        </font></Label>
+     <ComboBox fx:id="refProduitBox" layoutX="470.0" layoutY="300.0" prefHeight="40.0" prefWidth="310.0" style="-fx-background-color: ccecf0;" AnchorPane.leftAnchor="470.0" AnchorPane.topAnchor="300.0" />
+     <TextField fx:id="qteProduitField" layoutX="470.0" layoutY="370.0" prefHeight="40.0" prefWidth="130.0" style="-fx-background-color: ccecf0;" AnchorPane.leftAnchor="470.0" AnchorPane.topAnchor="370.0" />
+     <Separator layoutY="60.0" opacity="0.1" prefWidth="850.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="50.0" />
+   <Label layoutX="30.0" layoutY="60.0" text="Informations principales" AnchorPane.leftAnchor="30.0" AnchorPane.topAnchor="65.0">
+      <font>
+         <Font name="System Bold" size="16.0" />
+      </font>
+   </Label>
+   <Label layoutX="390.0" layoutY="260.0" text="Ajouter un produit" AnchorPane.leftAnchor="390.0" AnchorPane.topAnchor="260.0">
+      <font>
+         <Font name="System Bold" size="16.0" />
+      </font>
+   </Label>
+   <Button layoutX="660.0" layoutY="605.0" mnemonicParsing="false" onAction="#finaliserCommande" prefHeight="40.0" style="-fx-background-color: white; -fx-border-color: black; -fx-border-radius: 5; -fx-background-radius: 5;" text="Terminer" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="100.0">
+      <font>
+         <Font name="Inter Semi Bold" size="15.0" />
+      </font>
+   </Button>
+</AnchorPane>

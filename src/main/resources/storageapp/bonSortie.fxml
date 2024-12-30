@@ -4,63 +4,57 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="512.0" prefWidth="852.0" style="-fx-background-color: #ffffff;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
-    <right>
+<AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" style="-fx-background-color: #ffffff;-fx-background-radius: 20; -fx-border-radius: 20;" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1">
+    <Label layoutX="369.0" layoutY="92.0" text="Date" textFill="#6f7482" AnchorPane.leftAnchor="30.0" AnchorPane.topAnchor="200.0">
+        <font>
+            <Font name="Inter Regular" size="14.0" />
+        </font>
+    </Label>
+    <Label layoutX="30.0" layoutY="92.0" text="Référence" textFill="#6f7482" AnchorPane.leftAnchor="30.0" AnchorPane.topAnchor="140.0">
+        <font>
+            <Font name="Inter Regular" size="14.0" />
+        </font>
+    </Label>
+    <TextField fx:id="idBonField" layoutX="102.0" layoutY="99.0" prefHeight="40.0" prefWidth="300.0" style="-fx-background-color: ccecf0;" AnchorPane.leftAnchor="150.0" AnchorPane.topAnchor="130.0" />
+    <TextField fx:id="dateBonField" layoutX="369.0" layoutY="122.0" prefHeight="40.0" prefWidth="300.0" style="-fx-background-color: ccecf0;" AnchorPane.leftAnchor="150.0" AnchorPane.topAnchor="190.0" />
+    <Button layoutX="681.0" layoutY="450.0" mnemonicParsing="false" onAction="#modifierBonSortie" prefHeight="30.0" style="-fx-background-color: white; -fx-border-color: black; -fx-border-radius: 5; -fx-background-radius: 5;" text="Modifier" AnchorPane.rightAnchor="90.0" AnchorPane.topAnchor="10.0">
+        <font>
+            <Font name="Inter Semi Bold" size="15.0" />
+        </font>
+    </Button>
+    <Label fx:id="titleLabel" layoutX="50.0" layoutY="15.0" text="Bon de sortie n°" textFill="#2e3333" AnchorPane.leftAnchor="50.0" AnchorPane.topAnchor="15.0">
+        <font>
+            <Font name="System Bold" size="20.0" />
+        </font>
+    </Label>
+    <TableView fx:id="sortiesTable" layoutX="30.0" layoutY="220.0" stylesheets="@../css/tab.css" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="500.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="130.0">
+        <columns>
+            <TableColumn fx:id="idSortieCol" prefWidth="52.39999008178711" text="ID" />
+            <TableColumn fx:id="refSortieCol" prefWidth="152.8000030517578" text="Référence" />
+            <TableColumn fx:id="qteSortieCol" minWidth="0.0" prefWidth="90.0" text="Quantité" />
+            <TableColumn fx:id="descrSortieCol" prefWidth="400.0" text="Description" />
+        </columns>
+    </TableView>
+    <Label layoutX="30.0" layoutY="190.0" text="Matières premières" AnchorPane.leftAnchor="500.0" AnchorPane.topAnchor="80.0">
+        <font>
+            <Font name="System Bold" size="16.0" />
+        </font>
+    </Label>
+    <Separator layoutY="60.0" opacity="0.1" prefWidth="852.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="60.0" />
+ <Button layoutX="517.0" layoutY="450.0" mnemonicParsing="false" onAction="#imprimer" prefHeight="30.0" style="-fx-background-color: white; -fx-border-color: black; -fx-border-radius: 5; -fx-background-radius: 5;" text="Imprimer" AnchorPane.rightAnchor="180.0" AnchorPane.topAnchor="10.0">
+    <font>
+       <Font name="Inter Semi Bold" size="15.0" />
+    </font>
+ </Button>
+   <Label layoutX="35.0" layoutY="164.0" text="Informations principales" AnchorPane.leftAnchor="30.0" AnchorPane.topAnchor="80.0">
+      <font>
+         <Font name="System Bold" size="16.0" />
+      </font>
+   </Label>
+   <Button layoutX="1124.0" layoutY="20.0" mnemonicParsing="false" onAction="#retourAccueil" prefHeight="30.0" style="-fx-background-color: white; -fx-border-color: black; -fx-border-radius: 5; -fx-background-radius: 5;" text="Retour" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+      <font>
+         <Font name="Inter Semi Bold" size="15.0" />
+      </font>
+   </Button>
 
-    </right>
-    <bottom>
-    </bottom>
-    <left>
-
-    </left>
-    <center>
-        <Pane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-            <Label layoutX="369.0" layoutY="70.0" text="Date" textFill="#6f7482">
-                <font>
-                    <Font name="Inter Regular" size="18.0" />
-                </font>
-            </Label>
-            <Label layoutX="30.0" layoutY="70.0" text="ID" textFill="#6f7482">
-                <font>
-                    <Font name="Inter Regular" size="18.0" />
-                </font>
-            </Label>
-            <TextField fx:id="idBonField" layoutX="30.0" layoutY="100.0" prefHeight="40.0" prefWidth="300.0" style="-fx-background-color: ccecf0;" />
-            <TextField fx:id="dateBonField" layoutX="369.0" layoutY="100.0" prefHeight="40.0" prefWidth="230.0" style="-fx-background-color: ccecf0;" />
-            <Button layoutX="681.0" layoutY="450.0" mnemonicParsing="false" onAction="#modifier" prefHeight="40.0" prefWidth="150.0" style="-fx-background-color: white; -fx-border-color: black; -fx-border-radius: 10;" text="Modifier">
-                <font>
-                    <Font name="Inter Semi Bold" size="15.0" />
-                </font>
-            </Button>
-            <Label fx:id="titleLabel" layoutX="50.0" layoutY="15.0" text="Bon de sortie n°" textFill="#2e3333">
-                <font>
-                    <Font name="Inter Semi Bold" size="24.0" />
-                </font>
-            </Label>
-            <TableView fx:id="sortiesTable" layoutX="30.0" layoutY="220.0" prefHeight="160.0" prefWidth="698.0" stylesheets="@../css/tab.css">
-                <columns>
-                    <TableColumn fx:id="idSortieCol" prefWidth="52.39999008178711" text="ID" />
-                    <TableColumn fx:id="refSortieCol" prefWidth="152.8000030517578" text="Référence" />
-                    <TableColumn fx:id="qteSortieCol" minWidth="0.0" prefWidth="90.0" text="Quantité" />
-                    <TableColumn fx:id="descrSortieCol" prefWidth="400.0" text="Description" />
-                </columns>
-            </TableView>
-            <Button layoutX="790.0" layoutY="9.0" mnemonicParsing="false" onAction="#retour" style="-fx-background-color: white;" text="X">
-                <font>
-                    <Font name="System Bold" size="20.0" />
-                </font></Button>
-            <Label layoutX="30.0" layoutY="190.0" text="Sorties" textFill="#6f7482">
-                <font>
-                    <Font name="Inter Regular" size="20.0" />
-                </font>
-            </Label>
-            <Separator layoutY="60.0" prefWidth="852.0" />
-         <Button layoutX="517.0" layoutY="450.0" mnemonicParsing="false" onAction="#imprimer" prefHeight="40.0" prefWidth="150.0" style="-fx-background-color: white; -fx-border-color: black; -fx-border-radius: 10;" text="Imprimer">
-            <font>
-               <Font name="Inter Semi Bold" size="15.0" />
-            </font>
-         </Button>
-        </Pane>
-    </center>
-
-</BorderPane>
+</AnchorPane>

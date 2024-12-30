@@ -12,11 +12,9 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
-import jfxtras.styles.jmetro.JMetro;
-import jfxtras.styles.jmetro.Style;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
@@ -33,6 +31,8 @@ import java.util.Map;
 
 public class bonSortieController {
     @FXML
+    private AnchorPane root;
+    @FXML
     private Label titleLabel;
     private final String bonSortieId;
     @FXML
@@ -43,15 +43,18 @@ public class bonSortieController {
     @FXML
     private TableColumn<Map<String, Object>, String> idSortieCol, refSortieCol, qteSortieCol, descrSortieCol;
 
-    public bonSortieController(DependencyManager dependencyManager, String bonSortieId){
+    public bonSortieController(DependencyManager dependencyManager, String bonSortieId, AnchorPane root) {
         this.dependencyManager = dependencyManager;
         this.bonSortieId = bonSortieId;
+        this.root = root;
     }
 
     public void initialize(){
         titleLabel.setText("Bon de sortie N° " + bonSortieId);
         updateSortieTable();
         updateData();
+        sortiesTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+
     }
 
     @FXML
@@ -63,7 +66,6 @@ public class bonSortieController {
         idBonField.setText(String.valueOf(bonSortie.get("id")));
         dateBonField.setText((String) bonSortie.get("date"));
     }
-
     @FXML
     public void updateSortieTable(){
         if (!sortiesTable.getItems().isEmpty()) {
@@ -80,30 +82,22 @@ public class bonSortieController {
         descrSortieCol.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().get("description")).asString());
     }
 
-    public void retour(ActionEvent event) throws IOException, SQLException {
-        Node source = (Node) event.getSource();
-        Stage oldStage = (Stage) source.getScene().getWindow();
-        oldStage.close();
+    public void retourAccueil(ActionEvent event) throws IOException, SQLException {
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        fxmlLoader.setLocation(StorageApp.class.getResource("accueilBon.fxml"));
+        fxmlLoader.setController(new accueilBon(dependencyManager, root));
+        AnchorPane newLoadedPane = fxmlLoader.load();
+        newLoadedPane.setPrefSize(root.getWidth(), root.getHeight());
+        root.getChildren().setAll(newLoadedPane);
     }
-
-    public void modifier(ActionEvent event) throws IOException, SQLException {
+    public void modifierBonSortie(ActionEvent event) throws IOException, SQLException {
         FXMLLoader fxmlLoader = new FXMLLoader();
         fxmlLoader.setLocation(StorageApp.class.getResource("modifierBon.fxml"));
-        fxmlLoader.setController(new modifierBonController(dependencyManager, bonSortieId));
-
-        Scene scene = new Scene(fxmlLoader.load());
-        JMetro jMetro = new JMetro(scene, Style.LIGHT);
-        Stage stage = new Stage();
-        stage.initStyle(StageStyle.UNDECORATED);
-        stage.setTitle("Stockapp");
-        stage.setScene(scene);
-        stage.showAndWait();
-        Node source = (Node) event.getSource();
-        Stage oldStage = (Stage) source.getScene().getWindow();
-        oldStage.close();
+        fxmlLoader.setController(new modifierBonController(dependencyManager, bonSortieId, root));
+        AnchorPane newLoadedPane = fxmlLoader.load();
+        newLoadedPane.setPrefSize(root.getWidth(), root.getHeight());
+        root.getChildren().setAll(newLoadedPane);
     }
-
-    @FXML
     protected void imprimer(ActionEvent event) {
         Node source = (Node) event.getSource();
         Stage primaryStage = (Stage) source.getScene().getWindow();

@@ -5,20 +5,20 @@
 <?import javafx.scene.text.*?>
 
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1">
-    <Label fx:id="bonSortie" style="-fx-font-weight: bold;" text="Bons de sortie" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="30.0">
+    <Label fx:id="bonSortie" style="-fx-font-weight: bold;" text="Bons de sortie" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="15.0">
         <font>
             <Font name="Inter Semi Bold" size="24.0" />
         </font>
     </Label>
     <TableView fx:id="bonSortieTable" stylesheets="@../css/tab.css" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="80.0" VBox.vgrow="ALWAYS">
         <columns>
-            <TableColumn fx:id="idBonColumn" prefWidth="152.0" text="ID" />
+            <TableColumn fx:id="idBonColumn" prefWidth="152.0" text="Référence" />
             <TableColumn fx:id="dateBonColumn" minWidth="8.0" prefWidth="288.9999694824219" text="Date" />
         </columns>
     </TableView>
-    <Button fx:id="createBonSortie" mnemonicParsing="false" onAction="#creerBon" prefHeight="40.0" prefWidth="166.0" style="-fx-background-color: #1366D9; -fx-border-radius: 4;" text="Ajouter un bon de sortie" textFill="WHITE" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="30.0">
+    <Button fx:id="createBonSortie" mnemonicParsing="false" onAction="#ajouterBonSortie" prefHeight="40.0" style="-fx-background-color: #1366D9; -fx-border-radius: 5; -fx-background-radius: 5;" text="Ajouter un bon de sortie" textFill="WHITE" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="30.0">
         <font>
-            <Font name="System Bold" size="12.0" />
+            <Font name="System Bold" size="15.0" />
         </font>
     </Button>
 </AnchorPane>

@@ -5,7 +5,7 @@
 <?import javafx.scene.text.*?>
 
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1">
-    <Label fx:id="commande" style="-fx-font-weight: bold;" text="Commandes" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="30.0">
+    <Label fx:id="commande" style="-fx-font-weight: bold;" text="Commandes" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="15.0">
         <font>
             <Font name="Inter Semi Bold" size="24.0" />
         </font>
@@ -15,9 +15,9 @@
             <TableColumn fx:id="idCommandeColumn" prefWidth="332.99998474121094" text="Référence" />
         </columns>
     </TableView>
-    <Button fx:id="createCommande" mnemonicParsing="false" onAction="#creerCommande" prefHeight="40.0" prefWidth="150.0" style="-fx-background-color: #1366D9; -fx-border-radius: 4;" text="Ajouter une commande" textFill="WHITE" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="30.0">
+    <Button fx:id="createCommande" mnemonicParsing="false" onAction="#ajouterCommande" prefHeight="40.0" style="-fx-background-color: #1366D9; -fx-border-radius: 5; -fx-background-radius: 5;" text="Ajouter une commande" textFill="WHITE" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="30.0">
         <font>
-            <Font name="System Bold" size="12.0" />
+            <Font name="System Bold" size="15.0" />
         </font>
     </Button>
 </AnchorPane>

@@ -6,17 +6,9 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.effect.ColorAdjust;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.TilePane;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
-import jfxtras.styles.jmetro.JMetro;
-import jfxtras.styles.jmetro.Style;
 import storageapp.StorageApp;
 import storageapp.service.DependencyManager;
 
@@ -26,26 +18,20 @@ import java.util.Map;
 
 public class accueilFacture {
     @FXML
-    private AnchorPane anchorPane;
-    @FXML
-    private TilePane ficheCards;
+    private AnchorPane root;
     private DependencyManager dependencyManager;
     @FXML
-    private TableView<Map<String, Object>> ficheStockTable, bonSortieTable, facturesTable, produitFiniTable, commandeTable;
+    private TableView<Map<String, Object>> facturesTable;
     @FXML
-    private TableColumn<Map<String, Object>, String> idFactureColumn, nbrFactureColumn, fournisseurFactureColumn, dateFactureColumn, refProduitFiniColumn, refFicheStockColumn, catFicheStockColumn, desFicheStockColumn, qteFicheStockColumn, idBonColumn, dateBonColumn, idCommandeColumn;
-    @FXML
-    private Button createCommande, createFacture, createProduit, createBonSortie, rechercheFicheFiltre, factures, fiches, produits, bons, commandes;
-    @FXML
-    private Label facture, commande, produitFini, bonSortie, ficheStock;
-    @FXML
-    private ComboBox<String> referenceFicheFiltre, categorieFicheFiltre, designationFicheFiltre;
+    private TableColumn<Map<String, Object>, String> idFactureColumn, nbrFactureColumn, fournisseurFactureColumn, dateFactureColumn;
 
-    public accueilFacture(DependencyManager dependencyManager) {
+    public accueilFacture(DependencyManager dependencyManager, AnchorPane root) {
         this.dependencyManager = dependencyManager;
+        this.root = root;
     }
     public void initialize() {
         updateFactureTable();
+        facturesTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
     }
     public void updateFactureTable() {
         if (!facturesTable.getItems().isEmpty()) {
@@ -79,51 +65,22 @@ public class accueilFacture {
     public void openFactureWindow(String factureId, MouseEvent ignoredevent) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader();
         fxmlLoader.setLocation(StorageApp.class.getResource("facture.fxml"));
-        fxmlLoader.setController(new factureController(dependencyManager, factureId));
-        ColorAdjust dim = new ColorAdjust();
-        dim.setBrightness(-0.4);
+        fxmlLoader.setController(new factureController(dependencyManager, factureId, root));
 
-        Node source = (Node) ignoredevent.getSource();
-        Stage oldStage = (Stage) source.getScene().getWindow();
-        oldStage.getScene().getRoot().setEffect(dim);
-        Scene scene = new Scene(fxmlLoader.load());
-        Stage stage = new Stage();
-        JMetro jMetro = new JMetro(scene, Style.LIGHT);
-        stage.initStyle(StageStyle.UNDECORATED);
-        stage.setTitle("Stockapp");
-        stage.setScene(scene);
-        stage.showAndWait();
-        dim.setBrightness(0);
-        oldStage.getScene().getRoot().setEffect(dim);
-        updateFactureTable();
-        //updateFicheStockTable();
+        AnchorPane newLoadedPane = fxmlLoader.load();
+        newLoadedPane.setPrefSize(root.getWidth(), root.getHeight());
+        root.getChildren().setAll(newLoadedPane);
+
     }
 
     @FXML
-    protected void ajouterNouvelleFacture(ActionEvent ignorede) throws IOException {
+    protected void ajouterFacture(ActionEvent ignorede) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader();
         fxmlLoader.setLocation(StorageApp.class.getResource("nouvelleFacture.fxml"));
-        fxmlLoader.setController(new nouvelleFactureController(dependencyManager));
-        ColorAdjust dim = new ColorAdjust();
-        dim.setBrightness(-0.4);
-
-        Node source = (Node) ignorede.getSource();
-        Stage oldStage = (Stage) source.getScene().getWindow();
-        oldStage.getScene().getRoot().setEffect(dim);
-
-        Scene scene = new Scene(fxmlLoader.load());
-        JMetro jMetro = new JMetro(scene, Style.LIGHT);
-        Stage stage = new Stage();
-        //stage.setTitle("Stockapp");
-        //stage.setMaximized(true);
-        stage.initStyle(StageStyle.UNDECORATED);
-        stage.setTitle("Stockapp");
-        stage.setScene(scene);
-        stage.showAndWait();
-        dim.setBrightness(0);
-        oldStage.getScene().getRoot().setEffect(dim);
-        //updateFicheStockTable();
-        updateFactureTable();
+        fxmlLoader.setController(new nouvelleFactureController(dependencyManager, root));
+        AnchorPane newLoadedPane = fxmlLoader.load();
+        newLoadedPane.setPrefSize(root.getWidth(), root.getHeight());
+        root.getChildren().setAll(newLoadedPane);
     }
 
 

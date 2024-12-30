@@ -5,18 +5,18 @@
 <?import javafx.scene.text.*?>
 
 <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1">
-    <Label fx:id="facture" prefWidth="820.0" style="-fx-font-weight: bold;" text="Factures" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="30.0">
+    <Label fx:id="facture" style="-fx-font-weight: bold;" text="Factures" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="15.0">
         <font>
             <Font name="Inter Semi Bold" size="24.0" />
         </font>
     </Label>
-    <Button fx:id="createFacture" mnemonicParsing="false" onAction="#ajouterNouvelleFacture" prefHeight="40.0" prefWidth="120.0" style="-fx-background-color: #1366D9; -fx-border-radius: 8;" text="Ajouter facture" textFill="WHITE" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="30.0">
+    <Button fx:id="createFacture" mnemonicParsing="false" onAction="#ajouterFacture" prefHeight="40.0" style="-fx-background-color: #1366D9; -fx-border-radius: 5; -fx-background-radius: 5; -fx-border-color: #1366D9;" text="Ajouter facture" textFill="WHITE" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="30.0">
         <font>
-            <Font name="System Bold" size="12.0" />
+            <Font name="System Bold" size="15.0" />
         </font></Button>
     <TableView fx:id="facturesTable" prefHeight="400.0" prefWidth="751.0" stylesheets="@../css/tab.css" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="80.0" VBox.vgrow="ALWAYS">
         <columns>
-            <TableColumn fx:id="idFactureColumn" prefWidth="208.2000274658203" text="ID" />
+            <TableColumn fx:id="idFactureColumn" prefWidth="208.2000274658203" text="Référence" />
             <TableColumn fx:id="dateFactureColumn" prefWidth="125.79998779296875" text="Date" />
             <TableColumn fx:id="fournisseurFactureColumn" prefWidth="165.4000244140625" text="Fournisseur" />
             <TableColumn fx:id="nbrFactureColumn" prefWidth="257.4000244140625" text="Nombre d'entrées" />

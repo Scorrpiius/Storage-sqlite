@@ -6,13 +6,18 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import org.controlsfx.control.textfield.TextFields;
+import org.w3c.dom.Text;
+import storageapp.StorageApp;
 import storageapp.service.DependencyManager;
 
 import java.io.*;
@@ -22,6 +27,10 @@ import java.util.List;
 import java.util.Map;
 
 public class modifierProduitFiniController {
+    @FXML
+    private AnchorPane root;
+    @FXML
+    private Label titlePage;
     @FXML
     private ImageView img;
     private String matiereInit;
@@ -36,39 +45,19 @@ public class modifierProduitFiniController {
     private TableView<Map<String, Object>> matierePremiereTable;
     @FXML
     private TableColumn<Map<String, Object>, String> referenceColumn, qteColumn;
-    public modifierProduitFiniController(DependencyManager dependencyManager, String produitId){
+    public modifierProduitFiniController(DependencyManager dependencyManager, String produitId, AnchorPane root){
         this.dependencyManager = dependencyManager;
         this.idProduitInit = produitId;
         this.IDPRODUIT = produitId;
+        this.root = root;
     }
     public void initialize(){
+        titlePage.setText("Modifier le produit N° "+ idProduitInit);
         updateData();
         updateMatiereReferences();
         updateMatiereTable();
-    }
-    public void autoCompletion(ComboBox<String> comboBox, List<String> referencesList ){
-        TextField textField = comboBox.getEditor();
-        FilteredList<String> filteredItems = new FilteredList<>(FXCollections.observableArrayList(referencesList), p -> true);
+        matierePremiereTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
-        textField.textProperty().addListener((obs, oldValue, newValue) -> {
-            final TextField editor = comboBox.getEditor();
-            final String selected = comboBox.getSelectionModel().getSelectedItem();
-
-            if (selected == null || !selected.equals(editor.getText())) {
-                filterItems(filteredItems, newValue, comboBox);
-                comboBox.show();
-            }
-        });
-        comboBox.setItems(filteredItems);
-    }
-    private void filterItems(FilteredList<String> filteredItems, String filter, ComboBox<String> comboBox) {
-        filteredItems.setPredicate(item -> {
-            if (filter == null || filter.isEmpty()) {
-                return true;
-            }
-            String lowerCaseFilter = filter.toLowerCase();
-            return item.toLowerCase().contains(lowerCaseFilter);
-        });
     }
 
     public void updateData(){
@@ -83,7 +72,7 @@ public class modifierProduitFiniController {
         }
         matiereReferenceBox.setItems(FXCollections.observableArrayList(referencesList));
         matiereReferenceBox.setEditable(true);
-        autoCompletion(matiereReferenceBox, referencesList);
+        TextFields.bindAutoCompletion(matiereReferenceBox.getEditor(), matiereReferenceBox.getItems());
     }
     public void updateMatiereTable(){
         if (!matierePremiereTable.getItems().isEmpty()) {
@@ -118,7 +107,7 @@ public class modifierProduitFiniController {
         matiereReferenceBox.setValue(matierePremiereId);
         qte.setText(String.valueOf(quantite));
     }
-    public void ajouter(ActionEvent ignoredE) throws IOException {
+    public void ajouterMatierePremiere(ActionEvent ignoredE) throws IOException {
         majId();
 
         String referenceMatiereProduit = matiereReferenceBox.getValue();
@@ -139,7 +128,7 @@ public class modifierProduitFiniController {
         matiereReferenceBox.setValue("");
         qte.setText("");
         updateMatiereTable();    }
-    public void modifier(ActionEvent ignoredE) throws IOException {
+    public void modifierMatierePremiere(ActionEvent ignoredE) throws IOException {
         majId();
 
         String newMatierePremiere = matiereReferenceBox.getValue();
@@ -158,14 +147,14 @@ public class modifierProduitFiniController {
         qte.setText("");
         updateMatiereTable();
     }
-    public void supprimerMatiere(){
+    public void supprimerMatierePremiere(){
         /* Maj de l'id si il a été changé */
         majId();
 
         dependencyManager.getProduitFiniMatierePremiereRepository().delete(idProduitInit, matiereReferenceBox.getValue());
         updateMatiereTable();
     }
-    public void finaliserSaisie(ActionEvent event) throws SQLException {
+    public void finaliserModifProduitFini(ActionEvent event) throws SQLException, IOException {
         if (!IDPRODUIT.equals(referenceProduit.getText())){
             if (!(dependencyManager.getProduitFiniRepository().findById(referenceProduit.getText()) == null)){
                 showAlert();
@@ -183,18 +172,24 @@ public class modifierProduitFiniController {
 
         majId();
         dependencyManager.getConnection().commit();
-        Node source = (Node) event.getSource();
-        Stage stage = (Stage) source.getScene().getWindow();
-        stage.close();
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        fxmlLoader.setLocation(StorageApp.class.getResource("produitFini.fxml"));
+        fxmlLoader.setController(new produitFiniController(dependencyManager, idProduitInit,  root));
+        AnchorPane newLoadedPane = fxmlLoader.load();
+        newLoadedPane.setPrefSize(root.getWidth(), root.getHeight());
+        root.getChildren().setAll(newLoadedPane);
     }
-    public void retour(ActionEvent e) throws IOException, SQLException {
+    public void retourProduit(ActionEvent e) throws IOException, SQLException {
         dependencyManager.getConnection().rollback();
-        Node source = (Node) e.getSource();
-        Stage oldStage = (Stage) source.getScene().getWindow();
-        oldStage.close();
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        fxmlLoader.setLocation(StorageApp.class.getResource("produitFini.fxml"));
+        fxmlLoader.setController(new produitFiniController(dependencyManager, idProduitInit,  root));
+        AnchorPane newLoadedPane = fxmlLoader.load();
+        newLoadedPane.setPrefSize(root.getWidth(), root.getHeight());
+        root.getChildren().setAll(newLoadedPane);
 
     }
-    public void loadImage(ActionEvent e) throws FileNotFoundException {
+    public void telechargerImage(ActionEvent e) throws FileNotFoundException {
         Node source = (Node) e.getSource();
         Stage currentStage = (Stage) source.getScene().getWindow();
 

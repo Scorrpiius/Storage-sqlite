@@ -6,10 +6,15 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import org.controlsfx.control.textfield.TextFields;
+import org.w3c.dom.Text;
+import storageapp.StorageApp;
 import storageapp.service.DependencyManager;
 
 import java.io.IOException;
@@ -18,6 +23,8 @@ import java.time.LocalDate;
 import java.util.*;
 
 public class nouvelleCommandeController {
+    @FXML
+    private AnchorPane root;
     private String produitInit;
     @FXML
     private TextArea descriptionCommande;
@@ -35,36 +42,15 @@ public class nouvelleCommandeController {
     private TableColumn<Map<String, Object>, String> idProduitCol, qteProduitCol;
 
 
-    public nouvelleCommandeController(DependencyManager dependencyManager){
+    public nouvelleCommandeController(DependencyManager dependencyManager, AnchorPane root){
         this.dependencyManager = dependencyManager;
         this.listeProduits = new ArrayList<>();
+        this.root = root;
     }
     public void initialize(){
         updateProduit();
-    }
-    public void autoCompletion(ComboBox<String> comboBox, List<String> referencesList ){
-        TextField textField = comboBox.getEditor();
-        FilteredList<String> filteredItems = new FilteredList<>(FXCollections.observableArrayList(referencesList), p -> true);
+        produitTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
-        textField.textProperty().addListener((obs, oldValue, newValue) -> {
-            final TextField editor = comboBox.getEditor();
-            final String selected = comboBox.getSelectionModel().getSelectedItem();
-
-            if (selected == null || !selected.equals(editor.getText())) {
-                filterItems(filteredItems, newValue, comboBox);
-                comboBox.show();
-            }
-        });
-        comboBox.setItems(filteredItems);
-    }
-    private void filterItems(FilteredList<String> filteredItems, String filter, ComboBox<String> comboBox) {
-        filteredItems.setPredicate(item -> {
-            if (filter == null || filter.isEmpty()) {
-                return true;
-            }
-            String lowerCaseFilter = filter.toLowerCase();
-            return item.toLowerCase().contains(lowerCaseFilter);
-        });
     }
 
     public void updateProduit(){
@@ -77,7 +63,7 @@ public class nouvelleCommandeController {
         refProduitBox.setItems(FXCollections.observableArrayList(produitList));
         refProduitBox.setEditable(true);
 
-        autoCompletion(refProduitBox, produitList);
+        TextFields.bindAutoCompletion(refProduitBox.getEditor(), refProduitBox.getItems());
     }
     public void updateProduitTable(){
         if (!produitTable.getItems().isEmpty()) {
@@ -110,26 +96,12 @@ public class nouvelleCommandeController {
         refProduitBox.setValue(produitId);
         qteProduitField.setText(String.valueOf(p.get("quantite")));
     }
-    public void ajouter(){
+
+    public void ajouterProduit(){
         String idProduit = refProduitBox.getValue();
         String quantite = qteProduitField.getText();
 
-        boolean allFieldsFilled = !quantite.isEmpty() && idProduit != null;
-
-        if(!allFieldsFilled){
-            accept();
-            return;
-        }
-
-        /* Vérifier que cette référence n'existe pas déjà dans la liste */
-        Optional<Map<String, Object>> result = listeProduits.stream()
-                .filter(map -> idProduit.equals(map.get("id_ProduitFini")))
-                .findFirst();
-
-        if(result.isPresent()){
-            System.out.println("Can't add the same reference twice");
-            return;
-        }
+        if (assertProduit(idProduit, quantite, "add")){return;};
 
         Map<String, Object> mp = new HashMap<>();
         mp.put("id_ProduitFini", idProduit);
@@ -141,25 +113,11 @@ public class nouvelleCommandeController {
         updateProduitTable();
 
     }
-    public void modifier(){
+    public void modifierProduit(){
         String newProduit = refProduitBox.getValue();
         String quantite = qteProduitField.getText();
 
-        if (produitInit == null){
-            System.out.println("Click on the line to modify");
-            return;
-        }
-
-        if(!produitInit.equals(newProduit)) {
-            Optional<Map<String, Object>> result = listeProduits.stream()
-                    .filter(map -> newProduit.equals(map.get("id_ProduitFini")))
-                    .findFirst();
-
-            if (result.isPresent()) {
-                System.out.println("Already exists in the table");
-                return;
-            }
-        }
+        if (assertProduit(newProduit, quantite, "edit")){return;};
 
         Map<String, Object> p = listeProduits.stream()
                 .filter(map -> produitInit.equals(map.get("id_ProduitFini")))
@@ -185,25 +143,13 @@ public class nouvelleCommandeController {
         }
     }
     @FXML
-    public void finaliserSaisie(ActionEvent e) throws SQLException {
+
+    public void finaliserCommande(ActionEvent e) throws SQLException, IOException {
         final String idCommande = idCommandeField.getText();
         final String descriptionCommande = this.descriptionCommande.getText();
         final LocalDate dateCommande = dateCommandePicker.getValue();
 
-        boolean allFieldsFilled = !idCommande.isEmpty()
-                && !descriptionCommande.isEmpty()
-                && dateCommande != null;
-
-        if(!allFieldsFilled){
-            accept();
-            return;
-        }
-
-        if (!(dependencyManager.getCommandeRepository().findById(idCommande) == null)){
-            showAlert();
-            return;
-        }
-
+        if(assertCommande(idCommande, descriptionCommande, dateCommande)){return;}
         dependencyManager.getCommandeRepository().create(idCommande, descriptionCommande, dateCommande);
 
         for(Map<String, Object> p : listeProduits){
@@ -211,30 +157,83 @@ public class nouvelleCommandeController {
         }
 
         dependencyManager.getConnection().commit();
-        Node source = (Node) e.getSource();
-        Stage stage = (Stage) source.getScene().getWindow();
-        stage.close();
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        fxmlLoader.setLocation(StorageApp.class.getResource("accueilCommande.fxml"));
+        fxmlLoader.setController(new accueilCommande(dependencyManager, root));
+        AnchorPane newLoadedPane = fxmlLoader.load();
+        newLoadedPane.setPrefSize(root.getWidth(), root.getHeight());
+        root.getChildren().setAll(newLoadedPane);
 
     }
-    public void retour(ActionEvent event) throws IOException {
-        Node source = (Node) event.getSource();
-        Stage oldStage = (Stage) source.getScene().getWindow();
-        oldStage.close();
+    public void retourAccueil(ActionEvent event) throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        fxmlLoader.setLocation(StorageApp.class.getResource("accueilCommande.fxml"));
+        fxmlLoader.setController(new accueilCommande(dependencyManager, root));
+        AnchorPane newLoadedPane = fxmlLoader.load();
+        newLoadedPane.setPrefSize(root.getWidth(), root.getHeight());
+        root.getChildren().setAll(newLoadedPane);
     }
 
-    private void showAlert() {
+    public boolean assertProduit(String idProduit, String quantite, String status){
+        if (status.equals("add")){
+            boolean allFieldsFilled = !quantite.isEmpty() && idProduit != null;
+
+            if(!allFieldsFilled){
+                showAlert("Veuillez remplir tous les champs");
+                return true;
+            }
+
+            /* Vérifier que cette référence n'existe pas déjà dans la liste */
+            Optional<Map<String, Object>> result = listeProduits.stream()
+                    .filter(map -> idProduit.equals(map.get("id_ProduitFini")))
+                    .findFirst();
+
+            if(result.isPresent()){
+                showAlert("Cette référence de produit est déjà présente dans la liste, si vous souhaitez modifier la quantité, appuyez sur le bouton modifier. " +
+                        "Sinon veuillez choisir un autre produit");
+                return true;
+            }
+        } else if (status.equals("edit")){
+            if (produitInit == null){
+                showAlert("Choisissez un produit à modifier");
+                return true;
+            }
+
+            if(!produitInit.equals(idProduit)) {
+                Optional<Map<String, Object>> result = listeProduits.stream()
+                        .filter(map -> idProduit.equals(map.get("id_ProduitFini")))
+                        .findFirst();
+
+                if (result.isPresent()) {
+                    showAlert("Cette référence de produit existe déjà dans la table");
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    public boolean assertCommande(String idCommande, String descriptionCommande, LocalDate dateCommande){
+        boolean allFieldsFilled = !idCommande.isEmpty()
+                && !descriptionCommande.isEmpty()
+                && dateCommande != null;
+
+        if(!allFieldsFilled){
+            showAlert("Veuillez remplir tous les champs");
+            return true;
+        }
+
+        if (!(dependencyManager.getCommandeRepository().findById(idCommande) == null)){
+            showAlert("Cette référence de commande existe déjà, veuillez en saisir une nouvelle.");
+            return true;
+        }
+        return false;
+    }
+    public void showAlert(String message) {
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle("Warning Dialog");
         alert.setHeaderText("Validation échouée");
-        alert.setContentText("Cette référence de commande existe déjà. Veuillez saisir une nouvelle référence");
+        alert.setContentText(message);
         alert.showAndWait();
     }
-    private static void accept() {
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle("Warning Dialog");
-        alert.setHeaderText("Validation échouée");
-        alert.setContentText("Veuillez remplir tous les champs");
-        alert.showAndWait();
-        return;
-    }
+
 }

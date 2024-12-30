@@ -6,23 +6,18 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
-import jfxtras.styles.jmetro.JMetro;
-import jfxtras.styles.jmetro.Style;
+import javafx.scene.layout.AnchorPane;
 import storageapp.StorageApp;
 import storageapp.service.DependencyManager;
-
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
 public class commandeController {
-
+    @FXML
+    private AnchorPane root;
     private final String commandeId;
     @FXML
     private TextArea descriptionCommande;
@@ -34,14 +29,19 @@ public class commandeController {
     @FXML
     private TableColumn<Map<String, Object>, String> idProduitCol, qteProduitCol;
 
-    public commandeController(DependencyManager dependencyManager, String commandeId){
+    public commandeController(DependencyManager dependencyManager, String commandeId, AnchorPane root){
         this.dependencyManager = dependencyManager;
         this.commandeId = commandeId;
+        this.root = root;
     }
+
     public void initialize(){
         updateProduitsTable();
         updateData();
+        produitTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+
     }
+
     public void updateData(){
         Map<String, Object> commande = dependencyManager.getCommandeRepository().findById(commandeId);
         idCommandeField.setText(String.valueOf(commande.get("id")));
@@ -63,36 +63,30 @@ public class commandeController {
 
         idProduitCol.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().get("id_ProduitFini")).asString());
         qteProduitCol.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().get("quantite")).asString());
-
     }
-    public void modifier(ActionEvent ignoredevent) throws IOException {
+
+    public void modifierCommande(ActionEvent ignoredevent) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader();
         fxmlLoader.setLocation(StorageApp.class.getResource("modifierCommande.fxml"));
-        fxmlLoader.setController(new modifierCommandeController(dependencyManager, commandeId));
-        Scene scene = new Scene(fxmlLoader.load());
-        JMetro jMetro = new JMetro(scene, Style.LIGHT);
-        Stage stage = new Stage();
-        stage.initStyle(StageStyle.UNDECORATED);
-        stage.setTitle("Stockapp");
-        stage.setScene(scene);
-        stage.showAndWait();
-        updateProduitsTable();
+        fxmlLoader.setController(new modifierCommandeController(dependencyManager, commandeId, root));
+        AnchorPane newLoadedPane = fxmlLoader.load();
+        newLoadedPane.setPrefSize(root.getWidth(), root.getHeight());
+        root.getChildren().setAll(newLoadedPane);
     }
-    public void retour(ActionEvent event) throws IOException, SQLException {
-        Node source = (Node) event.getSource();
-        Stage oldStage = (Stage) source.getScene().getWindow();
-        oldStage.close();
+    public void retourAccueil(ActionEvent event) throws IOException, SQLException {
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        fxmlLoader.setLocation(StorageApp.class.getResource("accueilCommande.fxml"));
+        fxmlLoader.setController(new accueilCommande(dependencyManager, root));
+        AnchorPane newLoadedPane = fxmlLoader.load();
+        newLoadedPane.setPrefSize(root.getWidth(), root.getHeight());
+        root.getChildren().setAll(newLoadedPane);
     }
-    public void tableauBesoin(ActionEvent ignoredEvent) throws IOException {
+    public void visualiserTableauBesoin(ActionEvent ignoredEvent) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader();
         fxmlLoader.setLocation(StorageApp.class.getResource("tableauBesoin.fxml"));
-        fxmlLoader.setController(new tableauBesoinController(dependencyManager, commandeId));
-        Scene scene = new Scene(fxmlLoader.load());
-        JMetro jMetro = new JMetro(scene, Style.LIGHT);
-        Stage stage = new Stage();
-        stage.initStyle(StageStyle.UNDECORATED);
-        stage.setTitle("Stockapp");
-        stage.setScene(scene);
-        stage.showAndWait();
+        fxmlLoader.setController(new tableauBesoinController(dependencyManager, commandeId, root));
+        AnchorPane newLoadedPane = fxmlLoader.load();
+        newLoadedPane.setPrefSize(root.getWidth(), root.getHeight());
+        root.getChildren().setAll(newLoadedPane);
     }
 }

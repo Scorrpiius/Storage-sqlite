@@ -5,88 +5,77 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" style="-fx-background-color: #ffffff;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
-    <right>
+<AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" style="-fx-background-color: #ffffff;-fx-background-radius: 20; -fx-border-radius: 20;" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1">
 
-    </right>
-    <bottom>
-    </bottom>
-    <left>
+    <Label layoutX="15.0" layoutY="100.0" text="Référence " textFill="#6f7482" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="100.0">
+        <font>
+            <Font name="Inter Regular" size="14.0" />
+        </font>
+    </Label>
+    <Button layoutX="350.0" layoutY="360.0" onAction="#ajouterMatierePremiere" prefHeight="40.0" prefWidth="110.0" style="-fx-background-color: #007AFF; -fx-border-color: #007AFF; -fx-background-radius: 5; -fx-border-radius: 5;" text="Ajouter">
+        <font>
+            <Font name="Inter Semi Bold" size="15.0" />
+        </font>
+    </Button>
+    <TextField fx:id="referenceProduit" layoutX="110.0" layoutY="90.0" prefHeight="40.0" prefWidth="310.0" style="-fx-background-color: ccecf0;" AnchorPane.leftAnchor="110.0" AnchorPane.topAnchor="90.0" />
+    <Button layoutX="681.0" layoutY="546.0" mnemonicParsing="false" onAction="#finaliserModifProduitFini" prefHeight="40.0" style="-fx-background-color: white; -fx-border-color: black; -fx-border-radius: 5;" text="Terminer" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="30.0">
+        <font>
+            <Font name="Inter Semi Bold" size="15.0" />
+        </font>
+    </Button>
+    <Label fx:id="titlePage" layoutX="50.0" layoutY="20.0"  textFill="#2e3333" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="15.0">
+        <font>
+            <Font name="System Bold" size="20.0" />
+        </font>
+    </Label>
+    <TableView fx:id="matierePremiereTable" layoutX="50.0" layoutY="200.0" stylesheets="@../css/tab.css" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="200.0">
+        <columns>
+            <TableColumn fx:id="referenceColumn" prefWidth="241.0" text="Référence" />
+            <TableColumn fx:id="qteColumn" minWidth="0.0" prefWidth="75.0" text="Quantité" />
+        </columns>
+    </TableView>
+    <Label layoutX="50.0" layoutY="167.0" text="Matières premières " AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="170.0">
+        <font>
+            <Font name="System Bold" size="16.0" />
+        </font>
+    </Label>
+    <Button layoutX="610.0" layoutY="360.0" mnemonicParsing="false" onAction="#modifierMatierePremiere" prefHeight="40.0" prefWidth="110.0" style="-fx-background-color: white; -fx-border-color: grey; -fx-border-radius: 5;" text="Modifier">
+        <font>
+            <Font name="Inter Semi Bold" size="15.0" />
+        </font>
+    </Button>
+    <Button alignment="CENTER" layoutX="480.0" layoutY="360.0" mnemonicParsing="false" onAction="#supprimerMatierePremiere" prefHeight="40.0" prefWidth="110.0" style="-fx-background-color: #d04848; -fx-border-radius: 5; -fx-background-radius: 5;" text="Supprimer">
+        <font>
+            <Font name="Inter Semi Bold" size="15.0" />
+        </font>
+    </Button>
+    <Label layoutX="445.0" layoutY="100.0" text="Image " textFill="#6f7482" AnchorPane.rightAnchor="320.0" AnchorPane.topAnchor="100.0">
+        <font>
+            <Font name="Inter Regular" size="14.0" />
+        </font>
+    </Label>
+    <Button layoutX="584.0" layoutY="327.0" mnemonicParsing="false" onAction="#telechargerImage" prefHeight="40.0" style="-fx-background-color: white; -fx-border-color: black; -fx-border-radius: 5;" text="Télécharger une image" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="330.0">
+        <font>
+            <Font name="Inter Semi Bold" size="12.0" />
+        </font>
+    </Button>         <TextField fx:id="qte" layoutX="480.0" layoutY="290.0" prefHeight="40.0" prefWidth="100.0" style="-fx-background-color: ccecf0;" AnchorPane.topAnchor="290.0" />
+    <Label layoutX="350.0" layoutY="240.0" text="Matière première " textFill="#6f7482" AnchorPane.leftAnchor="350.0" AnchorPane.topAnchor="240.0">
+        <font>
+            <Font name="Inter Regular" size="14.0" />
+        </font>
+    </Label>
+    <Label layoutX="350.0" layoutY="300.0" text="Quantité " textFill="#6f7482" AnchorPane.topAnchor="300.0">
+        <font>
+            <Font name="Inter Regular" size="14.0" />
+        </font>
+    </Label>
+    <ComboBox fx:id="matiereReferenceBox" layoutX="480.0" layoutY="229.0" prefHeight="40.0" prefWidth="310.0" style="-fx-background-color: ccecf0;" AnchorPane.leftAnchor="480.0" AnchorPane.topAnchor="230.0" />
+    <Separator layoutY="60.0" prefWidth="800.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="60.0" />
+ <ImageView fx:id="img" fitHeight="228.0" fitWidth="300.0" layoutX="650.0" layoutY="85.0" pickOnBounds="true" preserveRatio="true" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="85.0" />
+   <Label layoutX="350.0" layoutY="197.0" text="Ajouter une matière première" AnchorPane.leftAnchor="350.0" AnchorPane.topAnchor="200.0">
+      <font>
+         <Font name="System Bold" size="16.0" />
+      </font>
+   </Label>
 
-    </left>
-    <center>
-        <Pane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-            <Label layoutX="50.0" layoutY="80.0" text="Référence :" textFill="#2e3333">
-                <font>
-                    <Font name="Inter Semi Bold" size="20.0" />
-                </font>
-            </Label>
-            <Button layoutX="50.0" layoutY="460.0" onAction="#ajouter" prefHeight="40.0" prefWidth="110.0" style="-fx-background-color: #529c3f; -fx-border-color: #529c3f; -fx-border-radius: 20;" text="Ajouter">
-                <font>
-                    <Font name="Inter Semi Bold" size="15.0" />
-                </font>
-            </Button>
-            <TextField fx:id="referenceProduit" layoutX="50.0" layoutY="105.0" prefHeight="40.0" prefWidth="310.0" style="-fx-background-color: ccecf0;" />
-            <Button layoutX="681.0" layoutY="546.0" mnemonicParsing="false" onAction="#finaliserSaisie" prefHeight="40.0" style="-fx-background-color: white; -fx-border-color: black; -fx-border-radius: 10;" text="Terminer">
-                <font>
-                    <Font name="Inter Semi Bold" size="15.0" />
-                </font>
-            </Button>
-            <Label layoutX="50.0" layoutY="20.0" text="Ajouter un nouveau produit fini" textFill="#2e3333">
-                <font>
-                    <Font name="Inter Semi Bold" size="24.0" />
-                </font>
-            </Label>
-            <TableView fx:id="matierePremiereTable" layoutX="50.0" layoutY="200.0" prefHeight="160.0" prefWidth="316.0" stylesheets="@../css/tab.css">
-                <columns>
-                    <TableColumn fx:id="referenceColumn" prefWidth="241.0" text="Référence" />
-                    <TableColumn fx:id="qteColumn" minWidth="0.0" prefWidth="75.0" text="Quantité" />
-                </columns>
-            </TableView>
-            <Button layoutX="736.0" layoutY="14.0" mnemonicParsing="false" onAction="#retour" style="-fx-background-color: transparent;" text="X">
-                <font>
-                    <Font name="System Bold" size="20.0" />
-                </font></Button>
-            <Label layoutX="50.0" layoutY="167.0" text="Matières premières :">
-                <font>
-                    <Font name="Inter Semi Bold" size="20.0" />
-                </font>
-            </Label>
-            <Button layoutX="310.0" layoutY="460.0" mnemonicParsing="false" onAction="#modifier" prefHeight="40.0" prefWidth="110.0" style="-fx-background-color: white; -fx-border-color: grey; -fx-border-radius: 10;" text="Modifier">
-                <font>
-                    <Font name="Inter Semi Bold" size="15.0" />
-                </font>
-            </Button>
-            <Button alignment="CENTER" layoutX="180.0" layoutY="460.0" mnemonicParsing="false" onAction="#supprimerMatiere" prefHeight="40.0" prefWidth="110.0" style="-fx-background-color: #d04848; -fx-border-radius: 10;" text="Supprimer">
-                <font>
-                    <Font name="Inter Semi Bold" size="15.0" />
-                </font>
-            </Button>
-            <Label layoutX="420.0" layoutY="80.0" text="Image :">
-                <font>
-                    <Font name="Inter Semi Bold" size="20.0" />
-                </font>
-            </Label>
-            <Button layoutX="417.0" layoutY="105.0" mnemonicParsing="false" onAction="#loadImage" prefHeight="40.0" prefWidth="205.0" style="-fx-background-color: white; -fx-border-color: black; -fx-border-radius: 10;" text="Télécharger une image">
-                <font>
-                    <Font name="Inter Semi Bold" size="12.0" />
-                </font>
-            </Button>         <TextField fx:id="qte" layoutX="380.0" layoutY="410.0" prefHeight="40.0" prefWidth="100.0" style="-fx-background-color: ccecf0;" />
-            <Label layoutX="50.0" layoutY="380.0" text="Matière première :">
-                <font>
-                    <Font name="Inter Semi Bold" size="20.0" />
-                </font>
-            </Label>
-            <Label layoutX="380.0" layoutY="380.0" text="Quantité :">
-                <font>
-                    <Font name="Inter Semi Bold" size="20.0" />
-                </font>
-            </Label>
-            <ComboBox fx:id="matiereReferenceBox" layoutX="50.0" layoutY="410.0" prefHeight="40.0" prefWidth="310.0" />
-            <Separator layoutY="60.0" prefWidth="800.0" />
-         <ImageView fx:id="img" fitHeight="228.0" fitWidth="345.0" layoutX="420.0" layoutY="150.0" pickOnBounds="true" preserveRatio="true" />
-        </Pane>
-
-    </center>
-
-</BorderPane>
+</AnchorPane>
